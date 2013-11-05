@@ -1,0 +1,99 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	java.util.List
+	java.util.Map
+" 
+%>
+	<%@ include file="HelpClass.javajet"%>
+<%
+
+	class DBInputBeginUtil extends DefaultDBInputUtil{
+	    
+		public void setURL(INode node) {
+			
+			String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
+%>
+			String url_<%=cid %> = <%=jdbcUrl%>;
+<%
+		}
+		
+		public void createStatement(INode node) {
+			super.createStatement(node);
+			String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+			String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
+            if(("true").equals(useCursor)) {
+%>
+                stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
+<%
+            }
+		}
+		
+		public void createConnection(INode node) {
+			cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+%>			
+			java.util.Map<String, routines.system.TalendDataSource> dataSources_<%=cid%> = (java.util.Map<String, routines.system.TalendDataSource>) globalMap.get(KEY_DB_DATASOURCES);
+            if (null != dataSources_<%=cid%>) {
+<%
+                String alias = ElementParameterParser.getValue(node, "__DATASOURCE_ALIAS__");
+%>
+                conn_<%=cid%> = dataSources_<%=cid%>.get(<%=(null != alias && !("".equals(alias)))?alias:"\"\""%>).getConnection();
+            } else {
+			    java.lang.Class.forName(<%=this.getDirverClassName(node) %>);
+				<%this.setURL(node);%>
+		        String dbUser_<%=cid %> = <%=dbuser%>;
+		        String dbPwd_<%=cid %> = <%=dbpwd%>;
+		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+			}
+<%
+		}
+		public String getDirverClassName(INode node){
+			String driverJar = ElementParameterParser.getValue(node, "__DRIVER_JAR__");
+			String driverClass = ElementParameterParser.getValue(node, "__DRIVER_CLASS__");
+			return driverClass;
+		}
+		
+		//-----------according schema type to generate ResultSet
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+%>
+            java.util.Date date_<%=cid%> = null;
+            try{
+            	date_<%=cid%> = rs_<%=cid %>.getTimestamp(column_index_<%=cid%>);
+            }catch(java.lang.Exception e){
+            	date_<%=cid%> = rs_<%=cid %>.getDate(column_index_<%=cid%>);
+            }
+            <%=firstConnName%>.<%=column.getLabel()%> = date_<%=cid%>;
+<%
+	    }  
+	    
+	    public void afterGenertorType(String firstConnName, IMetadataColumn column, int currentColNo) {
+			if (column.isNullable()) {
+%>
+				if (rs_<%=cid%>.wasNull()) {
+					<%=firstConnName%>.<%=column.getLabel()%> = null;
+				}
+<%
+			}	
+	    }
+	    //---------end according schema type to generate ResultSet
+	}//end class
+	
+	dbInputBeginUtil = new DBInputBeginUtil();
+%>
+    
+	<%@ include file="AbstractDBInputBegin.javajet"%>
+
+
