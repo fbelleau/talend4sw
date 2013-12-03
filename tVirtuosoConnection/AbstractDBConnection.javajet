@@ -1,0 +1,54 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+	
+    String cid = node.getUniqueName();
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+    if(dbschema == null||dbschema.trim().length()==0) {
+    	 dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+    }
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    
+	boolean isUseSharedConnection = ("true").equals(ElementParameterParser.getValue(node, "__USE_SHARED_CONNECTION__"));
+%>
+<%
+	connUtil.beforeComponentProcess(node);
+	
+	connUtil.createURL(node);
+%>
+
+	String userName_<%=cid%> = <%=(dbuser != null && dbuser.trim().length() == 0)? "null":dbuser%>;<%//the tSQLiteConnection component not contain user and pass return null%>
+	
+	String password_<%=cid%> = <%=(dbpass != null && dbpass.trim().length() == 0)? "null":dbpass%>;
+	
+	java.sql.Connection conn_<%=cid%>=null;
+
+<%
+	if(isUseSharedConnection){
+%>
+	<%connUtil.useShareConnection(node);%>
+<%
+	}else {
+%>
+		<%connUtil.classForName(node);%>
+		
+		<%connUtil.createConnection(node);%>
+<%
+	}
+%> 
+	<%connUtil.setAutoCommit(node);%>
+<%
+	connUtil.afterComponentProcess(node);
+%>

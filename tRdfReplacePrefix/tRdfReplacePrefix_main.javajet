@@ -1,0 +1,119 @@
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+IMetadataTable preMetadata = null;
+IMetadataTable Metadata = null;
+
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+String inRowName = node.getIncomingConnections().get(0).getName();
+String outRowName = "";
+
+Boolean islit_choice = false;
+String ntriple = "ntriple";
+
+String trad = ElementParameterParser.getValue(node, "__TRAD__"); // indicateur traduction
+String islit = ElementParameterParser.getValue(node, "__ISLIT__"); // colonne islit
+String object = ElementParameterParser.getValue(node, "__OBJECT__"); // colonne object
+String subject = ElementParameterParser.getValue(node, "__SUBJECT__"); //colonne subject
+String predicate = ElementParameterParser.getValue(node, "__PREDICATE__"); // colonne predicate
+
+String object_val = ""; // valeur object
+String subject_val = ""; // valeur subject
+String predicate_val = ""; // valeur predicate
+String inter_val = ""; // variable tampon
+
+ArrayList liste_valeur = new ArrayList(); // liste des valeurs à remplacer
+ArrayList liste_replace = new ArrayList(); // liste des valeurs nouvelles
+
+// Ajout des valeurs dans les listes !! ATTENTION à l'ordre !!
+
+liste_valeur.add("bm:"); liste_replace.add("http://bio2rdf.org/");
+liste_valeur.add("rdf:"); liste_replace.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+liste_valeur.add("rdfs:"); liste_replace.add("http://www.w3.org/2000/01/rdf-schema#");
+liste_valeur.add("owl:"); liste_replace.add("http://www.w3.org/2002/07/owl#");
+liste_valeur.add("dc:"); liste_replace.add("http://purl.org/dc/terms/");
+liste_valeur.add("dct:"); liste_replace.add("http://purl.org/dc/terms/");
+liste_valeur.add("foaf:"); liste_replace.add("http://xmlns.com/foaf/0.1/");
+
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+
+%>
+
+<%
+
+//------------------------------????---------------------//
+
+    for (IConnection conn : outConns) 
+    { //oc1 Open	
+     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
+     { //oc2 Open
+       outRowName = conn.getName();
+%>
+
+  <%=outRowName %> = new <%=outRowName %>Struct();
+
+<%
+       } //oc2 Close
+    } //oc1 Close
+
+List<IMetadataColumn> columns = preMetadata.getListColumns();
+
+//------------------------------Parcours des colonnes en entrées---------------------//
+
+for (int i = 0; i < columns.size(); i++) 
+{ // column cycle
+ IMetadataColumn column = columns.get(i);
+ 
+    for (IConnection conn : outConns) 
+    { //oc1 Open	
+     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
+     { //oc2 Open
+       outRowName = conn.getName();
+       
+//------------------------------Remplacement des préfixes------------------------//
+       
+       if (trad.equals("true")) { // test si case remplacement cochée
+              for (int x=0; x<liste_valeur.size(); x++) {
+              		if (column.getTalendType().equals("id_String")) {
+              
+ %>
+ 
+ <%=outRowName %>.<%=ntriple %> = <%=inRowName %>.<%=column.getLabel() %>.replace("<%=liste_valeur.get(x) %>", "<%=liste_replace.get(x) %>");
+
+ <%
+ 
+ //------------------------------Formation des triplets-------------------------//
+ 
+ 
+ 
+ } // if
+ } // for
+ } // if
+ 
+ %>
+ 
+  <%
+       } //oc2 Close
+    } //oc1 Close
+
+} // column cycle
+%>
+
+<%=outRowName %>.<%=ntriple %> = "vroum";
+
+nb_line_<%=cid %>++;

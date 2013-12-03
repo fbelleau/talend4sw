@@ -1,0 +1,226 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070327A"
+    STARTABLE="true"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Semantic web/Virtuoso>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+	<PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="1"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tMSSqlConnection"
+      NUM_ROW="1"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+      DYNAMIC_SETTINGS="true"
+    />
+
+    <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="2"
+      REPOSITORY_VALUE="DATABASE:SQL_SERVER"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />
+
+    <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>MSSQL</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>"1433"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DB_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SCHEMA"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>"dbo"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DBNAME"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SID"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>"DB"</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="USER"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="USERNAME"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PASS"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="PASSWORD"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+      
+    </PARAMETER>
+       <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="6"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="TABLE"
+      FIELD="DBTABLE"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="QUERYSTORE"
+      FIELD="QUERYSTORE_TYPE"
+      NUM_ROW="8"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+ 	<PARAMETER
+      NAME="GUESS_SCHEMA"
+      FIELD="GUESS_SCHEMA"
+      NUM_ROW="8"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>    
+
+    <PARAMETER
+      NAME="QUERY"
+      FIELD="MEMO_SQL"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >
+      <DEFAULT>"select id, name from employee"</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+	     NAME="MAPPING"
+	     FIELD="MAPPING_TYPE"
+	     NUM_ROW="100"
+	     SHOW="false"
+	>       
+	   <DEFAULT>id_MSSQL</DEFAULT>
+	</PARAMETER>
+    
+   </PARAMETERS>
+
+   <ADVANCED_PARAMETERS>
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
+      	NAME="ENCODING"
+      	FIELD="ENCODING_TYPE"
+      	NUM_ROW="10"
+      	REQUIRED="true"
+      	SHOW="false"
+    >
+      	<DEFAULT>"ISO-8859-15"</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER NAME="TRIM_COLUMN" FIELD="TABLE" NUM_ROW="40"
+		NB_LINES="5" SHOW_IF="TRIM_ALL_COLUMN == 'false'">
+		<ITEMS BASED_ON_SCHEMA="true">
+			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
+		</ITEMS>
+	</PARAMETER>	
+
+   </ADVANCED_PARAMETERS>
+
+   <CODEGENERATION>
+     <IMPORTS>
+     	<IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.5.jar" REQUIRED="true" />
+     	<IMPORT NAME="Talend_MssqlUtil" MODULE="talend_DB_mssqlUtil.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+      <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
+   </RETURNS>
+</COMPONENT>

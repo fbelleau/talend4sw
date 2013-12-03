@@ -1,0 +1,53 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+	<%@ include file="HelpClass.javajet"%>
+<%
+	class ConnectionUtil extends DefaultConnectionUtil{
+	
+		public void createURL(INode node) {
+			super.createURL(node);
+%>
+		String url_<%=cid %> = "jdbc:virtuoso://" + <%=dbhost%> ;
+		String port_<%=cid%> = <%=dbport%>;
+		String dbname_<%=cid%> = <%=dbname%> ;
+		String dbproperties_<%=cid%> = <%=dbproperties%> ;
+
+    	if (!"".equals(port_<%=cid%>)) {
+    		url_<%=cid %> += ":" + <%=dbport%>;
+    	}
+	
+    	url_<%=cid%> += "/DATABASE=" + <%=dbname%>; 
+    	url_<%=cid%> += "/UID=" + <%=username%>; 
+    	url_<%=cid%> += "/PWD=" + <%=password%>; 
+
+    	if (!"".equals(dbproperties_<%=cid%>)) {
+		   url_<%=cid%> += "/" + <%=dbproperties%>;  
+    	}
+
+<%	
+		}
+	
+		public String getDirverClassName(INode node){
+			return "virtuoso.jdbc3.Driver";
+		}
+		
+	}//end class
+	
+	connUtil = new ConnectionUtil();
+%>
+<%//----------------------------component codes-----------------------------------------%>
+
+	<%@ include file="AbstractDBConnection.javajet"%>
+
+	globalMap.put("dbschema_<%=cid%>", <%=dbschema%>);
+
+	globalMap.put("db_<%=cid%>",  <%=dbname%>);
+
+	globalMap.put("conn_<%=cid%>",conn_<%=cid%>);
+	
+	globalMap.put("shareIdentitySetting_<%=cid%>",  <%=ElementParameterParser.getValue(node, "__SHARE_IDENTITY_SETTING__")%>);

@@ -1,0 +1,32 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+                java.util.List  
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String outputFile = ElementParameterParser.getValue(node, "__OUTPUTFILE__");
+%> 
+int nb_line_<%=cid %> = 0;
+
+<%
+  IMetadataTable preMetadata = null;
+  if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+  preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+  List<IMetadataColumn> columns = preMetadata.getListColumns();
+  for (int i = 0; i < columns.size(); i++) 
+  {
+   IMetadataColumn column = columns.get(i);
+  }
+%>

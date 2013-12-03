@@ -1,0 +1,107 @@
+<%@ jet 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+		java.util.Map
+" 
+%>
+	<%@ include file="../templates/DB/Input/HelpClass.javajet"%>
+<%
+
+	class DBInputBeginUtil extends DefaultDBInputUtil{
+	
+	
+		public void beforeComponentProcess(INode node){
+	    	cid = node.getUniqueName();
+%>
+			org.talend.designer.components.util.mssql.MSSqlGenerateTimestampUtil mssqlGTU_<%=cid%> = org.talend.designer.components.util.mssql.MSSqlUtilFactory.getMSSqlGenerateTimestampUtil();
+			
+			java.util.List<String> talendToDBList_<%=cid %> = new java.util.ArrayList();
+			String[] talendToDBArray_<%=cid %>  = new String[]{"FLOAT","NUMERIC","NUMERIC IDENTITY","DECIMAL","DECIMAL IDENTITY","REAL"}; 
+			java.util.Collections.addAll(talendToDBList_<%=cid %>, talendToDBArray_<%=cid %>); 
+<%
+	    }
+		public void afterUseExistConnection(INode node) {
+			String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+			String conn = "conn_" + connection;
+			String schema = "dbschema_" + connection;
+%>
+			String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
+<%
+	    }
+	
+		public void setURL(INode node) {
+			
+			String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+%>
+		    String port_<%=cid%> = <%=dbport%>;
+		    String dbname_<%=cid%> = <%=dbname%> ;
+		    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> ; 
+		    if (!"".equals(port_<%=cid%>)) {
+		    	url_<%=cid %> += ":" + <%=dbport%>;
+		    }
+		    if (!"".equals(dbname_<%=cid%>)) {
+		    	url_<%=cid%> += "//" + <%=dbname%>; 
+		    }
+		    url_<%=cid%> += ";appName=" + projectName + ";" + <%=dbproperties%>;
+		    String dbschema_<%=cid%> = <%=dbschema%>;
+<%		
+		}
+		
+		public String getDirverClassName(INode node){
+			return "net.sourceforge.jtds.jdbc.Driver";
+		}
+		//-----------according schema type to generate ResultSet
+	    
+	    /**
+	     * DOC jliu Comment method "getDate". <br>
+	     * DB Type ---------> jtds driver return type<br>
+	     * DATE -------------> nvarchar<br>
+	     * DATETIME ---------> datetime<br>
+	     * DATETIME2 --------> nvarchar<br>
+	     * DTIME ------------> nvarchar<br>
+	     * SMALLDATETIME ----> smalldatetime<br>
+	     * DATETIMEOFFSET ---> nvarchar<br>
+	     * TIMESTAMP --------> timestamp<br>
+	     */
+		public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+%>
+			<%=firstConnName%>.<%=column.getLabel()%> = mssqlGTU_<%=cid%>.getDate(rsmd_<%=cid %>, rs_<%=cid %>, <%=currentColNo%>);
+			
+<%
+	    }
+	    
+		public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
+%>
+            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+            if(tmpContent_<%=cid%> != null) {
+            	if (talendToDBList_<%=cid %> .contains(rsmd_<%=cid %>.getColumnTypeName(<%=currentColNo%>).toUpperCase(java.util.Locale.ENGLISH))) {
+            		<%=firstConnName%>.<%=column.getLabel()%> = FormatterUtils.formatUnwithE(Double.valueOf(tmpContent_<%=cid%>));
+            	} else {
+                	<%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+                }
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> = null;
+            }
+<%
+	    }
+	    //---------end according schema type to generate ResultSet
+	}//end class
+	
+	dbInputBeginUtil = new DBInputBeginUtil();
+%>
+    
+	<%@ include file="../templates/DB/Input/AbstractDBInputBegin.javajet"%>
+
+
+
+
