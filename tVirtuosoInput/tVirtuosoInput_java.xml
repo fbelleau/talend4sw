@@ -1,5 +1,4 @@
 <COMPONENT>
-
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
@@ -7,15 +6,15 @@
     STATUS="ALPHA"
     
     COMPATIBILITY="ALL"
-    AUTHOR="Talend"
-    RELEASE_DATE="20070327A"
+    AUTHOR="Bio2RDF"
+    RELEASE_DATE="20130919"
     STARTABLE="true"
   >
     <SIGNATURE/>
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic web/Virtuoso>
+    <FAMILY>Semantic Web</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
@@ -34,161 +33,102 @@
 
   <PARAMETERS>
 
-	<PARAMETER
-      NAME="USE_EXISTING_CONNECTION"
-      FIELD="CHECK"
-      NUM_ROW="1"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
-
-    <PARAMETER
-      NAME="CONNECTION"
-      FIELD="COMPONENT_LIST"
-      FILTER="tMSSqlConnection"
-      NUM_ROW="1"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-      DYNAMIC_SETTINGS="true"
-    />
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="2"
-      REPOSITORY_VALUE="DATABASE:SQL_SERVER"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:JDBC"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    />
-
-    <PARAMETER
-      NAME="HOST"
-      FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-	<PARAMETER
-      NAME="TYPE"
-      FIELD="TEXT"
-      NUM_ROW="3"
+      
+	/>
+	
+   <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="10"
       SHOW="false"
-      REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>MSSQL</DEFAULT>
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
+	
+	<PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tVirtuosoConnection"
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+      DYNAMIC_SETTINGS="true"
+    />
     
+	
     <PARAMETER
-      NAME="PORT"
+      NAME="URL"
       FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="PORT"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>"1433"</DEFAULT>
+      NUM_ROW="15"
+      REPOSITORY_VALUE="URL"
+      REQUIRED="true" 
+     SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+	>
+      <DEFAULT>"localhost:1111"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="DB_SCHEMA"
+	
+	<PARAMETER
+      NAME="DATABASE"
       FIELD="TEXT"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>"dbo"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="DBNAME"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REPOSITORY_VALUE="SID"
+      NUM_ROW="30"
+      REPOSITORY_VALUE="DATABASE"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>"DB"</DEFAULT>
+	>
+	<DEFAULT>"DB"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
+	
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="30"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>""</DEFAULT>
+	>
+      <DEFAULT>"dba"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PASSWORD"
-      REQUIRED="true"
+      REQUIRED="true" 
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>""</DEFAULT>
-      
+	>
+      <DEFAULT>"dba"</DEFAULT>
     </PARAMETER>
-       <PARAMETER
+    
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="35"
     >
-      <DEFAULT>""</DEFAULT>
+      <TABLE READONLY="false">
+        <COLUMN NAME="uri" TYPE="id_String" />
+        <COLUMN NAME="count" TYPE="id_Integer"/>
+      </TABLE>
     </PARAMETER>
-    <PARAMETER
-      NAME="TABLE"
-      FIELD="DBTABLE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="QUERYSTORE"
-      FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="8"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
- 	<PARAMETER
-      NAME="GUESS_SCHEMA"
-      FIELD="GUESS_SCHEMA"
-      NUM_ROW="8"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>    
 
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="9"
+      NUM_ROW="55"
       REQUIRED="true"
     >
-      <DEFAULT>"select id, name from employee"</DEFAULT>
+      <DEFAULT>"select ?type count(*)  where { ?s a ?type . } order by  1"</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER
-	     NAME="MAPPING"
-	     FIELD="MAPPING_TYPE"
-	     NUM_ROW="100"
-	     SHOW="false"
-	>       
-	   <DEFAULT>id_MSSQL</DEFAULT>
-	</PARAMETER>
-    
+		
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
-	</PARAMETER>
-	
 	<PARAMETER
       	NAME="ENCODING"
       	FIELD="ENCODING_TYPE"
@@ -199,6 +139,16 @@
       	<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
 	
+	<PARAMETER NAME="USE_CURSOR" FIELD="CHECK" NUM_ROW="20">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	<PARAMETER NAME="CURSOR_SIZE" FIELD="TEXT" NUM_ROW="20"
+			SHOW_IF="(USE_CURSOR == 'true')">
+			<DEFAULT>1000</DEFAULT>
+	</PARAMETER>
+
+	
+	
 	<PARAMETER NAME="TRIM_ALL_COLUMN" FIELD="CHECK" NUM_ROW="30">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -208,15 +158,13 @@
 		<ITEMS BASED_ON_SCHEMA="true">
 			<ITEM NAME="TRIM" FIELD="CHECK"></ITEM>
 		</ITEMS>
-	</PARAMETER>	
-
+	</PARAMETER>		
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
-     <IMPORTS>
-     	<IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.5.jar" REQUIRED="true" />
-     	<IMPORT NAME="Talend_MssqlUtil" MODULE="talend_DB_mssqlUtil.jar" REQUIRED="true" />
-     </IMPORTS>
+	   <IMPORTS>
+	      <IMPORT NAME="virtjdbc3" MODULE="virtjdbc3.jar" UrlPath="http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VOSDownload/virtjdbc3.jar" REQUIRED="true" />
+	   </IMPORTS>
    </CODEGENERATION>
 
    <RETURNS>
