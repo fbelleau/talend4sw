@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <COMPONENT> 
 
-<HEADER   AUTHOR="Bio2RDF.org" 
+<HEADER   AUTHOR="Francois.Belleau@Bio2RDF.org" 
           COMPATIBILITY="ALL" 
           PLATEFORM="ALL" 
           RELEASE_DATE="20131220" 
@@ -50,31 +50,39 @@
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_STRING" FIELD="STRING" NUM_ROW="4" REQUIRED="true" SHOW_IF="ENDPOINT_MODE == 'true'">
-      <DEFAULT></DEFAULT>
+      <DEFAULT>"go"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
-      <ITEMS DEFAULT="hgnc">
+      <ITEMS DEFAULT="go">
         <ITEM NAME="hgnc" VALUE="hgnc"/>
         <ITEM NAME="go" VALUE="go"/>
+        <ITEM NAME="omim" VALUE="omim"/>
         <ITEM NAME="reactome" VALUE="reactome"/>
       </ITEMS>
     </PARAMETER>
 
+    <PARAMETER NAME="METHOD_STRING" FIELD="STRING" NUM_ROW="6" REQUIRED="true" SHOW_IF="'false'">
+      <DEFAULT>"describe"</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">
         <ITEM NAME="DESCRIBE" VALUE="describe"/>
         <ITEM NAME="LINKS" VALUE="links"/>
         <ITEM NAME="SEARCH" VALUE="search"/>
+        <ITEM NAME="DESCRIBE_URI" VALUE="describe_uri"/>
+        <ITEM NAME="LINKS_URI" VALUE="links_uri"/>
+        <ITEM NAME="LINKS_LITERAL" VALUE="links_literal"/>
       </ITEMS>
     </PARAMETER>
 
     <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED != 'SEARCH'" NUM_ROW="11">
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"go:0019200"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED == 'SEARCH'"  NUM_ROW="12">
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"hexokinase"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="15">

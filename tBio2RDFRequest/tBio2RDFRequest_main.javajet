@@ -65,8 +65,21 @@ String URL;
 
 if ("<%=sMethod%>".equals("search")){
   URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
-} else {
-  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+}
+else if ("<%=sMethod%>".equals("describe")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+}
+else if ("<%=sMethod%>".equals("links")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+}
+else if ("<%=sMethod%>".equals("describe_uri")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+}
+else if ("<%=sMethod%>".equals("links_uri")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+}
+else {
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "?parm=" + <%=sURI.replace("#","%23")%> ;
 }
 
 <%if (bDebug){%>
