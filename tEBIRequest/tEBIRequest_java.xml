@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <COMPONENT> 
 
-<HEADER   AUTHOR="Francois.Belleau@bio2rdf.org" 
+<HEADER   AUTHOR="Francois.Belleau@Bio2RDF.org" 
           COMPATIBILITY="ALL" 
           PLATEFORM="ALL" 
-          RELEASE_DATE="20140119" 
+          RELEASE_DATE="20131220" 
           SERIAL="" 
           STARTABLE="true" 
           STATUS="BETA" 
@@ -17,7 +17,7 @@
 </HEADER>
 
 <FAMILIES> 
-  <FAMILY>Bio2RDF</FAMILY>
+  <FAMILY>Semantic Web</FAMILY>
 </FAMILIES>  
 
 <DOCUMENTATION> 
@@ -40,10 +40,6 @@
         <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
       </TABLE>
     </PARAMETER>
-    
-    <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
-      <DEFAULT>"http://rest.bio2rdf.org"</DEFAULT>
-    </PARAMETER>
 
     <PARAMETER NAME="ENDPOINT_MODE" FIELD="CHECK" NUM_ROW="3">
       <DEFAULT>false</DEFAULT>
@@ -54,36 +50,12 @@
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
-      <ITEMS DEFAULT="atlas">
-        <ITEM NAME="affymetrix" VALUE="affymetrix"/>
+      <ITEMS DEFAULT="biomodel">
+        <ITEM NAME="biomodel" VALUE="biomodel"/>
+        <ITEM NAME="biosamples" VALUE="biosamples"/>
+        <ITEM NAME="chembl" VALUE="chembl"/>
         <ITEM NAME="atlas" VALUE="atlas"/>
-        <ITEM NAME="biomodels" VALUE="biomodels"/>
-        <ITEM NAME="bioportal" VALUE="bioportal"/>
-        <ITEM NAME="ctd" VALUE="ctd"/>
-        <ITEM NAME="drugbank" VALUE="drugbank"/>
-        <ITEM NAME="genbank" VALUE="genbank"/>
-        <ITEM NAME="gene" VALUE="gene"/>
-        <ITEM NAME="goa" VALUE="goa"/>
-        <ITEM NAME="hgnc" VALUE="hgnc"/>
-        <ITEM NAME="hhpid" VALUE="hhpid"/>
-        <ITEM NAME="homologene" VALUE="homologene"/>
-        <ITEM NAME="interpro" VALUE="interpro"/>
-        <ITEM NAME="iproclass" VALUE="iproclass"/>
-        <ITEM NAME="irefindex" VALUE="irefindex"/>
-        <ITEM NAME="kegg" VALUE="kegg"/>
-        <ITEM NAME="mesh" VALUE="mesh"/>
-        <ITEM NAME="mgi" VALUE="mgi"/>
-        <ITEM NAME="ndc" VALUE="ndc"/>
-        <ITEM NAME="omim" VALUE="omim"/>
-        <ITEM NAME="pharmgkb" VALUE="pharmgkb"/>
-        <ITEM NAME="pubmed" VALUE="pubmed"/>
-        <ITEM NAME="refseq" VALUE="refseq"/>
-        <ITEM NAME="sgd" VALUE="sgd"/>
-        <ITEM NAME="taxonomy" VALUE="taxonomy"/>
-        <ITEM NAME="toxkb" VALUE="toxkb"/>
-        <ITEM NAME="uniprot" VALUE="uniprot"/>
-
-
+        <ITEM NAME="reactome" VALUE="reactome"/>
       </ITEMS>
     </PARAMETER>
 
@@ -93,9 +65,10 @@
     
     <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">
-        <ITEM NAME="DESCRIBE" VALUE="describe"/>
-        <ITEM NAME="LINKS" VALUE="links"/>
         <ITEM NAME="SEARCH" VALUE="search"/>
+        <ITEM NAME="DESCRIBE_URI" VALUE="describe_uri"/>
+        <ITEM NAME="LINKS_URI" VALUE="links_uri"/>
+        <ITEM NAME="LINKS_LITERAL" VALUE="links_literal"/>
       </ITEMS>
     </PARAMETER>
 
@@ -109,11 +82,8 @@
     
     <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="15">
       <ITEMS DEFAULT="NT">
-        <ITEM NAME="NT" VALUE="nt"/>
         <ITEM NAME="RDF" VALUE="rdf"/>
         <ITEM NAME="N3" VALUE="n3"/>
-        <ITEM NAME="JSON" VALUE="json"/>
-        <ITEM NAME="JSONLD" VALUE="jsonld"/>
       </ITEMS>
     </PARAMETER>
     

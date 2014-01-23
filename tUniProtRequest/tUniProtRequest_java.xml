@@ -50,38 +50,13 @@
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_STRING" FIELD="STRING" NUM_ROW="4" REQUIRED="true" SHOW_IF="ENDPOINT_MODE == 'true'">
-      <DEFAULT>"go"</DEFAULT>
+      <DEFAULT>"uniprot"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
-      <ITEMS DEFAULT="atlas">
-        <ITEM NAME="affymetrix" VALUE="affymetrix"/>
-        <ITEM NAME="atlas" VALUE="atlas"/>
-        <ITEM NAME="biomodels" VALUE="biomodels"/>
-        <ITEM NAME="bioportal" VALUE="bioportal"/>
-        <ITEM NAME="ctd" VALUE="ctd"/>
-        <ITEM NAME="drugbank" VALUE="drugbank"/>
-        <ITEM NAME="genbank" VALUE="genbank"/>
-        <ITEM NAME="gene" VALUE="gene"/>
-        <ITEM NAME="goa" VALUE="goa"/>
-        <ITEM NAME="hgnc" VALUE="hgnc"/>
-        <ITEM NAME="hhpid" VALUE="hhpid"/>
-        <ITEM NAME="homologene" VALUE="homologene"/>
-        <ITEM NAME="interpro" VALUE="interpro"/>
-        <ITEM NAME="iproclass" VALUE="iproclass"/>
-        <ITEM NAME="irefindex" VALUE="irefindex"/>
-        <ITEM NAME="kegg" VALUE="kegg"/>
-        <ITEM NAME="mesh" VALUE="mesh"/>
-        <ITEM NAME="mgi" VALUE="mgi"/>
-        <ITEM NAME="ndc" VALUE="ndc"/>
-        <ITEM NAME="omim" VALUE="omim"/>
-        <ITEM NAME="pharmgkb" VALUE="pharmgkb"/>
-        <ITEM NAME="pubmed" VALUE="pubmed"/>
-        <ITEM NAME="refseq" VALUE="refseq"/>
-        <ITEM NAME="sgd" VALUE="sgd"/>
-        <ITEM NAME="taxonomy" VALUE="taxonomy"/>
-        <ITEM NAME="toxkb" VALUE="toxkb"/>
+      <ITEMS DEFAULT="uniprot">
         <ITEM NAME="uniprot" VALUE="uniprot"/>
+        
 
 
       </ITEMS>
@@ -94,13 +69,16 @@
     <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">
         <ITEM NAME="DESCRIBE" VALUE="describe"/>
+        <ITEM NAME="DESCRIBE_URI" VALUE="describe_uri"/>
         <ITEM NAME="LINKS" VALUE="links"/>
+        <ITEM NAME="LINKS_URI" VALUE="links_uri"/>
         <ITEM NAME="SEARCH" VALUE="search"/>
+        <ITEM NAME="LIST" VALUE="list"/>
       </ITEMS>
     </PARAMETER>
 
     <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED != 'SEARCH'" NUM_ROW="11">
-      <DEFAULT>"go:0019200"</DEFAULT>
+      <DEFAULT>"uniprot:P19367"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED == 'SEARCH'"  NUM_ROW="12">
