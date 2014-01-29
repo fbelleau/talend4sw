@@ -33,25 +33,8 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sREST_URI = ElementParameterParser.getValue(node, "__REST_URI__");
+String sURI = ElementParameterParser.getValue(node, "__URI__");
 String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
-String sURI = ElementParameterParser.getValue(node, "__RDF_URI__");
-String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
-String sFormat = ElementParameterParser.getValue(node, "__FORMAT_CHOSED__");
-
-boolean bEndpointMode = "true".equals(ElementParameterParser.getValue(node, "__ENDPOINT_MODE__"));
-String sEndpoint1 = ElementParameterParser.getValue(node, "__ENDPOINT_CHOSED__");
-String sEndpoint2 = ElementParameterParser.getValue(node, "__ENDPOINT_STRING__");
-String sEndpoint;
-
-if (bEndpointMode){
-  sEndpoint = sEndpoint2;
-} else {
-  sEndpoint = "\""+sEndpoint1+"\"";
-}
-
-boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
-
 String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FILE__");
 boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
 String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
@@ -60,24 +43,7 @@ boolean bNeedAuthentication = "true".equals(ElementParameterParser.getValue(node
 String sUser = ElementParameterParser.getValue(node, "__USR__");
 String sPwd = ElementParameterParser.getValue(node, "__PWD__");
 %>
-
-String URL_string_<%=cid%> = null;
-
-if ("<%=sMethod%>".equals("search")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
-}
-else if ("<%=sMethod%>".equals("describe")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
-}
-else if ("<%=sMethod%>".equals("links")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
-}
-
-<%if (bDebug){%>
-  System.out.println(URL_string_<%=cid%>);
-<%}%>
-
-java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
+java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
 
 <%if (bNeedAuthentication){%>
   java.net.Authenticator.setDefault(new java.net.Authenticator() {
@@ -86,7 +52,7 @@ java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
   }});
 <%}%>
 java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
-urlConn_<%=cid%>.setRequestMethod("GET");
+urlConn_<%=cid%>.setRequestMethod("<%=sMethod%>");
 urlConn_<%=cid%>.setDoOutput(true);
 urlConn_<%=cid%>.setDoInput(true);
 urlConn_<%=cid%>.setUseCaches(false);
@@ -152,9 +118,9 @@ if (outConnName != null){
     for (IMetadataColumn column : columns){
       String colName = column.getLabel();
       
-      if ("RDF".equals(colName)){
+      if ("ResponseContent".equals(colName)){
       %>
-        <%=outConnName%>.RDF = sb_<%=cid%>.toString();
+        <%=outConnName%>.ResponseContent = sb_<%=cid%>.toString();
       <%
       } else {
       %>
