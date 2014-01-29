@@ -1,13 +1,7 @@
-talend4sw
-=========
+talend4sw prototype branch
+===========================
 
-Talend for Semantic Web (talend4sw)
-
-The goal of this project is to create Talend components, an open source ETL software (http://talend.com),
-to help to produce, consume and publish RDF Linked Data on the Semantic Web.
-
-These components are created within de Bio2RDF (http://bio2rdf.org) project but are designed so they can be used 
-in any semantic web ETL project.
+This branch is used to keep track of various ideas for component to be created.
 
 François Belleau
 Project manager
