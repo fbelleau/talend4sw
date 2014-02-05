@@ -33,8 +33,11 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
+boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
+
 String sURI = ElementParameterParser.getValue(node, "__URI__");
 String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
+
 String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FILE__");
 boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
 String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
@@ -47,6 +50,11 @@ boolean bContentNegotiation = "true".equals(ElementParameterParser.getValue(node
 String sFormat = ElementParameterParser.getValue(node, "__FORMAT_CHOSED__");
 
 %>
+
+<%if (bDebug){%>
+  System.out.println(<%=sURI%>);
+<%}%>
+
 java.net.URL url_<%=cid%> = new java.net.URL(<%=sURI%>);
 
 <%if (bNeedAuthentication){%>
