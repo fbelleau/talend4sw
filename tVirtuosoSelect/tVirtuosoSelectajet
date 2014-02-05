@@ -1,0 +1,178 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+%>
+<%
+	//this util class use by connection component
+	class DefaultDBInputUtil {
+	
+		protected String cid ;
+		protected String dbproperties ;
+		protected String dbhost;
+	    protected String dbport;
+	    protected String dbname;
+	    protected String dbuser;
+		protected String dbpwd ;
+	    
+	    public void beforeComponentProcess(INode node){
+	    	cid = node.getUniqueName();
+	    }
+	    
+	    public void afterUseExistConnection(INode node) {
+	    }
+	    
+	    public String getDirverClassName(INode node){
+			return "";
+		}
+	    
+	    public void setURL(INode node) {
+	    }
+
+		public void createConnection(INode node) {
+			cid = node.getUniqueName();
+			dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+			dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	    	dbport = ElementParameterParser.getValue(node, "__PORT__");
+	    	dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	    	dbuser = ElementParameterParser.getValue(node, "__USER__");
+	 		dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+%>
+			    java.lang.Class.forName("<%=this.getDirverClassName(node) %>");
+				<%this.setURL(node);%>
+		        String dbUser_<%=cid %> = <%=dbuser%>;
+		        String dbPwd_<%=cid %> = <%=dbpwd%>;
+		        conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+		}
+		
+		public String getQueryString(INode node) {
+			String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+			dbquery = dbquery.replaceAll("\n"," ");
+			dbquery = dbquery.replaceAll("\r"," ");
+			
+			return dbquery;
+		}
+		
+		public void createStatement(INode node) {
+%>
+			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+<%
+		}
+		public void createMinValueStatement(INode node){
+%>
+			java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+																					java.sql.ResultSet.CONCUR_READ_ONLY);
+			
+<%}
+		public String mappingType(String typeToGenerate) {
+		
+            if(("byte[]").equals(typeToGenerate)) {
+                return "Bytes";
+            } else if(("java.util.Date").equals(typeToGenerate)) {
+                return "Timestamp";
+            } else if(("Integer").equals(typeToGenerate)) {
+               return "Int";
+            } else {
+                return typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+            }
+		}
+		//-----------according schema type to generate ResultSet
+		public void generateStringCharAndCharacterSet(String firstConnName, IMetadataColumn column, int currentColNo,
+					String trimMethod, String typeToGenerate, boolean whetherTrimAllCol, boolean whetherTrimCol) {
+%>
+					tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+<%
+                    if(whetherTrimAllCol || whetherTrimCol) {
+%>
+                        if(tmpContent_<%=cid%> != null) {
+                            tmpContent_<%=cid%> = tmpContent_<%=cid%><%=trimMethod%>;
+                        }
+<%
+                    }
+%>
+                    if(tmpContent_<%=cid%> != null && tmpContent_<%=cid%>.length() > 0) {			  	
+                        <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);			  		
+                    } else {			  	
+<%
+                        if(("Character").equals(typeToGenerate)) {
+%>			  	    
+                            if(tmpContent_<%=cid%> == null) {			  	   	
+                                <%=firstConnName%>.<%=column.getLabel()%> = null;			  			
+                            } else {			  		
+                                <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
+                            }
+<%
+                        } else {
+%>			  		
+                            if(("").equals(tmpContent_<%=cid%>)) {			  		
+                                <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
+                            } else {			  		
+        			  			throw new RuntimeException(
+        							"Value is empty for column : '<%=column.getLabel()%>' in '<%=firstConnName%>' connection, value is invalid or this column should be nullable or have a default value.");							
+                            }			  		
+<%
+                        }
+%>
+                    }
+<%
+		}
+		
+	    public void generateTimestampResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+%>
+			if(rs_<%=cid %>.getTimestamp(<%=currentColNo%>) != null) {
+			    <%=firstConnName%>.<%=column.getLabel()%> = new java.util.Date(rs_<%=cid %>.getTimestamp(<%=currentColNo%>).getTime());
+			} else {
+			    <%=firstConnName%>.<%=column.getLabel()%> =  null;
+			}			 
+<%
+	    }
+	    
+	    public void generateStringResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String trimMethod) {
+%>
+            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+            if(tmpContent_<%=cid%> != null) {
+                <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+            } else {
+                <%=firstConnName%>.<%=column.getLabel()%> = null;
+            }
+<%
+	    }
+	    
+	    public void generateBytesResultSet(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    }
+	    
+	    public void generateOthersResultSet(String firstConnName, IMetadataColumn column, int currentColNo, String typeToGenerate) {
+%>
+            if(rs_<%=cid %>.getObject(<%=currentColNo%>) != null) {
+                <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+            } else {
+                <%
+                if(column.isNullable()) {
+                    %>
+                    <%=firstConnName%>.<%=column.getLabel()%> = null;
+                    <%
+                } else {
+                    %>    
+                    throw new RuntimeException("Null value in non-Nullable column");
+                    <%    
+                }
+                %>
+            }
+<%
+	    }
+	    //---------end according schema type to generate ResultSet
+	    
+		public void afterGenertorType(String firstConnName, IMetadataColumn column, int currentColNo) {
+	    }
+	    
+		public void afterComponentProcess(INode node){
+	    }
+	}//end DefaultDBInputUtil class
+	
+	DefaultDBInputUtil dbInputBeginUtil = new DefaultDBInputUtil();
+	
+	
+%>

@@ -1,0 +1,177 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
+String inConnName = null, outConnName = null;
+
+boolean hasOutputSchema = false;
+
+if (outConns != null && outConns.size() > 0){
+  	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+	  	outConnName = outConns.get(0).getName();
+	  	hasOutputSchema = true;
+  	}
+  	if (inConns != null && inConns.size() > 0){
+    	inConnName = inConns.get(0).getName();
+  	}
+}
+
+String sREST_URI = ElementParameterParser.getValue(node, "__REST_URI__");
+String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
+String sURI = ElementParameterParser.getValue(node, "__RDF_URI__");
+String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
+String sFormat = ElementParameterParser.getValue(node, "__FORMAT_CHOSED__");
+
+boolean bEndpointMode = "true".equals(ElementParameterParser.getValue(node, "__ENDPOINT_MODE__"));
+String sEndpoint1 = ElementParameterParser.getValue(node, "__ENDPOINT_CHOSED__");
+String sEndpoint2 = ElementParameterParser.getValue(node, "__ENDPOINT_STRING__");
+String sEndpoint;
+
+if (bEndpointMode){
+  sEndpoint = sEndpoint2;
+} else {
+  sEndpoint = "\""+sEndpoint1+"\"";
+}
+
+boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
+
+String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FILE__");
+boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
+String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
+List<Map<String, String>> headerParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
+boolean bNeedAuthentication = "true".equals(ElementParameterParser.getValue(node, "__NEED_AUTHENTICATION__"));
+String sUser = ElementParameterParser.getValue(node, "__USR__");
+String sPwd = ElementParameterParser.getValue(node, "__PWD__");
+%>
+
+String URL;
+
+if ("<%=sMethod%>".equals("search")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
+}
+else if ("<%=sMethod%>".equals("describe")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+}
+else if ("<%=sMethod%>".equals("links")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+}
+else if ("<%=sMethod%>".equals("describe_uri")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+}
+else if ("<%=sMethod%>".equals("links_uri")){
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+}
+else {
+  URL = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "?parm=" + <%=sURI.replace("#","%23")%> ;
+}
+
+<%if (bDebug){%>
+  System.out.println(URL);
+<%}%>
+
+java.net.URL url_<%=cid%> = new java.net.URL(URL);
+
+<%if (bNeedAuthentication){%>
+  java.net.Authenticator.setDefault(new java.net.Authenticator() {
+	  protected java.net.PasswordAuthentication getPasswordAuthentication() {
+	  	return new java.net.PasswordAuthentication(<%=sUser%>, <%=sPwd%>.toCharArray());
+  }});
+<%}%>
+java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
+urlConn_<%=cid%>.setRequestMethod("GET");
+urlConn_<%=cid%>.setDoOutput(true);
+urlConn_<%=cid%>.setDoInput(true);
+urlConn_<%=cid%>.setUseCaches(false);
+
+<%for (Map<String, String> header : headerParams){ // set request properties%>
+  urlConn_<%=cid%>.setRequestProperty(<%=header.get("HEADER_NAME")%>, <%=header.get("HEADER_VALUE")%>);
+<%}%>
+
+urlConn_<%=cid%>.connect();
+
+byte[] buffer_<%=cid%> = new byte[1024];
+int bos_buffer_<%=cid%> = 0;
+<%if(hasOutputSchema){%>StringBuilder sb_<%=cid%>=new StringBuilder(); <%}%>
+<%
+// add parameters from file
+if ("POST".equals(sMethod)){
+  if (sParamFile != null && !"".equals(sParamFile)){
+  %>
+    java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
+    java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
+    
+    while ((bos_buffer_<%=cid%> = bisParam_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
+      bosParam_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>);
+    }
+    bosParam_<%=cid%>.flush();
+    bosParam_<%=cid%>.close();
+    bisParam_<%=cid%>.close();
+  <%
+  }
+}
+%>
+
+if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode())) {
+	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+<%
+  // output response content to file
+	if (bOutToFile && sOutFilePath != null){
+%>
+		java.io.OutputStream bosContent_<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=sOutFilePath%>));
+<%	}%>
+		while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
+<%	if (bOutToFile && sOutFilePath != null){%>bosContent_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>); <%}%>
+<%	if(hasOutputSchema){%>sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>)); <%}%>
+		}
+<%	if (bOutToFile && sOutFilePath != null){%>		
+		bosContent_<%=cid%>.flush();
+		bosContent_<%=cid%>.close();
+<%	}%>
+		bis_<%=cid%>.close();
+} else {
+  System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+}
+
+<%
+// output data
+if (outConnName != null){
+  List<IMetadataTable> metaTables = node.getMetadataList();
+  
+  if (metaTables != null && metaTables.size() > 0){
+    IMetadataTable metaTable = metaTables.get(0);
+    List<IMetadataColumn> columns = metaTable.getListColumns();
+    
+    for (IMetadataColumn column : columns){
+      String colName = column.getLabel();
+      
+      if ("RDF".equals(colName)){
+      %>
+        <%=outConnName%>.RDF = sb_<%=cid%>.toString();
+      <%
+      } else {
+      %>
+        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+      <%
+      }
+    }
+  }
+}
+%>
+urlConn_<%=cid%>.disconnect();

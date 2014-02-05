@@ -1,0 +1,88 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+IMetadataTable preMetadata = null;
+
+
+String inputFormat = ElementParameterParser.getValue(node, "__INPUTFORMAT__");
+String outputFormat = ElementParameterParser.getValue(node, "__OUTPUTFORMAT__");
+String defaultGraph = ElementParameterParser.getValue(node, "__DEFAULTGRAPH__");
+
+
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+String inRowName = node.getIncomingConnections().get(0).getName();
+String outRowName = "";
+
+
+
+
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+
+
+
+List<IMetadataColumn> columns = preMetadata.getListColumns();
+%>
+
+String rdfInput_<%=cid %> = "";
+String defaultGraph_<%=cid %> = <%=defaultGraph %>;
+
+<%
+ for (int i = 0; i < columns.size(); i++) 
+{
+ IMetadataColumn column = columns.get(i);
+%>
+	rdfInput_<%=cid %> = <%=inRowName %>.RDF;
+
+<% 
+}
+
+
+
+    for (IConnection conn : outConns) 
+    { //oc1 Open	
+     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
+     { //oc2 Open
+       outRowName = conn.getName();
+  
+  //------------------------------Récupération des données-------------------------//
+         
+%>
+
+
+org.openjena.riot.RIOT.init();
+
+Reader reader_<%=cid %> = new StringReader(rdfInput_<%=cid %>);
+Writer writer_<%=cid %> = new StringWriter();
+Model model_<%=cid %> = ModelFactory.createDefaultModel();
+
+model_<%=cid %>.read(reader_<%=cid %>,  defaultGraph_<%=cid %>, "<%=inputFormat %>"); 
+
+model_<%=cid %>.write(writer_<%=cid %>, "<%=outputFormat %>"); 
+
+<%=outRowName %>.RDF = writer_<%=cid %>.toString();
+
+ <%
+ 
+ 		} // for oc1
+ 	} // if oc2
+ 	
+%>
+
+nb_line_<%=cid %>++;
