@@ -1,0 +1,113 @@
+<COMPONENT>
+<HEADER   AUTHOR="Francois.Belleau@bio2rdf.org" 
+          COMPATIBILITY="ALL" 
+          PLATEFORM="ALL" 
+          RELEASE_DATE="20140202" 
+          SERIAL="" 
+          STARTABLE="true" 
+          STATUS="BETA" 
+          DATA_AUTO_PROPAGATE="false"
+          SCHEMA_AUTO_PROPAGATE="false"
+          HAS_CONDITIONAL_OUTPUTS="true"
+          PARTITIONING="AUTO"
+          VERSION="0.1">    
+          <SIGNATURE/>
+</HEADER>
+
+  <FAMILIES>
+    <FAMILY>Semantic Web</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+      <TABLE READONLY="true">
+        <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
+      </TABLE>
+    </PARAMETER>
+    
+    <PARAMETER NAME="URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="5">
+      <DEFAULT>"http://bio2rdf.org/rdfxml/omim:602080"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="CONTENT_NEGOCIATION2" FIELD="CHECK" NUM_ROW="7">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="8" REQUIRED="true" SHOW_IF="CONTENT_NEGOCIATION2 == 'true'">
+      <ITEMS DEFAULT="application_rdf_xml">
+        <ITEM NAME="application_rdf_xml" VALUE="application/rdf+xml"/>
+        <ITEM NAME="application_json" VALUE="application/json"/>
+        <ITEM NAME="text_n3" VALUE="text/n3"/>
+        <ITEM NAME="text_plain" VALUE="text/plain"/>
+
+        <ITEM NAME="application_rdf_n3" VALUE="application/rdf+n3"/>
+        <ITEM NAME="application_rdf_xml_abbrev" VALUE="application/rdf+xml+abbrev"/>
+        <ITEM NAME="application_turtle" VALUE="application/turtle"/>
+        <ITEM NAME="application_x-turtle" VALUE="application/x-turtle"/>
+        <ITEM NAME="application_xhtml_xml" VALUE="application/xhtml+xml"/>
+        <ITEM NAME="text_html" VALUE="text/html"/>
+        <ITEM NAME="text_json" VALUE="text/json"/>
+        <ITEM NAME="text_rdf" VALUE="text/rdf"/>
+        <ITEM NAME="text_rdf_n3" VALUE="text/rdf+n3"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="DEBUG_MODE" FIELD="CHECK" NUM_ROW="9">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+      
+    <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10" SHOW_IF="'false'">
+      <ITEMS DEFAULT="GET">
+        <ITEM NAME="POST" VALUE="POST"/>
+        <ITEM NAME="GET" VALUE="GET"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="POST_PARAMS_FROM_FILE" FIELD="FILE" SHOW_IF="METHOD_CHOSED == 'POST'" NUM_ROW="20">
+      <DEFAULT/>
+    </PARAMETER>
+
+    <PARAMETER NAME="OUT_TO_FILE" FIELD="CHECK" REQUIRED="true" NUM_ROW="25"  SHOW_IF="'false'">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="OUT_FILE_NAME" FIELD="FILE" SHOW_IF="OUT_TO_FILE == 'true'" NUM_ROW="25" >
+      <DEFAULT/>
+    </PARAMETER>
+    
+    <PARAMETER NAME="HEADERS" FIELD="TABLE" REQUIRED="false" NB_LINES="7" NUM_ROW="35"  SHOW_IF="CONTENT_NEGOCIATION == 'true'">
+      <ITEMS>
+        <ITEM NAME="HEADER_VALUE" />
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="NEED_AUTHENTICATION" FIELD="CHECK" NUM_ROW="40" SHOW_IF="'false'">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="USR" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="PWD" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+  </PARAMETERS>
+
+  <CODEGENERATION/>
+
+  <RETURNS/>
+
+</COMPONENT>

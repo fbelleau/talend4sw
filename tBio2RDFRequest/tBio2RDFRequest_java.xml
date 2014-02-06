@@ -82,8 +82,6 @@
         <ITEM NAME="taxonomy" VALUE="taxonomy"/>
         <ITEM NAME="toxkb" VALUE="toxkb"/>
         <ITEM NAME="uniprot" VALUE="uniprot"/>
-
-
       </ITEMS>
     </PARAMETER>
 
