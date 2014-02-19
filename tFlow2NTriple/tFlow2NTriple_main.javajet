@@ -1,0 +1,187 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+IMetadataTable preMetadata = null;
+
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+String inRowName = node.getIncomingConnections().get(0).getName();
+String outRowName = "";
+
+Boolean islit_choice = false;
+String ntriple = "ntriple";
+
+String trad = ElementParameterParser.getValue(node, "__TRAD__"); // indicateur traduction
+String trada = ElementParameterParser.getValue(node, "__TRAD1__"); // indicateur traduction
+String tradb = ElementParameterParser.getValue(node, "__TRAD2__"); // indicateur traduction
+String tradc = ElementParameterParser.getValue(node, "__TRAD3__"); // indicateur traduction
+String tradd = ElementParameterParser.getValue(node, "__TRAD4__"); // indicateur traduction
+String trade = ElementParameterParser.getValue(node, "__TRAD5__"); // indicateur traduction
+String tradf = ElementParameterParser.getValue(node, "__TRAD6__"); // indicateur traduction
+String tradg = ElementParameterParser.getValue(node, "__TRAD7__"); // indicateur traduction
+String subject = ElementParameterParser.getValue(node, "__SUBJECT_COL__"); // colonne subject
+String predicate = ElementParameterParser.getValue(node, "__PREDICATE_COL__"); // colonne predicate
+String object = ElementParameterParser.getValue(node, "__OBJECT_COL__"); // colonne object
+String type = ElementParameterParser.getValue(node, "__TYPE_COL__"); // colonne object
+
+ArrayList liste_valeur = new ArrayList(); // liste des valeurs à remplacer
+ArrayList liste_replace = new ArrayList(); // liste des valeurs nouvelles
+List<Map<String, String>> listColMapping = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__MAPPING__"); // Récupération du tableau
+
+// -----------------------------Ajout des valeurs dans les listes------------------------//
+
+if (trada.equals("true")) {
+liste_valeur.add("bm:"); liste_replace.add("http://bio2rdf.org/");
+}
+
+if (tradb.equals("true")) {
+liste_valeur.add("rdf:"); liste_replace.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+}
+
+if (tradc.equals("true")) {
+liste_valeur.add("rdfs:"); liste_replace.add("http://www.w3.org/2000/01/rdf-schema#");
+}
+
+if (tradd.equals("true")) {
+liste_valeur.add("owl:"); liste_replace.add("http://www.w3.org/2002/07/owl#");
+}
+
+if (trade.equals("true")) {
+liste_valeur.add("dc:"); liste_replace.add("http://purl.org/dc/terms/");
+}
+
+if (tradf.equals("true")) {
+liste_valeur.add("dct:"); liste_replace.add("http://purl.org/dc/terms/");
+}
+
+if (tradg.equals("true")) {
+liste_valeur.add("foaf:"); liste_replace.add("http://xmlns.com/foaf/0.1/");
+}
+
+// --------------------------------------------------------------------------------//
+
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+
+for (IConnection conn : outConns) 
+{ //oc1 Open	
+	if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
+	{ //oc2 Open
+		outRowName = conn.getName();
+		%>
+
+		<%=outRowName %> = new <%=outRowName %>Struct();
+
+		<%
+	} //oc2 Close
+} //oc1 Close
+
+List<IMetadataColumn> columns = preMetadata.getListColumns();
+ 
+    for (IConnection conn : outConns) 
+    { //oc1 Open	
+     if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
+     { //oc2 Open
+       outRowName = conn.getName();
+  
+  //------------------------------Récupération des données-------------------------//
+         
+%>
+
+String subject_<%=cid %> = <%=inRowName %>.<%=subject %>;
+String predicate_<%=cid %> = <%=inRowName %>.<%=predicate %>;
+String object_<%=cid %> = <%=inRowName %>.<%=object %>;
+
+<%
+
+  //------------------------------Remplacement des préfixes-------------------------//
+  
+       if (trad.equals("true")) { // test si case remplacement cochée
+              for (int x=0; x<liste_valeur.size(); x++) { //je parcours la liste
+%>
+
+
+subject_<%=cid %> = subject_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
+predicate_<%=cid %> = predicate_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
+object_<%=cid %> = object_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
+
+ <%
+ 
+ 		} // for
+ 	} // if
+ 	
+ 	if (listColMapping != null && !listColMapping.isEmpty()){
+		for (Map<String, String> colMapping : listColMapping) {
+
+String valuea = colMapping.get("PREFIXE");
+String valueb = colMapping.get("URI");
+
+%>
+
+subject_<%=cid %> = subject_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+predicate_<%=cid %> = predicate_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+object_<%=cid %> = object_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+
+<%
+
+		} // for
+	} // if
+ 	
+ 	  //------------------------------Formation des triplets-------------------------//
+ 	   	
+ %>
+
+ <%=outRowName %>.<%=ntriple %> = "<" + subject_<%=cid %> + ">" + " <" + predicate_<%=cid %> + "> ";
+
+if (<%=inRowName%>.<%=type %>.equals("uri")) {
+
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + object_<%=cid %> + "> .";
+
+}
+
+else if (<%=inRowName%>.<%=type %>.equals("string")) {
+
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
+
+}
+
+else if (<%=inRowName%>.<%=type %>.equals("integer")) {
+
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#integer> .";
+
+}
+
+else if (<%=inRowName%>.<%=type %>.equals("double")) {
+
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#double> .";
+
+}
+
+else 
+{
+	throw new Exception("Type is not correct.");
+}
+
+<%
+
+       } //oc2 Close
+    } //oc1 Close
+
+%>
+
+nb_line_<%=cid %>++;
