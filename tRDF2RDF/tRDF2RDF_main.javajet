@@ -19,7 +19,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 IMetadataTable preMetadata = null;
 
-String convertCol = ElementParameterParser.getValue(node, "__CONVERTCOL__");
+
 String inputFormat = ElementParameterParser.getValue(node, "__INPUTFORMAT__");
 String outputFormat = ElementParameterParser.getValue(node, "__OUTPUTFORMAT__");
 String defaultGraph = ElementParameterParser.getValue(node, "__DEFAULTGRAPH__");
@@ -32,19 +32,17 @@ String outRowName = "";
 
 
 
+
 List<? extends IConnection> outConns = node.getOutgoingConnections();
 
 
-List<IMetadataColumn> columnsIn = preMetadata.getListColumns();
 
+List<IMetadataColumn> columns = preMetadata.getListColumns();
 %>
 
 String rdfInput_<%=cid %> = "";
 String defaultGraph_<%=cid %> = <%=defaultGraph %>;
 
-<<<<<<< HEAD
-rdf_<%=cid %> = <%=inRowName %>.<%=convertCol %>;
-=======
 <%
  for (int i = 0; i < columns.size(); i++) 
 {
@@ -54,11 +52,9 @@ rdf_<%=cid %> = <%=inRowName %>.<%=convertCol %>;
 
 <% 
 }
->>>>>>> 42ed07eaa3ef40a9784426d8fffbc98899bd0171
 
 
 
-<%
     for (IConnection conn : outConns) 
     { //oc1 Open	
      if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)||conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))
@@ -70,17 +66,6 @@ rdf_<%=cid %> = <%=inRowName %>.<%=convertCol %>;
 %>
 
 
-<<<<<<< HEAD
-Reader reader_<%=cid %> = new StringReader(rdf_<%=cid %>);
-Writer writer_<%=cid %> = new StringWriter();
-Model model_<%=cid %> = ModelFactory.createDefaultModel();
-
-model_<%=cid %>.read(reader_<%=cid %>, "", "<%=inputFormat %>");
-
-model_<%=cid %>.write(writer_<%=cid %>, "<%=outputFormat %>"); 
-
-  <%=outRowName %>.<%=convertCol %> = writer_<%=cid %>.toString();
-=======
 org.openjena.riot.RIOT.init();
 
 Reader reader_<%=cid %> = new StringReader(rdfInput_<%=cid %>);
@@ -92,7 +77,6 @@ model_<%=cid %>.read(reader_<%=cid %>,  defaultGraph_<%=cid %>, "<%=inputFormat 
 model_<%=cid %>.write(writer_<%=cid %>, "<%=outputFormat %>"); 
 
 <%=outRowName %>.RDF = writer_<%=cid %>.toString();
->>>>>>> 42ed07eaa3ef40a9784426d8fffbc98899bd0171
 
  <%
  
