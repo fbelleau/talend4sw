@@ -23,12 +23,10 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String query = ElementParameterParser.getValue(node,"__QUERY__");
-String jenaModel = ElementParameterParser.getValue(node,"__JENAMODEL__");
-jenaModel = "model_" + jenaModel;
+String jenaModel = "model_" + ElementParameterParser.getValue(node,"__JENAMODEL__");
 %>
 
 Model model_<%=cid%> = (Model)globalMap.get("<%=jenaModel%>");
-
 
 String queryString_<%=cid%> = <%=query%> ;
   
@@ -52,7 +50,7 @@ ResultSet results_<%=cid%> = queryExec_<%=cid%>.execSelect() ;
 	
 int nb_line_<%=cid %> = 0;
 
-int x_<%=cid %> = 0;
+
 
 while (results_<%=cid%>.hasNext())
 {

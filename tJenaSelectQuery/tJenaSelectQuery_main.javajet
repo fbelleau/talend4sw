@@ -23,8 +23,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String query = ElementParameterParser.getValue(node,"__QUERY__");
-String jenaModel = ElementParameterParser.getValue(node,"__JENAMODEL__");
-jenaModel = "model_" + jenaModel;
+String jenaModel = "model_" + ElementParameterParser.getValue(node,"__JENAMODEL__");
 %>
 
 <%
@@ -59,5 +58,3 @@ List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
 %>
 
 
-
-x_<%=cid %> = x_<%=cid %> + 1;
