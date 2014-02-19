@@ -1,0 +1,63 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+	org.talend.core.model.metadata.types.JavaType		
+	java.util.List
+	java.util.Map
+" 
+%>
+
+
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String query = ElementParameterParser.getValue(node,"__QUERY__");
+String jenaModel = ElementParameterParser.getValue(node,"__JENAMODEL__");
+jenaModel = "model_" + jenaModel;
+%>
+
+<%
+
+IConnection conn = node.getOutgoingConnections().get(0);
+
+IMetadataTable postMetadata = conn.getMetadataTable();
+
+String outRowName = conn.getName();
+
+List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
+
+%>
+
+  		QuerySolution soln_<%=cid%> = results_<%=cid%>.nextSolution() ;
+  		
+  		Iterator queryVarIterator_<%=cid%> = soln_<%=cid%>.varNames();
+
+
+<%
+				for(IMetadataColumn column:columnsOut)
+				{
+%>
+
+					if (queryVarIterator_<%=cid%>.hasNext())
+					{
+						String varName_<%=cid%> = (String) queryVarIterator_<%=cid%>.next();
+						<%=conn.getName()%>.<%=column.getLabel()%> = soln_<%=cid%>.get(varName_<%=cid%>).toString();
+					}
+<% 
+				}
+%>
+
+
+
+x_<%=cid %> = x_<%=cid %> + 1;

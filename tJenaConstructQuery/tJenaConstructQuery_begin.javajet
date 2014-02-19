@@ -1,0 +1,68 @@
+<%@ jet 
+imports="
+	org.talend.core.model.process.INode
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.process.IConnectionCategory
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+	org.talend.core.model.metadata.types.JavaType		
+	java.util.List
+	java.util.Map
+" 
+%>
+
+
+
+<%
+CodeGeneratorArgument codeGenArgument  = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String query = ElementParameterParser.getValue(node,"__QUERY__");
+String jenaMode = ElementParameterParser.getValue(node,"__JENAMODEL__");
+String jenaModel = "model_" + jenaMode;
+%>
+
+Model model_<%=cid%> = (Model)globalMap.get("<%=jenaModel%>");
+
+
+String queryString_<%=cid%> = <%=query%> ;
+  
+Query query_<%=cid%> = QueryFactory.create(queryString_<%=cid%>) ;
+query_<%=cid%>.setQueryConstructType();
+  
+QueryExecution queryExec_<%=cid%> = QueryExecutionFactory.create(query_<%=cid%>, model_<%=cid%>) ;
+
+<%
+
+IConnection conn = node.getOutgoingConnections().get(0);
+
+IMetadataTable postMetadata = conn.getMetadataTable();
+
+String outRowName = conn.getName();
+
+List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
+
+IMetadataColumn columnOut = columnsOut.get(0);
+
+%>
+
+
+Model results_<%=cid%> = queryExec_<%=cid%>.execConstruct();
+
+
+StringWriter out_<%=cid%> = new StringWriter();
+
+results_<%=cid%>.write(out_<%=cid%>, "RDF/XML");
+
+<%=conn.getName()%>.<%=columnOut.getLabel()%> = out_<%=cid%>.toString();
+
+queryExec_<%=cid%>.close();
+
+
+
+
