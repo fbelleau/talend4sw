@@ -172,10 +172,29 @@ else if (<%=inRowName%>.<%=type %>.equals("double")) {
 
 }
 
+else if (<%=inRowName%>.<%=type %>.equals("date")) {
+
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#date> .";
+
+}
+
 else 
 {
 	throw new Exception("Type is not correct.");
 }
+
+<%
+
+ 	  //------------------------------Validation-------------------------//
+ 	  
+%>
+
+org.openjena.riot.RIOT.init();
+Reader reader = new StringReader(<%=outRowName %>.<%=ntriple %>);
+Writer writer = new StringWriter();
+Model model = ModelFactory.createDefaultModel();
+model.read(reader, "", "N-TRIPLE");
+model.write(writer, "RDF/XML");
 
 <%
 

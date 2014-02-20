@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT> 
+
+   <HEADER AUTHOR="Bio2RDF" 
+             COMPATIBILITY="ALL" 
+             PLATEFORM="ALL" 
+             RELEASE_DATE="20110907A" 
+             SERIAL="" 
+             STARTABLE="false" 
+             STATUS="BETA" 
+             DATA_AUTO_PROPAGATE="false"
+             SCHEMA_AUTO_PROPAGATE="false"
+             HAS_CONDITIONAL_OUTPUTS="true"
+             PARTITIONING="AUTO"
+             VERSION="0.1">
+          
+   <SIGNATURE/>
+    
+   </HEADER>
+
+   <FAMILIES> 
+      <FAMILY>Semantic web</FAMILY>
+   </FAMILIES>
+    
+   <DOCUMENTATION> 
+      <URL></URL> 
+   </DOCUMENTATION>
+  
+   <CONNECTORS> 
+      <CONNECTOR CTYPE="FLOW" MIN_INPUT="1" MAX_INPUT="1" MIN_OUTPUT="1"/>
+   </CONNECTORS>  
+  
+   <PARAMETERS>
+      <PARAMETER NAME="OUTPUT_SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+         <TABLE READONLY="false">
+            <COLUMN NAME="ntriple" TYPE="id_String" READONLY="true" CUSTOM="true" />
+         </TABLE>
+      </PARAMETER>
+      
+      <PARAMETER FIELD="TABLE" NAME="MAPPING" NB_LINES="3" NUM_ROW="10" REQUIRED="false" SHOW="true">
+         <ITEMS>
+            <ITEM NAME="PREFIXE" FIELD="String" />
+            <ITEM NAME="URI" FIELD="String" />
+         </ITEMS>
+      </PARAMETER>
+   
+      <PARAMETER NAME="TRAD" FIELD="CHECK" REQUIRED="false" NUM_ROW ="4">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+
+      <PARAMETER NAME="SUBJECT_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+
+      <PARAMETER NAME="PREDICATE_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+
+      <PARAMETER NAME="OBJECT_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+
+      <PARAMETER NAME="TYPE_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+   </PARAMETERS>
+  
+   <ADVANCED_PARAMETERS>
+      <PARAMETER NAME="INFO1" FIELD="LABEL" REQUIRED="true" NUM_ROW="1" COLOR="255;0;0" >
+         <DEFAULT>------------------------------Common prefixes to URI------------------------------------</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD1" FIELD="CHECK" REQUIRED="false" NUM_ROW ="2">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD2" FIELD="CHECK" REQUIRED="false" NUM_ROW ="3">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD3" FIELD="CHECK" REQUIRED="false" NUM_ROW ="4">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD4" FIELD="CHECK" REQUIRED="false" NUM_ROW ="5">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD5" FIELD="CHECK" REQUIRED="false" NUM_ROW ="6">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD6" FIELD="CHECK" REQUIRED="false" NUM_ROW ="7">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="TRAD7" FIELD="CHECK" REQUIRED="false" NUM_ROW ="8">
+         <DEFAULT>true</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="INFO2" FIELD="LABEL" REQUIRED="true" NUM_ROW="9" COLOR="255;0;0" >
+         <DEFAULT>-------------------------------------------------------------------------------------------------</DEFAULT>
+      </PARAMETER>
+      <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="0" NB_LINES="3">
+         <DEFAULT>import com.hp.hpl.jena.rdf.model.*; import com.hp.hpl.jena.util.FileManager; import java.io.*; import org.openjena.riot.out.RDFJSONWriter;</DEFAULT>
+      </PARAMETER>
+   </ADVANCED_PARAMETERS>
+
+   <CODEGENERATION>
+	   <IMPORTS>
+	      <IMPORT NAME="jena-core-2.7.2" MODULE="jena-core-2.7.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-log4j12-1.6.4" MODULE="slf4j-log4j12-1.6.4.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-api-1.6.4" MODULE="slf4j-api-1.6.4.jar" REQUIRED="true" />
+		  <IMPORT NAME="log4j-1.2.16" MODULE="log4j-1.2.16.jar" REQUIRED="true" />
+		  <IMPORT NAME="xercesImpl-2.10.0" MODULE="xercesImpl-2.10.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="xml-apis-1.4.01" MODULE="xml-apis-1.4.01.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-iri-0.9.2" MODULE="jena-iri-0.9.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-arq-2.9.2" MODULE="jena-arq-2.9.2.jar" REQUIRED="true" />
+	   </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS> 
+      <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+   </RETURNS>
+   
+</COMPONENT>
