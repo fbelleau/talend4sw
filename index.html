@@ -59,6 +59,20 @@ Those components aimed to make Talend more user friendly to transform RDF data.
 
 <p>The goal of these components is to make operations on Virtuoso triplestore easily using Talend. These components will allow the user to connect to a Virtuoso triplestore, submit sparql query, insert data, clear graph...</p>
 
+<h4>tVirtuosoConnection</h4>
+<p>The user uses this component to connect to a Virtuoso triplestore by informing the host, the port, the username and the password</p>
+
+<h4>tVirtuosoSelect</h4>
+<p>submit a sparql select query to a tVirtuosoConnection.</p>
+
+<h4>tVirtuosoConstruct</h4>
+<p>submit a sparql construct query to a tVirtuosoConnection</p>
+
+<h4>tVirtuosoInsert</h4>
+<p>insert statements in a virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+
+<h4>tVirtuosoClearGraph</h4>
+<p>clear a graph in a Virtuoso triplestore (defined by a tVirtuosoConnection)</p>
 
 <h3>
 <a class="anchor"><span class="octicon octicon-link"></span></a>Jena components</h3>
@@ -67,6 +81,24 @@ Those components aimed to make Talend more user friendly to transform RDF data.
 The goal of these components is to easily create and make operations on Jena model using Talend. These components will allow the user to create a Jena model, to add statements and to query it.
 </p>
 
+<h4>tJenaCreateModel</h4>
+<p>create an empty Jena model (a set of RDF statements).</p>
+
+<h4>tJenaReadFile</h4>
+<p>fill a model (created using tJenaCreateModel) with statements from a file (RDF/XML, n-triple or turtle format)</p>
+
+<h4>tJenaReadRow</h4>
+<p>fill a model with statements from an incoming row (RDF/XML, n-triple or turtle format)</p>
+
+<h4>tJenaSelectQuery</h4>
+<p>submit a sparql select query to the Jena model.</p>
+
+<h4>tJenaConstructQuery</h4>
+<p>submit a sparql construct query to the Jena model.</p>
+
+<h4>tJenaDropModel</h4>
+<p>clear a model from any statements.</p>
+
 
 <h3>
 <a class="anchor"><span class="octicon octicon-link"></span></a>Semantic data components</h3>
@@ -74,6 +106,12 @@ The goal of these components is to easily create and make operations on Jena mod
 <p>
 Those components aimed to make Talend more user friendly to transform RDF data.
 </p>
+
+<h4>tRDF2RDF</h4>
+<p>convert data from a RDF format to another RDF format. The format available are RDF/XML, n-triple and Turtle.</p>
+
+<h4>tTriple2Ntriple</h4>
+<p>convert a 4 columns row (subject, predicate, object, type) into a well formed n-triple. It also replace common prefixes and the user can add prefixes to be replaced during the transformation.</p>
 
 
         </section>
