@@ -4,12 +4,6 @@
 */
 
 
-<div class="verticalLine">
-
-some other content
-
-</div>
-in CSS:
 
 .verticalLine {
     border-left: thick solid #ff0000;
