@@ -74,7 +74,7 @@
 
 
 
-<p>The goal of these components is to make operations on Virtuoso triplestore easily using Talend. These components will allow the user to connect to a Virtuoso triplestore, submit sparql query, insert data, clear graph...</p>
+<p>The goal of these components is to easily make operations on Virtuoso triplestore using Talend. These components will allow the user to connect to a Virtuoso triplestore, submit sparql query, insert data, clear graph...</p>
 
 
 <h4 class="virtuosoconnexiontext" >tVirtuosoConnection</h4>
@@ -102,8 +102,28 @@ $(document).ready(function () {
 
 
 <hr>
-<h4>tVirtuosoSelect</h4>
-<p>Submit a sparql select query to a tVirtuosoConnection.</p>
+<h4 class="virtuososelecttext" >tVirtuosoSelect</h4>
+<p class="virtuososelecttext">Submit a sparql select query to a tVirtuosoConnection.</p>
+
+<p class="pimage" ><img id="virtuososelectimage" src="images/virtuoso_select_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.virtuososelecttext').on('mouseenter', function () {
+	   $('#virtuososelectimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#virtuososelectimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
+
 <hr>
 <h4>tVirtuosoConstruct</h4>
 <p>Submit a sparql construct query to a tVirtuosoConnection</p>
