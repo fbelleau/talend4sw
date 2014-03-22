@@ -4,6 +4,12 @@
 */
 
 
+.pimage {
+    margin:0;
+    padding:0;
+	text-align:center;
+}
+
 
 
 html, body, div, span, applet, object, iframe,
