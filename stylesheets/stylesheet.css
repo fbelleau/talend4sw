@@ -13,6 +13,7 @@
 	background: -ms-linear-gradient(left, rgba(255,249,249,1) 0%,rgba(204,0,0,1) 50%,rgba(255,255,255,1) 100%); /* IE10+ */
 	background: linear-gradient(to right, rgba(255,249,249,1) 0%,rgba(204,0,0,1) 50%,rgba(255,255,255,1) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fff9f9', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+	overflow:auto;
 }
 
 
