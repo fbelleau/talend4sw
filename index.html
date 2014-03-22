@@ -125,14 +125,71 @@ $(document).ready(function () {
 
 
 <hr>
-<h4>tVirtuosoConstruct</h4>
-<p>Submit a sparql construct query to a tVirtuosoConnection</p>
+<h4 class="virtuosoconstructtext">tVirtuosoConstruct</h4>
+<p class="virtuosoconstructtext">Submit a sparql construct query to a tVirtuosoConnection</p>
+
+<p class="pimage" ><img id="virtuosoconstructimage" src="images/virtuoso_construct_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.virtuosoconstructtext').on('mouseenter', function () {
+	   $('#virtuosoconstructimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#virtuosoconstructimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
 <hr>
-<h4>tVirtuosoInsert</h4>
-<p>Insert statements in a virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+<h4 class="virtuosoinserttext">tVirtuosoInsert</h4>
+<p class="virtuosoinserttext">Insert statements in a virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+
+<p class="pimage" ><img id="virtuosoinsertimage" src="images/virtuoso_insert_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.virtuosoinserttext').on('mouseenter', function () {
+	   $('#virtuosoinsertimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#virtuosoinsertimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
 <hr>
-<h4>tVirtuosoClearGraph</h4>
-<p>Clear a graph in a Virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+<h4 class="virtuosocleartext">tVirtuosoClearGraph</h4>
+<p class="virtuosocleartext">Clear a graph in a Virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+
+<p class="pimage" ><img id="virtuosoclearimage" src="images/virtuoso_cleargraph_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.virtuosocleartext').on('mouseenter', function () {
+	   $('#virtuosoclearimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#virtuosoclearimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
 <hr>
 <h3>
 <a name="jenacomponents" class="anchor"><span class="octicon octicon-link"></span></a>Jena components</h3>
@@ -143,18 +200,100 @@ The goal of these components is to easily create and make operations on Jena mod
 
 <h4>tJenaCreateModel</h4>
 <p>Create an empty Jena model (a set of RDF statements).</p>
+
+
 <hr>
-<h4>tJenaReadFile</h4>
-<p>Fill a model (created using tJenaCreateModel) with statements from a file (RDF/XML, n-triple or turtle format)</p>
+<h4 class="jenareadfiletext">tJenaReadFile</h4>
+<p class="jenareadfiletext">Fill a model (created using tJenaCreateModel) with statements from a file (RDF/XML, n-triple or turtle format)</p>
+
+<p class="pimage" ><img id="jenareadfileimage" src="images/jena_readfile_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.jenareadfiletext').on('mouseenter', function () {
+	   $('#jenareadfileimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#jenareadfileimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
 <hr>
-<h4>tJenaReadRow</h4>
-<p>Fill a model with statements from an incoming row (RDF/XML, n-triple or turtle format)</p>
+<h4 class="jenareadrowtext">tJenaReadRow</h4>
+<p class="jenareadrowtext">Fill a model with statements from an incoming row (RDF/XML, n-triple or turtle format)</p>
+
+
+<p class="pimage" ><img id="jenareadrowimage" src="images/jena_readrow_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.jenareadrowtext').on('mouseenter', function () {
+	   $('#jenareadrowimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#jenareadrowimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
+
 <hr>
-<h4>tJenaSelectQuery</h4>
-<p>Submit a sparql select query to the Jena model.</p>
+<h4 class="jenaselecttext">tJenaSelectQuery</h4>
+<p class="jenaselecttext">Submit a sparql select query to the Jena model.</p>
+
+<p class="pimage" ><img id="jenaselectimage" src="images/jena_select_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.jenaselecttext').on('mouseenter', function () {
+	   $('#jenaselectimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#jenaselectimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
+
 <hr>
-<h4>tJenaConstructQuery</h4>
-<p>Submit a sparql construct query to the Jena model.</p>
+<h4 class="jenaconstructtext">tJenaConstructQuery</h4>
+<p class="jenaconstructtext">Submit a sparql construct query to the Jena model.</p>
+
+<p class="pimage" ><img id="jenaconstructimage" src="images/jena_construct_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.jenaconstructtext').on('mouseenter', function () {
+	   $('#jenaconstructimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#jenaconstructimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
+
 <hr>
 <h4>tJenaDropModel</h4>
 <p>Clear a model from any statements.</p>
@@ -167,12 +306,49 @@ The goal of these components is to easily create and make operations on Jena mod
 Those components aimed to make Talend more user friendly to transform RDF data.
 </p>
 
-<h4>tRDF2RDF</h4>
-<p>Convert data from a RDF format to another RDF format. The format available are RDF/XML, n-triple and Turtle.</p>
-<hr>
-<h4>tTriple2Ntriple</h4>
-<p>Convert a 4 columns row (subject, predicate, object, type) into a well formed n-triple. It also replace common prefixes and the user can add prefixes to be replaced during the transformation.</p>
+<h4 class="rdftordftext">tRDF2RDF</h4>
+<p class="rdftordftext">Convert data from a RDF format to another RDF format. The format available are RDF/XML, n-triple and Turtle.</p>
 
+<p class="pimage" ><img id="rdftordfimage" src="images/rdf2rdf_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.rdftordftext').on('mouseenter', function () {
+	   $('#jenaselectimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#rdftordfimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
+
+
+<hr>
+<h4 class="tripletotripletext">tTriple2Ntriple</h4>
+<p class="tripletotripletext">Convert a 4 columns row (subject, predicate, object, type) into a well formed n-triple. It also replace common prefixes and the user can add prefixes to be replaced during the transformation.</p>
+
+<p class="pimage" ><img id="tripletotripleimage" src="images/triple2ntriple_screen.png" /> </p>
+
+<script>
+$(document).ready(function () {
+   $('.tripletotripletext').on('mouseenter', function () {
+	   $('#tripletotripleimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#tripletotripleimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
 
         </section>
 
