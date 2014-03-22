@@ -3,6 +3,29 @@
    License: none (public domain)
 */
 
+#container {
+    width:100%;
+    height:200px;
+}
+#colOne {
+    width:33.333%;
+    height:200px;
+    float:left;
+    background-color:red;
+}
+#colTwo {
+    width:33.333%;
+    height:200px;
+    float:left;
+    background-color:yellow;
+}
+#colThree {
+    width:33.333%;
+    height:200px;
+    float:left;
+    background-color:blue;
+}
+
 
 #test{
 	display:none
