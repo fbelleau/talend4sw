@@ -65,22 +65,22 @@ Those components aimed to make Talend more user friendly to transform RDF data.
 
 
 <h4 id="virtuosoconnexiontitle" >
-<img src="images/glass_icon.png" alt="Details" style="margin: 10px; float: left" hspace="5" vspace="5" width="15" height="15" />tVirtuosoConnection</h4>
+tVirtuosoConnection</h4>
 <p>The user uses this component to connect to a Virtuoso triplestore by informing the host, the port, the username and the password</p>
 
 
-<img id="test" align="middle" src="images/virtuoso_connexion.png" alt="tVirtuosoConnexion" />
+<img id="virtuosoconnexionimage" align="middle" src="images/virtuoso_connexion.png" alt="tVirtuosoConnexion" />
 
 <script src="javascripts/jquery-1.11.0.min.js"></script>
 <script>
 $(document).ready(function () {
    $('#virtuosoconnexiontitle').on('mouseenter', function () {
-	   $('#test').show();
+	   $('#virtuosoconnexionimage').show();
 	   $(this).css({
-		   "text-decoration": "underline"
+		   "text-decoration": "none"
 	   });
    }).on('mouseleave', function () {
-	   $('#test').hide();
+	   $('#virtuosoconnexionimage').hide();
 	   $(this).css({
 		   "text-decoration": ''
 	   });
