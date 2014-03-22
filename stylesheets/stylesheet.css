@@ -3,29 +3,17 @@
    License: none (public domain)
 */
 
-#container {
-    width:100%;
-    height:200px;
-}
-#colOne {
-    width:33.333%;
-    height:200px;
-    float:left;
-    background-color:red;
-}
-#colTwo {
-    width:33.333%;
-    height:200px;
-    float:left;
-    background-color:yellow;
-}
-#colThree {
-    width:33.333%;
-    height:200px;
-    float:left;
-    background-color:blue;
-}
 
+<div class="verticalLine">
+
+some other content
+
+</div>
+in CSS:
+
+.verticalLine {
+    border-left: thick solid #ff0000;
+}
 
 #test{
 	display:none
@@ -85,7 +73,7 @@ body {
   font-family: 'Helvetica Neue', Helvetica, Arial, serif;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
   color: #6d6d6d;
-  text-align: justify; 
+  /*text-align: justify; */
 }
 
 a {
