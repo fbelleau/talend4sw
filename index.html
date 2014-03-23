@@ -74,11 +74,11 @@
 
 
 
-<p>The goal of these components is to easily make operations on Virtuoso triplestore using Talend. These components will allow the user to connect to a Virtuoso triplestore, submit sparql query, insert data, clear graph...</p>
+<p>The goal of these components is to easily make operations on Virtuoso triplestores using Talend. These components will allow the user to connect to a Virtuoso triplestore, submit sparql query, insert data, clear graph...</p>
 
 
 <h4 class="virtuosoconnexiontext" >tVirtuosoConnection</h4>
-<p class="virtuosoconnexiontext">The user uses this component to connect to a Virtuoso triplestore by informing the host, the port, the username and the password</p>
+<p class="virtuosoconnexiontext">The user uses this component to connect to a Virtuoso triplestore by informing the host, the port, the username and the password.\n This connection is then used by the other Virtuoso components to make operations on the triplestore.</p>
 
 
 <p class="pimage" ><img id="virtuosoconnexionimage" class="hideimg" src="images/virtuoso_connexion.png" alt="tVirtuosoConnexion" /> </p>
@@ -103,7 +103,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="virtuososelecttext" >tVirtuosoSelect</h4>
-<p class="virtuososelecttext">Submit a sparql select query to a tVirtuosoConnection.</p>
+<p class="virtuososelecttext">Submit a SPARQL select query to a Virtuoso triplestore (tVirtuosoConnection). One output row per result and the different selected variables are sorted in columns in the row.</p>
 
 <p class="pimage" ><img id="virtuososelectimage" class="hideimg" src="images/virtuoso_select_screen.png" /> </p>
 
@@ -126,7 +126,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="virtuosoconstructtext">tVirtuosoConstruct</h4>
-<p class="virtuosoconstructtext">Submit a sparql construct query to a tVirtuosoConnection</p>
+<p class="virtuosoconstructtext">Submit a sparql construct query to a tVirtuosoConnection.</p>
 
 <p class="pimage" ><img id="virtuosoconstructimage" class="hideimg" src="images/virtuoso_construct_screen.png" /> </p>
 
@@ -148,7 +148,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="virtuosoinserttext">tVirtuosoInsert</h4>
-<p class="virtuosoinserttext">Insert statements in a virtuoso triplestore (defined by a tVirtuosoConnection)</p>
+<p class="virtuosoinserttext">Insert statements into a graph stored in a Virtuoso triplestore (defined by a tVirtuosoConnection).</p>
 
 <p class="pimage" ><img id="virtuosoinsertimage" class="hideimg" src="images/virtuoso_insert_screen.png" /> </p>
 
@@ -199,12 +199,12 @@ The goal of these components is to easily create and make operations on Jena mod
 </p>
 
 <h4>tJenaCreateModel</h4>
-<p>Create an empty Jena model (a set of RDF statements).</p>
+<p>Create an empty Jena model (a set of RDF statements). That will be manipulate by the other Jena components.</p>
 
 
 <hr>
 <h4 class="jenareadfiletext">tJenaReadFile</h4>
-<p class="jenareadfiletext">Fill a model (created using tJenaCreateModel) with statements from a file (RDF/XML, n-triple or turtle format)</p>
+<p class="jenareadfiletext">Fill a model (created using tJenaCreateModel) with statements from a file (RDF/XML, n-triple or turtle format).</p>
 
 <p class="pimage" ><img id="jenareadfileimage" class="hideimg" src="images/jena_readfile_screen.png" /> </p>
 
@@ -226,7 +226,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="jenareadrowtext">tJenaReadRow</h4>
-<p class="jenareadrowtext">Fill a model with statements from an incoming row (RDF/XML, n-triple or turtle format)</p>
+<p class="jenareadrowtext">Fill a model with statements from an incoming row (RDF/XML, n-triple or turtle format).</p>
 
 
 <p class="pimage" ><img id="jenareadrowimage" class="hideimg" src="images/jena_readrow_screen.png" /> </p>
@@ -250,7 +250,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="jenaselecttext">tJenaSelectQuery</h4>
-<p class="jenaselecttext">Submit a sparql select query to the Jena model.</p>
+<p class="jenaselecttext">Submit a SPARQL select query to the Jena model using ARQ query engine. One output row per result and the different selected variables are sorted in columns in the row. </p>
 
 <p class="pimage" ><img id="jenaselectimage" class="hideimg" src="images/jena_select_screen.png" /> </p>
 
@@ -273,7 +273,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="jenaconstructtext">tJenaConstructQuery</h4>
-<p class="jenaconstructtext">Submit a sparql construct query to the Jena model.</p>
+<p class="jenaconstructtext">Submit a SPARQL construct query to the Jena model using ARQ query engine. The whole result is given as a RDF document in the first columnof the output row. The user can choose the output format (RDF/XML, n-triple or turtle).</p>
 
 <p class="pimage" ><img id="jenaconstructimage" class="hideimg" src="images/jena_construct_screen.png" /> </p>
 
@@ -307,7 +307,7 @@ Those components aimed to make Talend more user friendly to transform RDF data.
 </p>
 
 <h4 class="rdftordftext">tRDF2RDF</h4>
-<p class="rdftordftext">Convert data from a RDF format to another RDF format. The format available are RDF/XML, n-triple and Turtle.</p>
+<p class="rdftordftext">Convert data from a RDF format to another RDF format. The format available are RDF/XML, n-triple and Turtle. This component use the Jena library.</p>
 
 <p class="pimage" ><img id="rdftordfimage" class="hideimg" src="images/rdf2rdf_screen.png" /> </p>
 
@@ -330,7 +330,7 @@ $(document).ready(function () {
 
 <hr>
 <h4 class="tripletotripletext">tTriple2Ntriple</h4>
-<p class="tripletotripletext">Convert a 4 columns row (subject, predicate, object, type) into a well formed n-triple. It also replace common prefixes and the user can add prefixes to be replaced during the transformation.</p>
+<p class="tripletotripletext">Convert a 4 columns row (subject, predicate, object, type) into a well formed n-triple. It also replaces common prefixes and the user can add prefixes to be replaced during the transformation.</p>
 
 <p class="pimage" ><img id="tripletotripleimage" class="hideimg" src="images/triple2ntriple_screen.png" /> </p>
 
