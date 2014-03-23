@@ -10,6 +10,10 @@ p.pimage {
 	text-align:center;
 }
 
+.hideimg{
+	display:none;
+}
+
 
 
 html, body, div, span, applet, object, iframe,
