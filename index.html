@@ -84,7 +84,21 @@
 <p class="pimage" ><img id="virtuosoconnexionimage" class="hideimg" src="images/virtuoso_connexion.png" alt="tVirtuosoConnexion" /> </p>
 
 <script src="javascripts/jquery-1.11.0.min.js"></script>
-
+<script>
+$(document).ready(function () {
+   $('.virtuosoconnexiontext').on('mouseenter', function () {
+	   $('#virtuosoconnexionimage').show();
+	   $(this).css({
+		   "text-decoration": "none"
+	   });
+   }).on('mouseleave', function () {
+	   $('#virtuosoconnexionimage').hide();
+	   $(this).css({
+		   "text-decoration": ''
+	   });
+   });;
+});
+</script>
 
 
 <hr>
