@@ -40,7 +40,7 @@ List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
 
   		QuerySolution soln_<%=cid%> = results_<%=cid%>.nextSolution() ;
   		
-  		Iterator queryVarIterator_<%=cid%> = soln_<%=cid%>.varNames();
+  		Iterator queryVarIterator_<%=cid%> = varList_<%=cid%>.iterator();
 
 
 <%
@@ -50,7 +50,9 @@ List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
 
 					if (queryVarIterator_<%=cid%>.hasNext())
 					{
+						
 						String varName_<%=cid%> = (String) queryVarIterator_<%=cid%>.next();
+						
 						<%=conn.getName()%>.<%=column.getLabel()%> = soln_<%=cid%>.get(varName_<%=cid%>).toString();
 					}
 <% 

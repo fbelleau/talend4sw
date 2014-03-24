@@ -31,6 +31,8 @@ Model model_<%=cid%> = (Model)globalMap.get("<%=jenaModel%>");
 String queryString_<%=cid%> = <%=query%> ;
   
 Query query_<%=cid%> = QueryFactory.create(queryString_<%=cid%>) ;
+
+java.util.List varList_<%=cid%> = query_<%=cid%>.getResultVars();
   
 QueryExecution queryExec_<%=cid%> = QueryExecutionFactory.create(query_<%=cid%>, model_<%=cid%>) ;
 
@@ -46,10 +48,10 @@ List<IMetadataColumn> columnsOut = postMetadata.getListColumns();
 
 %>
 
-ResultSet results_<%=cid%> = queryExec_<%=cid%>.execSelect() ;
+ResultSet results_<%=cid%> = queryExec_<%=cid%>.execSelect();
+
 	
 int nb_line_<%=cid %> = 0;
-
 
 
 while (results_<%=cid%>.hasNext())
