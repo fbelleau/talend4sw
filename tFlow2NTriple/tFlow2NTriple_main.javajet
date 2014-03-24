@@ -1,0 +1,121 @@
+<%@ jet 
+  imports="
+    java.util.List
+    java.util.Map
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.BlockCode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+  " 
+%>
+<% 
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();  
+
+
+String subjectText = ElementParameterParser.getValue(node,"__SUBJECT__");
+String subjectCol = ElementParameterParser.getValue(node,"__SUBJECTCOL__");
+String predicatePrefixe = ElementParameterParser.getValue(node,"__PREDICATEPREFIXE__");
+String objectPrefixe = ElementParameterParser.getValue(node,"__OBJECTPREFIXE__");
+String useTextSubject = ElementParameterParser.getValue(node,"__USETEXTSUBJECT__");
+String useColumnSubject = ElementParameterParser.getValue(node,"__USECOLUMNSUBJECT__");
+
+if (predicatePrefixe.equals(""))
+{
+	predicatePrefixe = "\"\"";
+}
+if (objectPrefixe.equals(""))
+{
+	objectPrefixe = "\"\"";
+}
+
+String subject = null; 
+    
+if (useTextSubject.equals("true"))
+{
+	subject = subjectText;
+}
+else
+{
+	subject = subjectCol;
+}
+
+
+
+//for TDI-23590 deal with FLOW_MERGE connection
+List<? extends IConnection> inConns = node.getIncomingConnections();
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
+
+if (inConns == null || inConns.isEmpty() || outConns == null || outConns.isEmpty()){
+  return "";
+}
+IConnection inConn = null, outConn = null;
+inConn = inConns.get(0);
+outConn = outConns.get(0);
+
+if (!inConn.isActivate() || !outConn.isActivate()){
+  return "";
+}
+String inConnName = inConn.getName();
+String outConnName = outConn.getName();
+
+if (!inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+      || !outConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA) ){
+  return "";
+}
+List<IMetadataColumn> outColumns = outConn.getMetadataTable().getListColumns();
+List<IMetadataColumn> columnsInc = inConn.getMetadataTable().getListColumns();
+
+
+%>
+
+
+java.util.List<String> columnsName_<%=cid%> = new java.util.ArrayList<String>();
+java.util.List<String> columnsContent_<%=cid%> = new java.util.ArrayList<String>();
+
+<%
+	for (int i = 0; i < columnsInc.size(); i++)
+	{
+%>
+		columnsName_<%=cid%>.add("<%=columnsInc.get(i).getLabel()%>");
+		columnsContent_<%=cid%>.add(<%=inConn.getName()%>.<%=columnsInc.get(i).getLabel()%>);	
+<%
+	}
+
+int rowNumber = columnsInc.size();
+%>
+
+java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<%=outConnName%>Struct>(<%=rowNumber%>);
+<%=outConnName%>Struct rowTmp_<%=cid%> = null;
+
+
+
+<%for (IMetadataColumn colName : columnsInc) {%>
+    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
+    
+	rowTmp_<%=cid%>.subject = <%=subject%>;
+	rowTmp_<%=cid%>.predicate = "<%=colName.getLabel()%>";
+	rowTmp_<%=cid%>.object = "<%=colName.getLabel()%>";
+	rowTmp_<%=cid%>.type = "<%=colName.getLabel()%>";
+    
+    rows_<%=cid%>.add(rowTmp_<%=cid%>);
+    nb_line_<%=cid%>++;
+  <%}%>
+
+
+
+  for (<%=outConnName%>Struct row_<%=cid%> : rows_<%=cid%>) {// C_01
+    <%=outConnName%> = row_<%=cid%>;
+
+<%
+    List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+  blockCodes.add(new BlockCode("C_01"));
+  ((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+}
+%>
+  
+  
