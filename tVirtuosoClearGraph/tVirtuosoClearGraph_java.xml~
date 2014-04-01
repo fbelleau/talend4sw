@@ -17,7 +17,8 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic Web</FAMILY>  
+    <FAMILY>Semantic Web</FAMILY>
+    <FAMILY>Database/Virtuoso</FAMILY>    
   </FAMILIES>
 
   <DOCUMENTATION>
