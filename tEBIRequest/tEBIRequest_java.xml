@@ -41,21 +41,26 @@
       </TABLE>
     </PARAMETER>
 
-    <PARAMETER NAME="ENDPOINT_MODE" FIELD="CHECK" NUM_ROW="3">
+    
+    <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+      <DEFAULT>"http://rest.bio2rdf.org"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="ENDPOINT_MODE" FIELD="CHECK" NUM_ROW="3" SHOW_IF="'false'">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_STRING" FIELD="STRING" NUM_ROW="4" REQUIRED="true" SHOW_IF="ENDPOINT_MODE == 'true'">
-      <DEFAULT>"go"</DEFAULT>
+      <DEFAULT>"atlas"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
-      <ITEMS DEFAULT="biomodel">
-        <ITEM NAME="biomodel" VALUE="biomodel"/>
+      <ITEMS DEFAULT="biomodels">
+        <ITEM NAME="atlas" VALUE="atlas.ebi"/>
+        <ITEM NAME="biomodels" VALUE="biomodels.ebi"/>
         <ITEM NAME="biosamples" VALUE="biosamples"/>
         <ITEM NAME="chembl" VALUE="chembl"/>
-        <ITEM NAME="atlas" VALUE="atlas"/>
-        <ITEM NAME="reactome" VALUE="reactome"/>
+        <ITEM NAME="reactome" VALUE="reactome.ebi"/>
       </ITEMS>
     </PARAMETER>
 
@@ -64,26 +69,28 @@
     </PARAMETER>
     
     <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
-      <ITEMS DEFAULT="DESCRIBE">
+      <ITEMS DEFAULT="DESCRIBE_URI">
         <ITEM NAME="SEARCH" VALUE="search"/>
         <ITEM NAME="DESCRIBE_URI" VALUE="describe_uri"/>
         <ITEM NAME="LINKS_URI" VALUE="links_uri"/>
-        <ITEM NAME="LINKS_LITERAL" VALUE="links_literal"/>
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED != 'SEARCH'" NUM_ROW="11">
-      <DEFAULT>"go:0019200"</DEFAULT>
+    <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="(METHOD_CHOSED == 'DESCRIBE_URI') OR (METHOD_CHOSED == 'LINKS_URI')" NUM_ROW="11">
+      <DEFAULT>"http://identifiers.org/biomodels.db/BIOMD0000000001"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED == 'SEARCH'"  NUM_ROW="12">
+    <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="(METHOD_CHOSED == 'SEARCH') OR (METHOD_CHOSED == 'SEARCH_LITERAL')"  NUM_ROW="12">
       <DEFAULT>"hexokinase"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="15">
       <ITEMS DEFAULT="NT">
+        <ITEM NAME="NT" VALUE="nt"/>
         <ITEM NAME="RDF" VALUE="rdf"/>
         <ITEM NAME="N3" VALUE="n3"/>
+        <ITEM NAME="JSON" VALUE="json"/>
+        <ITEM NAME="JSONLD" VALUE="jsonld"/>
       </ITEMS>
     </PARAMETER>
     

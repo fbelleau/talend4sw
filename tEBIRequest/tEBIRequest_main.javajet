@@ -34,10 +34,6 @@ if (outConns != null && outConns.size() > 0){
 }
 
 String sREST_URI = ElementParameterParser.getValue(node, "__REST_URI__");
-
-sREST_URI = "\"http://rest.bio2rdf.org\"";
-
-
 String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
 String sURI = ElementParameterParser.getValue(node, "__RDF_URI__");
 String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
@@ -65,32 +61,29 @@ String sUser = ElementParameterParser.getValue(node, "__USR__");
 String sPwd = ElementParameterParser.getValue(node, "__PWD__");
 %>
 
-String urlString__<%=cid%>;
+String URL_<%=cid%>;
 
 if ("<%=sMethod%>".equals("search")){
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
+  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
 }
-else if ("<%=sMethod%>".equals("describe")){
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
-}
-else if ("<%=sMethod%>".equals("links")){
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+else if ("<%=sMethod%>".equals("search_literal")){
+  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search_literal/" + "<%=sFormat%>" + "?query=" + <%=sQuery%> ;
 }
 else if ("<%=sMethod%>".equals("describe_uri")){
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe_uri/" + "<%=sFormat%>" + "?uri=" + <%=sURI%>.replace("#","%23") ;
 }
 else if ("<%=sMethod%>".equals("links_uri")){
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links/" + "<%=sFormat%>" + "?uri=" + <%=sURI.replace("#","%23")%> ;
+  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links_uri/" + "<%=sFormat%>" + "?uri=" + <%=sURI%>.replace("#","%23") ;
 }
 else {
-  urlString__<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "?parm=" + <%=sURI.replace("#","%23")%> ;
+  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "?parm=" + <%=sURI%>.replace("#","%23") ;
 }
 
 <%if (bDebug){%>
-  System.out.println(urlString__<%=cid%>);
+  System.out.println(URL_<%=cid%>);
 <%}%>
 
-java.net.URL url_<%=cid%> = new java.net.URL(urlString__<%=cid%>);
+java.net.URL url_<%=cid%> = new java.net.URL(URL_<%=cid%>);
 
 <%if (bNeedAuthentication){%>
   java.net.Authenticator.setDefault(new java.net.Authenticator() {
