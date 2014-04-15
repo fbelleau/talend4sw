@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT> 
+
+<HEADER   AUTHOR="Francois.Belleau@bio2rdf.org" 
+          COMPATIBILITY="ALL" 
+          PLATEFORM="ALL" 
+          RELEASE_DATE="20140119" 
+          SERIAL="" 
+          STARTABLE="true" 
+          STATUS="BETA" 
+          DATA_AUTO_PROPAGATE="false"
+          SCHEMA_AUTO_PROPAGATE="false"
+          HAS_CONDITIONAL_OUTPUTS="true"
+          PARTITIONING="AUTO"
+          VERSION="0.1">    
+          <SIGNATURE/>
+</HEADER>
+
+<FAMILIES> 
+  <FAMILY>Semantic Web</FAMILY>
+</FAMILIES>  
+
+<DOCUMENTATION> 
+  <URL>http://bio2rdf.org</URL> 
+</DOCUMENTATION> 
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+      <TABLE READONLY="true">
+        <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
+      </TABLE>
+    </PARAMETER>
+    
+    <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+      <DEFAULT>"http://bio2rdf.org"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="ENDPOINT_MODE" FIELD="CHECK" NUM_ROW="3">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="ENDPOINT_STRING" FIELD="STRING" NUM_ROW="4" REQUIRED="true" SHOW_IF="ENDPOINT_MODE == 'true'">
+      <DEFAULT>"go"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
+      <ITEMS DEFAULT="atlas">
+        <ITEM NAME="affymetrix" VALUE="affymetrix"/>
+        <ITEM NAME="atlas" VALUE="atlas"/>
+        <ITEM NAME="biomodels" VALUE="biomodels"/>
+        <ITEM NAME="bioportal" VALUE="bioportal"/>
+        <ITEM NAME="ctd" VALUE="ctd"/>
+        <ITEM NAME="drugbank" VALUE="drugbank"/>
+        <ITEM NAME="genbank" VALUE="genbank"/>
+        <ITEM NAME="gene" VALUE="gene"/>
+        <ITEM NAME="goa" VALUE="goa"/>
+        <ITEM NAME="hgnc" VALUE="hgnc"/>
+        <ITEM NAME="hhpid" VALUE="hhpid"/>
+        <ITEM NAME="homologene" VALUE="homologene"/>
+        <ITEM NAME="interpro" VALUE="interpro"/>
+        <ITEM NAME="iproclass" VALUE="iproclass"/>
+        <ITEM NAME="irefindex" VALUE="irefindex"/>
+        <ITEM NAME="kegg" VALUE="kegg"/>
+        <ITEM NAME="mesh" VALUE="mesh"/>
+        <ITEM NAME="mgi" VALUE="mgi"/>
+        <ITEM NAME="ndc" VALUE="ndc"/>
+        <ITEM NAME="omim" VALUE="omim"/>
+        <ITEM NAME="pharmgkb" VALUE="pharmgkb"/>
+        <ITEM NAME="pubmed" VALUE="pubmed"/>
+        <ITEM NAME="refseq" VALUE="refseq"/>
+        <ITEM NAME="sgd" VALUE="sgd"/>
+        <ITEM NAME="taxonomy" VALUE="taxonomy"/>
+        <ITEM NAME="toxkb" VALUE="toxkb"/>
+        <ITEM NAME="uniprot" VALUE="uniprot"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="METHOD_STRING" FIELD="STRING" NUM_ROW="6" REQUIRED="true" SHOW_IF="'false'">
+      <DEFAULT>"describe"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
+      <ITEMS DEFAULT="DESCRIBE">
+        <ITEM NAME="DESCRIBE" VALUE="describe"/>
+        <ITEM NAME="LINKS" VALUE="links"/>
+        <ITEM NAME="SEARCH" VALUE="search"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED != 'SEARCH'" NUM_ROW="11">
+      <DEFAULT>"go:0019200"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="METHOD_CHOSED == 'SEARCH'"  NUM_ROW="12">
+      <DEFAULT>"hexokinase"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="15">
+      <ITEMS DEFAULT="NT">
+        <ITEM NAME="NT" VALUE="nt"/>
+        <ITEM NAME="RDF" VALUE="rdf"/>
+        <ITEM NAME="N3" VALUE="n3"/>
+        <ITEM NAME="JSON" VALUE="json"/>
+        <ITEM NAME="JSONLD" VALUE="jsonld"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="POST_PARAMS_FROM_FILE" FIELD="FILE" SHOW_IF="'false'" NUM_ROW="20">
+      <DEFAULT/>
+    </PARAMETER>
+
+    <PARAMETER NAME="OUT_TO_FILE" FIELD="CHECK" REQUIRED="true" SHOW_IF="'false'"  NUM_ROW="21">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="OUT_FILE_NAME" FIELD="FILE" SHOW_IF="OUT_TO_FILE == 'true'" NUM_ROW="22" >
+      <DEFAULT/>
+    </PARAMETER>
+    
+    <PARAMETER NAME="HEADERS" FIELD="TABLE" REQUIRED="false" NB_LINES="7" NUM_ROW="35" SHOW_IF="'false'">
+      <ITEMS>
+        <ITEM NAME="HEADER_NAME" />
+        <ITEM NAME="HEADER_VALUE" />
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="DEBUG_MODE" FIELD="CHECK" NUM_ROW="50">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="NEED_AUTHENTICATION" FIELD="CHECK" NUM_ROW="40" SHOW_IF="'false'">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="USR" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER NAME="PWD" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+  </PARAMETERS>
+
+  <CODEGENERATION/>
+
+  <RETURNS/>
+
+</COMPONENT>
