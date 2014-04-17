@@ -150,13 +150,13 @@ object_<%=cid %> = object_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
 
 if (<%=inRowName%>.<%=type %>.equals("uri")) {
 
-<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + StringHandling.CHANGE(object_<%=cid %>, " ", "_") + "> .";
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + object_<%=cid %> + "> .";
 
 }
 
 else if (<%=inRowName%>.<%=type %>.equals("string")) {
 
-<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %>.replace("\"", "'") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
 
 }
 
@@ -172,29 +172,10 @@ else if (<%=inRowName%>.<%=type %>.equals("double")) {
 
 }
 
-else if (<%=inRowName%>.<%=type %>.equals("date")) {
-
-<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %> + "\"^^<http://www.w3.org/2001/XMLSchema#date> .";
-
-}
-
 else 
 {
-	throw new Exception("Type is not correct.");
+	throw new Exception("Type " + <%=inRowName%>.<%=type %> + " is not correct.");
 }
-
-
-
-org.openjena.riot.RIOT.init();
-
-Reader reader_<%=cid %> = new StringReader(<%=outRowName %>.<%=ntriple %>);
-Writer writer_<%=cid %> = new StringWriter();
-Model model_<%=cid %> = ModelFactory.createDefaultModel();
-
-model_<%=cid %>.read(reader_<%=cid %>,  "http://default.graph", "N-TRIPLE"); 
-
-model_<%=cid %>.write(writer_<%=cid %>, "RDF/XML"); 
-
 
 <%
 
@@ -202,8 +183,5 @@ model_<%=cid %>.write(writer_<%=cid %>, "RDF/XML");
     } //oc1 Close
 
 %>
-
-
-
 
 nb_line_<%=cid %>++;
