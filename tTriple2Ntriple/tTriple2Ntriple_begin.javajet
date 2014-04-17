@@ -15,6 +15,23 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-%> 
+
+String useValidation = ElementParameterParser.getValue(node, "__USE_VALIDATION__");
+%>
+
+<%
+if (useValidation.equals("true"))
+{
+%>
+org.openjena.riot.RIOT.init();
+
+Model model_<%=cid %> = ModelFactory.createDefaultModel();
+
+Reader reader_<%=cid %>;
+Writer writer_<%=cid %>;
+<%
+}
+%>
+
 int nb_line_<%=cid %> = 0;
 

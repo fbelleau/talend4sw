@@ -40,6 +40,8 @@ String predicate = ElementParameterParser.getValue(node, "__PREDICATE_COL__"); /
 String object = ElementParameterParser.getValue(node, "__OBJECT_COL__"); // colonne object
 String type = ElementParameterParser.getValue(node, "__TYPE_COL__"); // colonne object
 
+String useValidation = ElementParameterParser.getValue(node, "__USE_VALIDATION__"); // Activate or not the Jena validation
+
 ArrayList liste_valeur = new ArrayList(); // liste des valeurs à remplacer
 ArrayList liste_replace = new ArrayList(); // liste des valeurs nouvelles
 List<Map<String, String>> listColMapping = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__MAPPING__"); // Récupération du tableau
@@ -184,17 +186,23 @@ else
 }
 
 
+///////////////////// Jena Validation
 
-org.openjena.riot.RIOT.init();
-
-Reader reader_<%=cid %> = new StringReader(<%=outRowName %>.<%=ntriple %>);
-Writer writer_<%=cid %> = new StringWriter();
-Model model_<%=cid %> = ModelFactory.createDefaultModel();
+<%
+if (useValidation.equals("true"))
+{
+%>
+reader_<%=cid %> = new StringReader(<%=outRowName %>.<%=ntriple %>);
+writer_<%=cid %> = new StringWriter();
 
 model_<%=cid %>.read(reader_<%=cid %>,  "http://default.graph", "N-TRIPLE"); 
 
 model_<%=cid %>.write(writer_<%=cid %>, "RDF/XML"); 
+<%
+}
+%>
 
+/////////////////////
 
 <%
 
