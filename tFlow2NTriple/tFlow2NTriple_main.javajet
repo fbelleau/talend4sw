@@ -17,8 +17,8 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();  
 
 
-String subjectText = ElementParameterParser.getValue(node,"__SUBJECT__");
-String subjectCol = ElementParameterParser.getValue(node,"__SUBJECTCOL__");
+String subjectByText = ElementParameterParser.getValue(node,"__SUBJECT__");
+String subjectByColumn = ElementParameterParser.getValue(node,"__SUBJECTCOL__");
 String predicatePrefixe = ElementParameterParser.getValue(node,"__PREDICATEPREFIXE__");
 String objectPrefixe = ElementParameterParser.getValue(node,"__OBJECTPREFIXE__");
 String useTextSubject = ElementParameterParser.getValue(node,"__USETEXTSUBJECT__");
@@ -33,15 +33,19 @@ if (objectPrefixe.equals(""))
 	objectPrefixe = "\"\"";
 }
 
-String subject = null; 
+String subjectName = null; 
     
 if (useTextSubject.equals("true"))
 {
-	subject = subjectText;
+	if (subjectByText.matches("^\".*\"$"))
+	{
+		subjectByText = subjectByText.substring(1, subjectByText.length()-1);
+	}
+	subjectName = subjectByText;
 }
 else
 {
-	subject = subjectCol;
+	subjectName = subjectByColumn;
 }
 
 
@@ -71,21 +75,6 @@ List<IMetadataColumn> outColumns = outConn.getMetadataTable().getListColumns();
 List<IMetadataColumn> columnsInc = inConn.getMetadataTable().getListColumns();
 
 
-%>
-
-
-java.util.List<String> columnsName_<%=cid%> = new java.util.ArrayList<String>();
-java.util.List<String> columnsContent_<%=cid%> = new java.util.ArrayList<String>();
-
-<%
-	for (int i = 0; i < columnsInc.size(); i++)
-	{
-%>
-		columnsName_<%=cid%>.add("<%=columnsInc.get(i).getLabel()%>");
-		columnsContent_<%=cid%>.add(<%=inConn.getName()%>.<%=columnsInc.get(i).getLabel()%>);	
-<%
-	}
-
 int rowNumber = columnsInc.size();
 %>
 
@@ -95,15 +84,50 @@ java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<
 
 
 <%for (IMetadataColumn colName : columnsInc) {%>
-    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
-    
-	rowTmp_<%=cid%>.subject = <%=subject%>;
-	rowTmp_<%=cid%>.predicate = "<%=colName.getLabel()%>";
-	rowTmp_<%=cid%>.object = "<%=colName.getLabel()%>";
-	rowTmp_<%=cid%>.type = "<%=colName.getLabel()%>";
-    
-    rows_<%=cid%>.add(rowTmp_<%=cid%>);
-    nb_line_<%=cid%>++;
+
+	if (!("<%=useTextSubject%>".equals("false") && "<%=colName.getLabel()%>".equals("<%=subjectName%>")))
+	{
+	    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
+	    
+		rowTmp_<%=cid%>.subject =  <%=inConn.getName()%>.<%=subjectName%>;
+		rowTmp_<%=cid%>.predicate = <%=predicatePrefixe%> + "<%=colName.getLabel()%>";
+		
+		<%
+		if (colName.getTalendType().equals("id_String"))
+		{
+		%>
+			rowTmp_<%=cid%>.object = <%=inConn.getName()%>.<%=colName.getLabel()%>;
+			rowTmp_<%=cid%>.type = "string";
+		<%
+		}
+		else if (colName.getTalendType().equals("id_Integer"))
+		{
+		%>
+			rowTmp_<%=cid%>.object = Integer.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+			rowTmp_<%=cid%>.type = "integer";
+		<%
+		}
+		else if (colName.getTalendType().equals("id_Object"))
+		{
+		%>
+			rowTmp_<%=cid%>.object = <%=objectPrefixe%> + (String) <%=inConn.getName()%>.<%=colName.getLabel()%>;
+			rowTmp_<%=cid%>.type = "uri";
+		<%
+		}
+		else if (colName.getTalendType().equals("id_Date"))
+		{
+		%>
+			java.text.DateFormat df_<%=cid%> = new SimpleDateFormat("yyyy-MM-dd");
+			rowTmp_<%=cid%>.object = df_<%=cid%>.format(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+			rowTmp_<%=cid%>.type = "date";
+		<%
+		}
+		%>
+		
+	    
+	    rows_<%=cid%>.add(rowTmp_<%=cid%>);
+	    nb_line_<%=cid%>++;
+    }
   <%}%>
 
 
@@ -115,7 +139,6 @@ java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<
     List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
   blockCodes.add(new BlockCode("C_01"));
   ((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
-}
 %>
   
   
