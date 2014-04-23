@@ -182,7 +182,10 @@ else if (<%=inRowName%>.<%=type %>.equals("date")) {
 
 else 
 {
-	throw new Exception("Type is not correct.");
+	//throw new Exception("Type is not correct.");
+	System.out.println("Type ' " + <%=inRowName%>.<%=type %> + " ' is not valid");
+	System.out.println("Others infos: " + <%=outRowName %>.<%=ntriple %> + "  " + object_<%=cid %>);
+	<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %>.replace("\"", "'") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
 }
 
 
