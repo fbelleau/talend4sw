@@ -38,8 +38,9 @@ if (outConns != null && outConns.size() > 0){
 
 String sREST_URI = ElementParameterParser.getValue(node, "__REST_URI__");
 String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
-String sURI = ElementParameterParser.getValue(node, "__RDF_URI__");
-String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
+String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
+String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
+String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
 String sFormat = ElementParameterParser.getValue(node, "__CHOSEN_FORMAT__");
 
 boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
@@ -52,13 +53,22 @@ boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MO
 String URL_string_<%=cid%> = null;
 
 if ("<%=sMethod%>".equals("search")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
+  URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/search/" + "<%=sFormat%>" + "/" + <%=sSearchQuery%> ;
 }
 else if ("<%=sMethod%>".equals("describe")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/describe/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+	// Check if the user use an URI or ns:id
+  	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/describe/" + "<%=sFormat%>" + "/" + <%=sDescribeQuery%> ;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/describe/" + "<%=sFormat%>" + "?uri=" + <%=sDescribeQuery%> ;
+  	}  	
+
 }
 else if ("<%=sMethod%>".equals("links")){
-  URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/links/" + "<%=sFormat%>" + "/" + <%=sURI%>.replace("http://bio2rdf.org/","") ;
+  URL_string_<%=cid%> = <%=sREST_URI%> + "/pc/links/" + "<%=sFormat%>" + "/" + <%=sLinksQuery%>.replace("http://bio2rdf.org/","") ;
 }
 
 <%if (bDebug){%>
