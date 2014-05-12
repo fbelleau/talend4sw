@@ -34,7 +34,7 @@
   </CONNECTORS>  
 
   <PARAMETERS> 
-    <PARAMETER NAME="OUTPUT_SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+    <PARAMETER NAME="OUTPUT_SCHEMA" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
          <TABLE READONLY="true">
             <COLUMN NAME="subject" TYPE="id_String" READONLY="true" CUSTOM="true" />
             <COLUMN NAME="predicate" TYPE="id_String" READONLY="true" CUSTOM="true" />

@@ -107,6 +107,13 @@ java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<
 			rowTmp_<%=cid%>.type = "integer";
 		<%
 		}
+		else if (colName.getTalendType().equals("id_Double"))
+		{
+		%>
+			rowTmp_<%=cid%>.object = Double.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+			rowTmp_<%=cid%>.type = "double";
+		<%
+		}
 		else if (colName.getTalendType().equals("id_Object"))
 		{
 		%>

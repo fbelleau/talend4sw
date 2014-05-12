@@ -113,34 +113,28 @@ String object_<%=cid %> = <%=inRowName %>.<%=object %>;
 
   //------------------------------Remplacement des préfixes-------------------------//
   
-       if (trad.equals("true")) { // test si case remplacement cochée
-              for (int x=0; x<liste_valeur.size(); x++) { //je parcours la liste
+       if (trad.equals("true")) { // Check if common prefixes replacement is selected
+              for (int x=0; x<liste_valeur.size(); x++) { 
 %>
-
-
-subject_<%=cid %> = subject_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
-predicate_<%=cid %> = predicate_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
-object_<%=cid %> = object_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
-
+			subject_<%=cid %> = subject_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
+			predicate_<%=cid %> = predicate_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
+			object_<%=cid %> = object_<%=cid %>.replace("<%=liste_valeur.get(x)%>", "<%=liste_replace.get(x)%>");
  <%
- 
  		} // for
  	} // if
  	
  	if (listColMapping != null && !listColMapping.isEmpty()){
 		for (Map<String, String> colMapping : listColMapping) {
 
-String valuea = colMapping.get("PREFIXE");
-String valueb = colMapping.get("URI");
-
+			String valuea = colMapping.get("PREFIXE");
+			String valueb = colMapping.get("URI");
 %>
-
-subject_<%=cid %> = subject_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
-predicate_<%=cid %> = predicate_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
-object_<%=cid %> = object_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+			
+			subject_<%=cid %> = subject_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+			predicate_<%=cid %> = predicate_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
+			object_<%=cid %> = object_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
 
 <%
-
 		} // for
 	} // if
  	
@@ -153,13 +147,11 @@ object_<%=cid %> = object_<%=cid %>.replace(<%=valuea%>, <%=valueb%>);
 if (<%=inRowName%>.<%=type %>.equals("uri")) {
 
 <%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + StringHandling.CHANGE(object_<%=cid %>, " ", "_") + "> .";
-
 }
 
 else if (<%=inRowName%>.<%=type %>.equals("string")) {
 
 <%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %>.replace("\"", "'") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
-
 }
 
 else if (<%=inRowName%>.<%=type %>.equals("integer")) {
@@ -184,7 +176,7 @@ else
 {
 	//throw new Exception("Type is not correct.");
 	System.out.println("Type ' " + <%=inRowName%>.<%=type %> + " ' is not valid");
-	System.out.println("Others infos: " + <%=outRowName %>.<%=ntriple %> + "  " + object_<%=cid %>);
+	System.out.println("Complete triple: " + <%=outRowName %>.<%=ntriple %> + "  " + object_<%=cid %> + "\n");
 	<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "\"" + object_<%=cid %>.replace("\"", "'") + "\"^^<http://www.w3.org/2001/XMLSchema#string> .";
 }
 
@@ -213,8 +205,6 @@ model_<%=cid %>.write(writer_<%=cid %>, "RDF/XML");
     } //oc1 Close
 
 %>
-
-
 
 
 nb_line_<%=cid %>++;
