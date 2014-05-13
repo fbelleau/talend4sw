@@ -27,35 +27,40 @@ String sInputFormat = "";
 if (sCheckInputFormatList.equals("true"))
 {
 	sInputFormat = ElementParameterParser.getValue(node, "__INPUT_FORMAT_LIST__");
+%>
+	inputFormat_<%=cid %> = "<%=sInputFormat%>";
+<%
 }
 else
 {
 	sInputFormat = ElementParameterParser.getValue(node, "__INPUT_FORMAT_TEXT__");
-	
-	if (sInputFormat.toLowerCase().equals("\"rdf\"") || sInputFormat.toLowerCase().equals("\"rdf/xml\"") || sInputFormat.toLowerCase().equals("\"xml\"") || sInputFormat.toLowerCase().equals("\"rdf/xml-abbrev\""))
+%>
+
+	if (<%=sInputFormat%>.toLowerCase().equals("rdf") || <%=sInputFormat%>.toLowerCase().equals("rdf/xml") || <%=sInputFormat%>.toLowerCase().equals("xml") || <%=sInputFormat%>.toLowerCase().equals("application/rdf+xml"))
 	{
-		sInputFormat = "RDF/XML";
+		inputFormat_<%=cid %> = "RDF/XML";
 	}
-	else if (sInputFormat.toLowerCase().equals("\"turtle\"") || sInputFormat.toLowerCase().equals("\"ttl\""))
+	else if (<%=sInputFormat%>.toLowerCase().equals("turtle") || <%=sInputFormat%>.toLowerCase().equals("ttl") || <%=sInputFormat%>.toLowerCase().equals("text/turtle"))
 	{
-		sInputFormat = "TURTLE";
+		inputFormat_<%=cid %> = "TURTLE";
 	}
-	else if (sInputFormat.toLowerCase().equals("\"nt\"") || sInputFormat.toLowerCase().equals("\"n-triple\"")) 
+	else if (<%=sInputFormat%>.toLowerCase().equals("nt") || <%=sInputFormat%>.toLowerCase().equals("n-triple") || <%=sInputFormat%>.toLowerCase().equals("text/plain")) 
 	{
-		sInputFormat = "N-TRIPLE";
+		inputFormat_<%=cid %> = "N-TRIPLE";
 	}
-	else if (sInputFormat.toLowerCase().equals("\"n3\"")) 
+	else if (<%=sInputFormat%>.toLowerCase().equals("n3") || <%=sInputFormat%>.toLowerCase().equals("text/rdf+n3")) 
 	{
-		sInputFormat = "N3";
+		inputFormat_<%=cid %> = "N3";
 	}
-	else if (sInputFormat.toLowerCase().equals("\"rdf/json\"") || sInputFormat.toLowerCase().equals("\"json\""))
+	else if (<%=sInputFormat%>.toLowerCase().equals("rdf/json") || <%=sInputFormat%>.toLowerCase().equals("json") || <%=sInputFormat%>.toLowerCase().equals("application/json"))
 	{
-		sInputFormat = "RDF/JSON";
+		inputFormat_<%=cid %> = "RDF/JSON";
 	}
 	else
 	{
-	 	sInputFormat = "null";
+		inputFormat_<%=cid %> = "null";
 	}
+<%
 }
 
 
@@ -64,39 +69,41 @@ String sOutputFormat = "";
 if (sCheckOutputFormatList.equals("true"))
 {
 	sOutputFormat = ElementParameterParser.getValue(node, "__OUTPUT_FORMAT_LIST__");
+%>
+	outputFormat_<%=cid %> = "<%=sOutputFormat%>";
+<%
 }
 else
 {
 	sOutputFormat = ElementParameterParser.getValue(node, "__OUTPUT_FORMAT_TEXT__");
-	
-	if (sOutputFormat.toLowerCase().equals("\"rdf\"") || sOutputFormat.toLowerCase().equals("\"rdf/xml\"") || sOutputFormat.toLowerCase().equals("\"xml\"") || sOutputFormat.toLowerCase().equals("\"rdf/xml-abbrev\""))
+%>
+
+	if (<%=sOutputFormat%>.toLowerCase().equals("rdf") || <%=sOutputFormat%>.toLowerCase().equals("rdf/xml") || <%=sOutputFormat%>.toLowerCase().equals("xml") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+xml"))
 	{
-		sOutputFormat = "RDF/XML";
+		outputFormat_<%=cid %> = "RDF/XML";
 	}
-	else if (sOutputFormat.toLowerCase().equals("\"turtle\"") || sOutputFormat.toLowerCase().equals("\"ttl\""))
+	else if (<%=sOutputFormat%>.toLowerCase().equals("turtle") || <%=sOutputFormat%>.toLowerCase().equals("ttl") || <%=sOutputFormat%>.toLowerCase().equals("text/turtle"))
 	{
-		sOutputFormat = "TURTLE";
+		outputFormat_<%=cid %> = "TURTLE";
 	}
-	else if (sOutputFormat.toLowerCase().equals("\"nt\"") || sOutputFormat.toLowerCase().equals("\"n-triple\"")) 
+	else if (<%=sOutputFormat%>.toLowerCase().equals("nt") || <%=sOutputFormat%>.toLowerCase().equals("n-triple") || <%=sOutputFormat%>.toLowerCase().equals("text/plain")) 
 	{
-		sOutputFormat = "N-TRIPLE";
+		outputFormat_<%=cid %> = "N-TRIPLE";
 	}
-	else if (sOutputFormat.toLowerCase().equals("\"n3\"")) 
+	else if (<%=sOutputFormat%>.toLowerCase().equals("n3") || <%=sOutputFormat%>.toLowerCase().equals("text/rdf+n3")) 
 	{
-		sOutputFormat = "N3";
+		outputFormat_<%=cid %> = "N3";
 	}
-	else if (sOutputFormat.toLowerCase().equals("\"rdf/json\"") || sOutputFormat.toLowerCase().equals("\"json\""))
+	else if (<%=sOutputFormat%>.toLowerCase().equals("rdf/json") || <%=sOutputFormat%>.toLowerCase().equals("json") || <%=sOutputFormat%>.toLowerCase().equals("application/json"))
 	{
-		sOutputFormat = "RDF/JSON";
-	}
-	else if (sOutputFormat.equals("\"n-triple\""))
-	{
-		sOutputFormat = "N-TRIPLE";
+		outputFormat_<%=cid %> = "RDF/JSON";
 	}
 	else
 	{
-		sOutputFormat = "null";
+		outputFormat_<%=cid %> = "null";
 	}
+	
+<%
 }
 
 
@@ -141,9 +148,9 @@ reader_<%=cid %> = new StringReader(rdfInput_<%=cid %>);
 writer_<%=cid %> = new StringWriter();
 model_<%=cid %> = ModelFactory.createDefaultModel();
 
-model_<%=cid %>.read(reader_<%=cid %>,  defaultGraph_<%=cid %>, "<%=sInputFormat %>"); 
+model_<%=cid %>.read(reader_<%=cid %>,  defaultGraph_<%=cid %>, inputFormat_<%=cid %>); 
 
-model_<%=cid %>.write(writer_<%=cid %>, "<%=sOutputFormat %>"); 
+model_<%=cid %>.write(writer_<%=cid %>, outputFormat_<%=cid %>); 
 
 <%=outRowName %>.RDF = writer_<%=cid %>.toString();
 

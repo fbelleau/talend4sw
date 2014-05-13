@@ -21,13 +21,17 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-%> 
+%>
+   
 
 org.openjena.riot.RIOT.init();
 
 Reader reader_<%=cid %>;
 Writer writer_<%=cid %>;
 Model model_<%=cid %>;
+
+String outputFormat_<%=cid %>;
+String inputFormat_<%=cid %>;
 
 
 int nb_line_<%=cid %> = 0;
