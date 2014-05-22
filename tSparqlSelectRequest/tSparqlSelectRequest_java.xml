@@ -8,7 +8,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     DATA_AUTO_PROPAGATE="false"
-    SCHEMA_AUTO_PROPAGATE="true"
+    SCHEMA_AUTO_PROPAGATE="false"
     STARTABLE="true"
 	PARTITIONING="AUTO"
     >
@@ -24,7 +24,7 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -35,16 +35,13 @@
 
   <PARAMETERS>
     <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
-      <TABLE READONLY="true">
-        <COLUMN NAME="SparqlResults" TYPE="id_String" READONLY="true" CUSTOM="true" />
-      </TABLE>
     </PARAMETER>
     
     <PARAMETER NAME="VIRTUOSO_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'VIRTUOSO'" NUM_ROW="5">
       <DEFAULT>"http://dataset.bio2rdf.org/sparql"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="EBI_ENDPOINT" FIELD="TEXT" READONLY="true" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="5">
+    <PARAMETER NAME="EBI_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="5">
       <DEFAULT>"www.ebi.ac.uk/rdf/services/reactome/sparql"</DEFAULT>
     </PARAMETER>
     
@@ -52,7 +49,7 @@
       <DEFAULT>"http://linkedlifedata.com/sparql"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="UNIPROT_ENDPOINT" FIELD="TEXT" READONLY="true" SHOW_IF="TRIPLESTORE_TYPE == 'UNIPROT'" NUM_ROW="5">
+    <PARAMETER NAME="UNIPROT_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'UNIPROT'" NUM_ROW="5">
       <DEFAULT>"http://beta.sparql.uniprot.org/"</DEFAULT>
     </PARAMETER>
 
@@ -65,44 +62,13 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="FORMAT_VIRTUOSO" FIELD="CLOSED_LIST" SHOW_IF="TRIPLESTORE_TYPE == 'VIRTUOSO'" NUM_ROW="15">
-      <ITEMS DEFAULT="RDFXML">
-        <ITEM NAME="RDFXML" VALUE="application%2Frdf%2Bxml"/>
-        <ITEM NAME="N3" VALUE="text%2Frdf%2Bn3"/>
-        <ITEM NAME="NT" VALUE="text%2Fplain"/>
-        <ITEM NAME="JSON" VALUE="application%2Fsparql-results%2Bjson"/>
-      </ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER NAME="FORMAT_EBI" FIELD="CLOSED_LIST" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="15">
-      <ITEMS DEFAULT="RDFXML">
-        <ITEM NAME="RDFXML" VALUE="RDF/XML"/>
-        <ITEM NAME="N3" VALUE="N3"/>
-      </ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER NAME="FORMAT_LINKEDLIFE" FIELD="CLOSED_LIST" SHOW_IF="TRIPLESTORE_TYPE == 'LINKEDLIFEDATA'" NUM_ROW="15">
-      <ITEMS DEFAULT="XML">
-        <ITEM NAME="XML" VALUE="xml"/>
-        <ITEM NAME="JSON" VALUE="json"/>
-      </ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER NAME="FORMAT_UNIPROT" FIELD="CLOSED_LIST" SHOW_IF="TRIPLESTORE_TYPE == 'UNIPROT'" NUM_ROW="15">
-      <ITEMS DEFAULT="RDFXML">
-        <ITEM NAME="RDFXML" VALUE="rdf"/>
-        <ITEM NAME="TTL" VALUE="ttl"/>
-        <ITEM NAME="NT" VALUE="nt"/>
-      </ITEMS>
-    </PARAMETER>
-    
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
       NUM_ROW="55"
       REQUIRED="true"
     >
-      <DEFAULT>"construct {?s ?p ?o .}  where {?s ?p ?o .}"</DEFAULT>
+      <DEFAULT>"select distinct ?p ?o where {&lt;http://bio2rdf.org/namespace:pc&gt; ?p ?o}"</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

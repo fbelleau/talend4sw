@@ -20,26 +20,21 @@ String cid = node.getUniqueName();
 String sDisplayUrl = ElementParameterParser.getValue(node, "__CHECK_DISPLAY_URL__");
 String sTriplestoreType = ElementParameterParser.getValue(node, "__TRIPLESTORE_TYPE__");
 String sSparqlEndpoint = "";
-String sFormatOut = "";
 
 if (sTriplestoreType.equals("virtuoso"))
 {
-	sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_VIRTUOSO__");
 	sSparqlEndpoint = ElementParameterParser.getValue(node, "__VIRTUOSO_ENDPOINT__");
 }
 else if (sTriplestoreType.equals("linkedlifedata"))
 {
-	sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_LINKEDLIFE__");
 	sSparqlEndpoint = ElementParameterParser.getValue(node, "__LINKEDLIFE_ENDPOINT__");
 }
 else if (sTriplestoreType.equals("ebi"))
 {
-	sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_EBI__");
 	sSparqlEndpoint = ElementParameterParser.getValue(node, "__EBI_ENDPOINT__");
 }
 else if (sTriplestoreType.equals("uniprot"))
 {
-	sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_UNIPROT__");
 	sSparqlEndpoint = ElementParameterParser.getValue(node, "__UNIPROT_ENDPOINT__");
 }
 
@@ -48,19 +43,13 @@ String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
 sQuery = sQuery.replaceAll("\n", " ");
 
 
-List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
 List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
-String inConnName = null, outConnName = null;
+String outConnName = null;
 
-boolean hasOutputSchema = false;
 
 if (outConns != null && outConns.size() > 0){
   	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
 	  	outConnName = outConns.get(0).getName();
-	  	hasOutputSchema = true;
-  	}
-  	if (inConns != null && inConns.size() > 0){
-    	inConnName = inConns.get(0).getName();
   	}
 }
 
@@ -72,13 +61,13 @@ String URL_string_<%=cid%>;
 if (sTriplestoreType.equals("virtuoso"))
 {
 %>
-	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "?default-graph-uri=&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + "&timeout=0&debug=on";
+	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "?default-graph-uri=&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on";
 <%
 }
 else if (sTriplestoreType.equals("linkedlifedata"))
 {
 %>
-	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "." + "<%=sFormatOut%>" + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&_implicit=false&implicit=true&_form=%2Fsparql";
+	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + ".json?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&_implicit=false&implicit=true&_form=%2Fsparql";
 <%
 }
 else if (sTriplestoreType.equals("ebi"))
@@ -89,13 +78,13 @@ else if (sTriplestoreType.equals("ebi"))
 	{
 		URL_string_<%=cid%> = "http://www.ebi.ac.uk/rdf/services/reactome/servlet/query";
 	}
-	URL_string_<%=cid%> = URL_string_<%=cid%> + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>";
+	URL_string_<%=cid%> = URL_string_<%=cid%> + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=RDF/XML";
 <%
 }
 else if (sTriplestoreType.equals("uniprot"))
 {
 %>
-	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "/sparql?format=" + "<%=sFormatOut%>" + "&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8");
+	URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "/sparql?format=rdf&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8");
 <%
 }
 %>
@@ -109,10 +98,10 @@ if (sDisplayUrl.equals("true"))
 }
 %>
 
+
 <%
 ///// Construct the HTTP request
 %>
-
 
 java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
 
@@ -125,42 +114,41 @@ urlConn_<%=cid%>.setUseCaches(false);
 urlConn_<%=cid%>.connect();
 
 <%
-////////// Get the response from an Input Stream
+////////// Get the response from an Input Stream and convert it to a string
 %>
 
 byte[] buffer_<%=cid%> = new byte[1024];
 int bos_buffer_<%=cid%> = 0;
-<%
-if(hasOutputSchema)
-{
-%>
-	StringBuilder sb_<%=cid%>=new StringBuilder(); 
-<%
-}
-%>
+
+StringBuilder sb_<%=cid%>=new StringBuilder(); 
+
 
 if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
 {
 	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
 	<%// Get the input stream containing the request response 
 
-	// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
+	// The inputstream is read table of bytes by table of bytes (table of bytes = buffer_cid)	
 	// bos_buffer_cid is the byte table size
 	%>
 	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
 	{
-		<%if(hasOutputSchema)
-		{// Then the table of bytes and its size are used to generate a string
-		 // which is added to a string builder that will contain the whole response
-		%>
-			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
-		<%}%>
+		// Then the table of bytes and its size are used to generate a string
+		// which is added to a string builder that will contain the whole response
+		sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
 	}
 	bis_<%=cid%>.close();
 	
 } else {
 	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
 }
+
+<%
+/////////// Parse the JSON
+%>
+
+
+
 
 <%
 // output data
@@ -173,16 +161,11 @@ if (outConnName != null){
     
     for (IMetadataColumn column : columns){
       String colName = column.getLabel();
+
+      %>
+        <%=outConnName%>.<%=colName%> = sb_<%=cid%>.toString();
+      <%
       
-      if ("SparqlResults".equals(colName)){
-      %>
-        <%=outConnName%>.SparqlResults = sb_<%=cid%>.toString();
-      <%
-      } else {
-      %>
-        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
-      <%
-      }
     }
   }
 }
