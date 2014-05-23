@@ -38,10 +38,11 @@
     </PARAMETER>
     
     <PARAMETER NAME="VIRTUOSO_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'VIRTUOSO'" NUM_ROW="5">
-      <DEFAULT>"http://dataset.bio2rdf.org/sparql"</DEFAULT>
+      <!-- <DEFAULT>"http://dataset.bio2rdf.org/sparql"</DEFAULT> -->
+      <DEFAULT>"http://localhost:8890/sparql"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="EBI_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="5">
+    <PARAMETER NAME="EBI_ENDPOINT" FIELD="TEXT" READONLY="true" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="5">
       <DEFAULT>"www.ebi.ac.uk/rdf/services/reactome/sparql"</DEFAULT>
     </PARAMETER>
     
@@ -49,7 +50,7 @@
       <DEFAULT>"http://linkedlifedata.com/sparql"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="UNIPROT_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'UNIPROT'" NUM_ROW="5">
+    <PARAMETER NAME="UNIPROT_ENDPOINT" FIELD="TEXT" READONLY="true" SHOW_IF="TRIPLESTORE_TYPE == 'UNIPROT'" NUM_ROW="5">
       <DEFAULT>"http://beta.sparql.uniprot.org/"</DEFAULT>
     </PARAMETER>
 
@@ -81,7 +82,11 @@
 
    </ADVANCED_PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="json-20140107.jar" MODULE="json-20140107.jar" REQUIRED="true" />
+		</IMPORTS>
+	</CODEGENERATION>
 
   <RETURNS/>
 

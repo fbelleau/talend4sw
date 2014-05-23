@@ -12,5 +12,7 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 %>
 
-//}
-//globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+	nb_line_<%=cid %>++;
+}
+
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
