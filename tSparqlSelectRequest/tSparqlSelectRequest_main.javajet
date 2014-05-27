@@ -44,7 +44,14 @@ if (outConns != null && outConns.size() > 0){
 %>
 	    if (queryKeysIterator_<%=cid%>.hasNext() )
 	    {
-	     	<%=outConn.getName()%>.<%=column.getLabel()%> = jsonArray_<%=cid%>.getJSONObject(i_<%=cid%>).getJSONObject(queryKeysIterator_<%=cid%>.next()).getString("value");
+	    	try 
+	    	{
+	     		<%=outConn.getName()%>.<%=column.getLabel()%> = jsonArray_<%=cid%>.getJSONObject(i_<%=cid%>).getJSONObject(queryKeysIterator_<%=cid%>.next()).getString("value");
+			}
+			catch (org.json.JSONException e_<%=cid%>)
+			{
+				<%=outConn.getName()%>.<%=column.getLabel()%> = "";
+			}
 		}
     
 <%
