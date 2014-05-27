@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <COMPONENT> 
 
-<HEADER   AUTHOR="Francois.Belleau@bio2rdf.org" 
+<HEADER   AUTHOR="vincent.emonet@gmail.com, francois.belleau@bio2rdf.org" 
           COMPATIBILITY="ALL" 
           PLATEFORM="ALL" 
           RELEASE_DATE="20140119" 
@@ -35,7 +35,7 @@
   </CONNECTORS>
 
   <PARAMETERS>
-    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1" SHOW="true">
       <TABLE READONLY="true">
         <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
       </TABLE>
@@ -48,6 +48,10 @@
         <ITEM NAME="LINKS" VALUE="links"/>
         <ITEM NAME="SEARCH" VALUE="search"/>
       </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="REST_ENDPOINT" FIELD="CHECK" REQUIRED="true" NUM_ROW="10">
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="DESCRIBE_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'DESCRIBE'" NUM_ROW="11">
@@ -62,14 +66,23 @@
       <DEFAULT>"uniprot:P20908"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="CHOSEN_FORMAT" FIELD="CLOSED_LIST" NUM_ROW="15">
-      <ITEMS DEFAULT="NT">
+    
+    <PARAMETER NAME="FORMAT_LIST" FIELD="CLOSED_LIST" SHOW_IF="CHECK_FORMAT_LIST == 'true'" NUM_ROW="15">
+      <ITEMS DEFAULT="RDF">
         <ITEM NAME="NT" VALUE="nt"/>
         <ITEM NAME="RDF" VALUE="rdf"/>
         <ITEM NAME="N3" VALUE="n3"/>
         <ITEM NAME="JSON" VALUE="json"/>
         <ITEM NAME="JSONLD" VALUE="jsonld"/>
       </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="FORMAT_TEXT" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHECK_FORMAT_LIST == 'false'"  NUM_ROW="15">
+      <DEFAULT>"rdf"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="CHECK_FORMAT_LIST" FIELD="CHECK" NUM_ROW="15">
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>
