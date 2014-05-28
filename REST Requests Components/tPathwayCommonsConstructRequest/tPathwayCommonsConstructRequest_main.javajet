@@ -18,7 +18,14 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 
-////////////////// Get component properties
+String sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_OUT__");
+String sSparqlEndpoint = ElementParameterParser.getValue(node, "__SPARQL_ENDPOINT__");
+
+String sDisplayUrl = ElementParameterParser.getValue(node, "__CHECK_DISPLAY_URL__");
+
+String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
+sQuery = sQuery.replaceAll("\n", " ");
+
 
 List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
 List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
@@ -36,79 +43,23 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sNamespace = ElementParameterParser.getValue(node, "__NAMESPACE_LIST__");
-
-String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
-String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
-String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
-String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
-String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
-
-
-String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
-String sFormat = "";
-
-
-boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
-
-
-
-///// Construct URL query string
 %>
 
-String URL_string_<%=cid%> = null;
-String formatOut_<%=cid%>;
+String URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "?default-graph-uri=&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + "&timeout=0&debug=on";
 
 <%
-if (sCheckFormatList.equals("true"))
+if (sDisplayUrl.equals("true"))
 {
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
 %>
-	formatOut_<%=cid%> = "<%=sFormat%>";
-<%
-}
-else 
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
-%>
-	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
+	System.out.println(URL_string_<%=cid%>);
 <%
 }
 %>
-
-if ("<%=sMethod%>".equals("search")){
-  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
-}
-else if ("<%=sMethod%>".equals("describe")){
-	// Check if the user use an URI or ns:id
-  	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
-  	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
-  	}
-  	else
-  	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
-  	}
-}
-else if ("<%=sMethod%>".equals("links")){
-	// Check if the user use an URI or ns:id
-  	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
-  	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
-  	}
-  	else
-  	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
-  	}
-}
-
-<%if (bDebug){%>
-  System.out.println(URL_string_<%=cid%>);
-<%}%>
 
 <%
 ///// Construct the HTTP request
 %>
+
 
 java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
 
@@ -170,9 +121,9 @@ if (outConnName != null){
     for (IMetadataColumn column : columns){
       String colName = column.getLabel();
       
-      if ("RDF".equals(colName)){
+      if ("SparqlResults".equals(colName)){
       %>
-        <%=outConnName%>.RDF = sb_<%=cid%>.toString();
+        <%=outConnName%>.SparqlResults = sb_<%=cid%>.toString();
       <%
       } else {
       %>

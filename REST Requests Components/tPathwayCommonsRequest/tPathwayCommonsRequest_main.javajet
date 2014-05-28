@@ -37,6 +37,7 @@ if (outConns != null && outConns.size() > 0){
 }
 
 String sRestEndpoint = ElementParameterParser.getValue(node, "__REST_ENDPOINT__");
+String sNamespace = "pc";
 
 String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
 String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
@@ -47,39 +48,7 @@ String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
 
 String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
 String sFormat = "";
-if (sCheckFormatList.equals("true"))
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
-}
-else
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
-	
-	if (sFormat.toLowerCase().equals("\"rdf\"") || sFormat.toLowerCase().equals("\"rdf/xml\"") || sFormat.toLowerCase().equals("\"xml\"") || sFormat.toLowerCase().equals("\"rdf/xml-abbrev\""))
-	{
-		sFormat = "rdf";
-	}
-	else if (sFormat.toLowerCase().equals("\"turtle\"") || sFormat.toLowerCase().equals("\"ttl\""))
-	{
-		sFormat = "ttl";
-	}
-	else if (sFormat.toLowerCase().equals("\"nt\"") || sFormat.toLowerCase().equals("\"n-triple\"")) 
-	{
-		sFormat = "nt";
-	}
-	else if (sFormat.toLowerCase().equals("\"n3\"")) 
-	{
-		sFormat = "n3";
-	}
-	else if (sFormat.toLowerCase().equals("\"rdf/json\"") || sFormat.toLowerCase().equals("\"json\""))
-	{
-		sFormat = "json";
-	}
-	else
-	{
-	 	sFormat = "null";
-	}
-}
+
 
 String restMethod;
 if (sRestEndpoint.equals("true"))
@@ -99,24 +68,49 @@ boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MO
 %>
 
 String URL_string_<%=cid%> = null;
+String formatOut_<%=cid%>;
+
+<%
+if (sCheckFormatList.equals("true"))
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
+%>
+	formatOut_<%=cid%> = "<%=sFormat%>";
+<%
+}
+else 
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
+%>
+	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
+<%
+}
+%>
 
 if ("<%=sMethod%>".equals("search")){
-  URL_string_<%=cid%> = <%=sRestUri%> + "/pc/" + "<%=restMethod%>" + "/" + "<%=sFormat%>" + "/" + <%=sSearchQuery%>;
+  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
 }
 else if ("<%=sMethod%>".equals("describe")){
 	// Check if the user use an URI or ns:id
   	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/pc/" + "<%=restMethod%>" + "/" + "<%=sFormat%>" + "/" + <%=sDescribeQuery%> ;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
   	}
   	else
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/pc/" + "<%=restMethod%>" + "/" + "<%=sFormat%>" + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
   	}
 }
-
 else if ("<%=sMethod%>".equals("links")){
-  URL_string_<%=cid%> = <%=sRestUri%> + "/pc/" + "<%=restMethod%>" + "/" + "<%=sFormat%>" + "/" + <%=sLinksQuery%>.replace("http://bio2rdf.org/","");
+	// Check if the user use an URI or ns:id
+  	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
+  	}
 }
 
 <%if (bDebug){%>

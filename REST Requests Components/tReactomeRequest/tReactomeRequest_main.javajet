@@ -36,7 +36,7 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sNamespace = ElementParameterParser.getValue(node, "__NAMESPACE_LIST__");
+String sNamespace = "reactome.ebi";
 
 String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
 String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
@@ -90,6 +90,7 @@ else if ("<%=sMethod%>".equals("describe")){
   		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
   	}
 }
+
 else if ("<%=sMethod%>".equals("links")){
 	// Check if the user use an URI or ns:id
   	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
@@ -100,6 +101,7 @@ else if ("<%=sMethod%>".equals("links")){
   	{
   		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
   	}
+
 }
 
 <%if (bDebug){%>

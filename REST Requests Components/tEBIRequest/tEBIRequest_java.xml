@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <COMPONENT> 
 
-<HEADER   AUTHOR="Francois.Belleau@Bio2RDF.org" 
+<HEADER   AUTHOR="vincent.emonet@gmail.com, francois.belleau@bio2rdf.org" 
           COMPATIBILITY="ALL" 
           PLATEFORM="ALL" 
-          RELEASE_DATE="20131220" 
+          RELEASE_DATE="20140119" 
           SERIAL="" 
           STARTABLE="true" 
           STATUS="BETA" 
@@ -35,98 +35,74 @@
   </CONNECTORS>
 
   <PARAMETERS>
-    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1" SHOW="true">
       <TABLE READONLY="true">
         <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
       </TABLE>
     </PARAMETER>
-
     
-    <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
-      <DEFAULT>"http://rest.bio2rdf.org"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER NAME="ENDPOINT_MODE" FIELD="CHECK" NUM_ROW="3" SHOW_IF="'false'">
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER NAME="ENDPOINT_STRING" FIELD="STRING" NUM_ROW="4" REQUIRED="true" SHOW_IF="ENDPOINT_MODE == 'true'">
-      <DEFAULT>"atlas"</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER NAME="ENDPOINT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true" SHOW_IF="ENDPOINT_MODE  == 'false'">
-      <ITEMS DEFAULT="biomodels">
-        <ITEM NAME="atlas" VALUE="atlas.ebi"/>
-        <ITEM NAME="biomodels" VALUE="biomodels.ebi"/>
-        <ITEM NAME="biosamples" VALUE="biosamples"/>
-        <ITEM NAME="chembl" VALUE="chembl"/>
-        <ITEM NAME="reactome" VALUE="reactome.ebi"/>
+    <PARAMETER NAME="DATASET" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
+      <ITEMS DEFAULT="REACTOME">
+        <ITEM NAME="ATLAS" VALUE="atlas.ebi"/>
+        <ITEM NAME="BIOMODELS" VALUE="biomodels.ebi"/>
+        <ITEM NAME="BIOSAMPLES" VALUE="biosamples.ebi"/>
+        <ITEM NAME="CHEMBL" VALUE="chembl.ebi"/>
+        <ITEM NAME="REACTOME" VALUE="reactome.ebi"/>
       </ITEMS>
     </PARAMETER>
-
-    <PARAMETER NAME="METHOD_STRING" FIELD="STRING" NUM_ROW="6" REQUIRED="true" SHOW_IF="'false'">
-      <DEFAULT>"describe"</DEFAULT>
-    </PARAMETER>
     
-    <PARAMETER NAME="METHOD_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="10">
-      <ITEMS DEFAULT="DESCRIBE_URI">
+    
+    <PARAMETER NAME="CHOSEN_METHOD" FIELD="CLOSED_LIST" NUM_ROW="10">
+      <ITEMS DEFAULT="DESCRIBE">
+        <ITEM NAME="DESCRIBE" VALUE="describe"/>
+        <ITEM NAME="LINKS" VALUE="links"/>
         <ITEM NAME="SEARCH" VALUE="search"/>
-        <ITEM NAME="DESCRIBE_URI" VALUE="describe_uri"/>
-        <ITEM NAME="LINKS_URI" VALUE="links_uri"/>
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="RDF_URI" FIELD="TEXT" REQUIRED="true" SHOW_IF="(METHOD_CHOSED == 'DESCRIBE_URI') OR (METHOD_CHOSED == 'LINKS_URI')" NUM_ROW="11">
-      <DEFAULT>"http://identifiers.org/biomodels.db/BIOMD0000000001"</DEFAULT>
+    <PARAMETER NAME="DESCRIBE_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'DESCRIBE'" NUM_ROW="11">
+      <DEFAULT>"http://identifiers.org/reactome/REACT_15550.4"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="(METHOD_CHOSED == 'SEARCH') OR (METHOD_CHOSED == 'SEARCH_LITERAL')"  NUM_ROW="12">
+    <PARAMETER NAME="SEARCH_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'SEARCH'"  NUM_ROW="12">
       <DEFAULT>"hexokinase"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="FORMAT_CHOSED" FIELD="CLOSED_LIST" NUM_ROW="15">
-      <ITEMS DEFAULT="NT">
+    <PARAMETER NAME="LINKS_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'LINKS'"  NUM_ROW="12">
+      <DEFAULT>"http://purl.uniprot.org/uniprot/P01308"</DEFAULT>
+    </PARAMETER>
+    
+    
+    <PARAMETER NAME="FORMAT_LIST" FIELD="CLOSED_LIST" SHOW_IF="CHECK_FORMAT_LIST == 'true'" NUM_ROW="15">
+      <ITEMS DEFAULT="RDF">
         <ITEM NAME="NT" VALUE="nt"/>
         <ITEM NAME="RDF" VALUE="rdf"/>
         <ITEM NAME="N3" VALUE="n3"/>
         <ITEM NAME="JSON" VALUE="json"/>
-        <ITEM NAME="JSONLD" VALUE="jsonld"/>
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="POST_PARAMS_FROM_FILE" FIELD="FILE" SHOW_IF="'false'" NUM_ROW="20">
-      <DEFAULT/>
-    </PARAMETER>
-
-    <PARAMETER NAME="OUT_TO_FILE" FIELD="CHECK" REQUIRED="true" SHOW_IF="'false'"  NUM_ROW="21">
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER NAME="OUT_FILE_NAME" FIELD="FILE" SHOW_IF="OUT_TO_FILE == 'true'" NUM_ROW="22" >
-      <DEFAULT/>
+    <PARAMETER NAME="FORMAT_TEXT" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHECK_FORMAT_LIST == 'false'"  NUM_ROW="15">
+      <DEFAULT>"rdf"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="HEADERS" FIELD="TABLE" REQUIRED="false" NB_LINES="7" NUM_ROW="35" SHOW_IF="'false'">
-      <ITEMS>
-        <ITEM NAME="HEADER_NAME" />
-        <ITEM NAME="HEADER_VALUE" />
-      </ITEMS>
+    <PARAMETER NAME="CHECK_FORMAT_LIST" FIELD="CHECK" NUM_ROW="15">
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="DEBUG_MODE" FIELD="CHECK" NUM_ROW="50">
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER NAME="NEED_AUTHENTICATION" FIELD="CHECK" NUM_ROW="40" SHOW_IF="'false'">
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    <PARAMETER NAME="USR" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    <PARAMETER NAME="PWD" FIELD="TEXT" NUM_ROW="40" SHOW_IF="NEED_AUTHENTICATION == 'true'">
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER NAME="INFO1" FIELD="LABEL" REQUIRED="true" NUM_ROW="1" >
+		<DEFAULT>Component using the UniProt SPARQL endpoint: http://beta.sparql.uniprot.org/</DEFAULT>
+	</PARAMETER>
+	 <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+      <DEFAULT>"http://bio2rdf.org"</DEFAULT>
+    </PARAMETER>
+  	 <PARAMETER NAME="DEBUG_MODE" FIELD="CHECK" NUM_ROW="50">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION/>
 

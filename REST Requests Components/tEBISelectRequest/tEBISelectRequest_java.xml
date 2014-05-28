@@ -1,0 +1,105 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    DATA_AUTO_PROPAGATE="false"
+    SCHEMA_AUTO_PROPAGATE="false"
+    STARTABLE="true"
+	PARTITIONING="AUTO"
+    >
+    <SIGNATURE/>
+  </HEADER>
+
+  <FAMILIES>
+    <FAMILY>Semantic Web</FAMILY>
+  </FAMILIES>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+  </PARAMETER>
+  
+  	 <PARAMETER NAME="DATASET_LIST" FIELD="CLOSED_LIST" NUM_ROW="10">
+      <ITEMS DEFAULT="REACTOME">
+      	<ITEM NAME="REACTOME" VALUE="reactome"/>
+        <ITEM NAME="BIOMODELS" VALUE="biomodels"/>
+        <ITEM NAME="BIOSAMPLES" VALUE="biosamples"/>
+        <ITEM NAME="CHEMBL" VALUE="chembl"/>
+        <ITEM NAME="ATLAS" VALUE="atlas"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="QUERY"
+      FIELD="MEMO_SQL"
+      NUM_ROW="55"
+      REQUIRED="true"
+    >
+      <DEFAULT>"PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX biopax3: &lt;http://www.biopax.org/release/biopax-level3.owl#&gt;
+SELECT DISTINCT ?s ?type
+WHERE
+{
+	?s rdf:type ?type .
+}
+LIMIT 10"</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  
+	<PARAMETER NAME="REACTOME_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'REACTOME'" NUM_ROW="5">
+      <DEFAULT>"http://www.ebi.ac.uk/rdf/services/reactome/sparql"</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER NAME="BIOMODELS_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'BIOMODELS'" NUM_ROW="5">
+      <DEFAULT>"http://www.ebi.ac.uk/rdf/services/biomodels/sparql"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="BIOSAMPLES_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'BIOSAMPLES'" NUM_ROW="5">
+      <DEFAULT>"http://www.ebi.ac.uk/rdf/services/biosamples/sparql"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="CHEMBL_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'CHEMBL'" NUM_ROW="5">
+      <DEFAULT>"http://www.ebi.ac.uk/rdf/services/chembl/sparql"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="ATLAS_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'ATLAS'" NUM_ROW="5">
+      <DEFAULT>"http://www.ebi.ac.uk/rdf/services/atlas/sparql"</DEFAULT>
+    </PARAMETER>
+   
+	   <PARAMETER NAME="CHECK_DISPLAY_URL" FIELD="CHECK" NUM_ROW="10">
+	      <DEFAULT>false</DEFAULT>
+	   </PARAMETER>
+
+   </ADVANCED_PARAMETERS>
+
+  <CODEGENERATION>
+		<IMPORTS>
+			<IMPORT NAME="json-20140107.jar" MODULE="json-20140107.jar" REQUIRED="true" />
+		</IMPORTS>
+	</CODEGENERATION>
+
+  <RETURNS/>
+
+</COMPONENT>

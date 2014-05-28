@@ -17,6 +17,9 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+
+////////////////// Get component properties
+
 List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
 List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
 String inConnName = null, outConnName = null;
@@ -33,117 +36,128 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sREST_URI = ElementParameterParser.getValue(node, "__REST_URI__");
-String sMethod = ElementParameterParser.getValue(node, "__METHOD_CHOSED__");
-String sURI = ElementParameterParser.getValue(node, "__RDF_URI__");
-String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
-String sFormat = ElementParameterParser.getValue(node, "__FORMAT_CHOSED__");
+String sNamespace = ElementParameterParser.getValue(node, "__DATASET__");
 
-boolean bEndpointMode = "true".equals(ElementParameterParser.getValue(node, "__ENDPOINT_MODE__"));
-String sEndpoint1 = ElementParameterParser.getValue(node, "__ENDPOINT_CHOSED__");
-String sEndpoint2 = ElementParameterParser.getValue(node, "__ENDPOINT_STRING__");
-String sEndpoint;
+String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
+String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
+String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
+String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
+String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
 
-if (bEndpointMode){
-  sEndpoint = sEndpoint2;
-} else {
-  sEndpoint = "\""+sEndpoint1+"\"";
-}
+
+String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
+String sFormat = "";
+
 
 boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
 
-String sParamFile = ElementParameterParser.getValue(node, "__POST_PARAMS_FROM_FILE__");
-boolean bOutToFile = "true".equals(ElementParameterParser.getValue(node, "__OUT_TO_FILE__"));
-String sOutFilePath = ElementParameterParser.getValue(node, "__OUT_FILE_NAME__");
-List<Map<String, String>> headerParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__HEADERS__");
-boolean bNeedAuthentication = "true".equals(ElementParameterParser.getValue(node, "__NEED_AUTHENTICATION__"));
-String sUser = ElementParameterParser.getValue(node, "__USR__");
-String sPwd = ElementParameterParser.getValue(node, "__PWD__");
+
+
+///// Construct URL query string
 %>
 
-String URL_<%=cid%>;
+String URL_string_<%=cid%> = null;
+String formatOut_<%=cid%>;
+
+<%
+if (sCheckFormatList.equals("true"))
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
+%>
+	formatOut_<%=cid%> = "<%=sFormat%>";
+<%
+}
+else 
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
+%>
+	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
+<%
+}
+%>
 
 if ("<%=sMethod%>".equals("search")){
-  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search/" + "<%=sFormat%>" + "/" + <%=sQuery%> ;
+  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
 }
-else if ("<%=sMethod%>".equals("search_literal")){
-  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/search_literal/" + "<%=sFormat%>" + "?query=" + <%=sQuery%> ;
+else if ("<%=sMethod%>".equals("describe")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
+  	}
 }
-else if ("<%=sMethod%>".equals("describe_uri")){
-  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/describe_uri/" + "<%=sFormat%>" + "?uri=" + <%=sURI%>.replace("#","%23") ;
-}
-else if ("<%=sMethod%>".equals("links_uri")){
-  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/links_uri/" + "<%=sFormat%>" + "?uri=" + <%=sURI%>.replace("#","%23") ;
-}
-else {
-  URL_<%=cid%> = <%=sREST_URI%> + "/" + <%=sEndpoint%> + "/" + "<%=sMethod%>" + "/" + "<%=sFormat%>" + "?parm=" + <%=sURI%>.replace("#","%23") ;
+
+else if ("<%=sMethod%>".equals("links")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
+  	}
+
 }
 
 <%if (bDebug){%>
-  System.out.println(URL_<%=cid%>);
+  System.out.println(URL_string_<%=cid%>);
 <%}%>
 
-java.net.URL url_<%=cid%> = new java.net.URL(URL_<%=cid%>);
+<%
+///// Construct the HTTP request
+%>
 
-<%if (bNeedAuthentication){%>
-  java.net.Authenticator.setDefault(new java.net.Authenticator() {
-	  protected java.net.PasswordAuthentication getPasswordAuthentication() {
-	  	return new java.net.PasswordAuthentication(<%=sUser%>, <%=sPwd%>.toCharArray());
-  }});
-<%}%>
+java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
+
 java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
 urlConn_<%=cid%>.setRequestMethod("GET");
 urlConn_<%=cid%>.setDoOutput(true);
 urlConn_<%=cid%>.setDoInput(true);
 urlConn_<%=cid%>.setUseCaches(false);
 
-<%for (Map<String, String> header : headerParams){ // set request properties%>
-  urlConn_<%=cid%>.setRequestProperty(<%=header.get("HEADER_NAME")%>, <%=header.get("HEADER_VALUE")%>);
-<%}%>
-
 urlConn_<%=cid%>.connect();
+
+<%
+////////// Get the response from an Input Stream
+%>
 
 byte[] buffer_<%=cid%> = new byte[1024];
 int bos_buffer_<%=cid%> = 0;
-<%if(hasOutputSchema){%>StringBuilder sb_<%=cid%>=new StringBuilder(); <%}%>
 <%
-// add parameters from file
-if ("POST".equals(sMethod)){
-  if (sParamFile != null && !"".equals(sParamFile)){
-  %>
-    java.io.InputStream bisParam_<%=cid%> = new java.io.BufferedInputStream(new java.io.FileInputStream(<%=sParamFile%>));
-    java.io.OutputStream bosParam_<%=cid%> = new java.io.BufferedOutputStream(urlConn_<%=cid%>.getOutputStream());
-    
-    while ((bos_buffer_<%=cid%> = bisParam_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
-      bosParam_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>);
-    }
-    bosParam_<%=cid%>.flush();
-    bosParam_<%=cid%>.close();
-    bisParam_<%=cid%>.close();
-  <%
-  }
+if(hasOutputSchema)
+{
+%>
+	StringBuilder sb_<%=cid%>=new StringBuilder(); 
+<%
 }
 %>
 
-if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode())) {
+if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
+{
 	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
-<%
-  // output response content to file
-	if (bOutToFile && sOutFilePath != null){
-%>
-		java.io.OutputStream bosContent_<%=cid%> = new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=sOutFilePath%>));
-<%	}%>
-		while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1) {
-<%	if (bOutToFile && sOutFilePath != null){%>bosContent_<%=cid%>.write(buffer_<%=cid%>,0,bos_buffer_<%=cid%>); <%}%>
-<%	if(hasOutputSchema){%>sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>)); <%}%>
-		}
-<%	if (bOutToFile && sOutFilePath != null){%>		
-		bosContent_<%=cid%>.flush();
-		bosContent_<%=cid%>.close();
-<%	}%>
-		bis_<%=cid%>.close();
+	<%// Get the input stream containing the request response 
+
+	// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
+	// bos_buffer_cid is the byte table size
+	%>
+	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
+	{
+		<%if(hasOutputSchema)
+		{// Then the table of bytes and its size are used to generate a string
+		 // which is added to a string builder that will contain the whole response
+		%>
+			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
+		<%}%>
+	}
+	bis_<%=cid%>.close();
+	
 } else {
-  System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
 }
 
 <%

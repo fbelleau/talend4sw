@@ -41,18 +41,6 @@
       </TABLE>
     </PARAMETER>
     
-    <PARAMETER NAME="NAMESPACE_LIST" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
-      <ITEMS DEFAULT="UNIPROT">
-        <ITEM NAME="ATLAS" VALUE="atlas.ebi"/>
-        <ITEM NAME="BIOMODELS" VALUE="biomodels.ebi"/>
-        <ITEM NAME="BIOSAMPLES" VALUE="biosamples.ebi"/>
-        <ITEM NAME="CHEMBL" VALUE="chembl.ebi"/>
-        <ITEM NAME="REACTOME" VALUE="reactome.ebi"/>
-        <ITEM NAME="UNIPROT" VALUE="uniprot"/>
-        <ITEM NAME="PC" VALUE="pc"/>
-      </ITEMS>
-    </PARAMETER>
-    
     
     <PARAMETER NAME="CHOSEN_METHOD" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">

@@ -41,18 +41,6 @@
       </TABLE>
     </PARAMETER>
     
-    <PARAMETER NAME="NAMESPACE_LIST" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
-      <ITEMS DEFAULT="UNIPROT">
-        <ITEM NAME="ATLAS" VALUE="atlas.ebi"/>
-        <ITEM NAME="BIOMODELS" VALUE="biomodels.ebi"/>
-        <ITEM NAME="BIOSAMPLES" VALUE="biosamples.ebi"/>
-        <ITEM NAME="CHEMBL" VALUE="chembl.ebi"/>
-        <ITEM NAME="REACTOME" VALUE="reactome.ebi"/>
-        <ITEM NAME="UNIPROT" VALUE="uniprot"/>
-        <ITEM NAME="PC" VALUE="pc"/>
-      </ITEMS>
-    </PARAMETER>
-    
     
     <PARAMETER NAME="CHOSEN_METHOD" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">
@@ -63,7 +51,7 @@
     </PARAMETER>
 
     <PARAMETER NAME="DESCRIBE_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'DESCRIBE'" NUM_ROW="11">
-      <DEFAULT>"http://uniprot.org/uniprot/P19367"</DEFAULT>
+      <DEFAULT>"http://identifiers.org/reactome/REACT_15550.4"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="SEARCH_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'SEARCH'"  NUM_ROW="12">
@@ -71,7 +59,7 @@
     </PARAMETER>
     
     <PARAMETER NAME="LINKS_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'LINKS'"  NUM_ROW="12">
-      <DEFAULT>"go:0051156"</DEFAULT>
+      <DEFAULT>"http://purl.uniprot.org/uniprot/P01308"</DEFAULT>
     </PARAMETER>
     
     

@@ -1,0 +1,59 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+%>
+
+<%
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+
+
+if (outConns != null && outConns.size() > 0){
+  	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+  	}
+}
+%>
+
+	
+	queryKeysIterator_<%=cid%> = queryKeys_<%=cid%>.iterator();
+	
+<%
+	for(IMetadataColumn column:columnsOut)
+	{
+%>
+	    if (queryKeysIterator_<%=cid%>.hasNext() )
+	    {
+	    	try 
+	    	{
+	     		<%=outConn.getName()%>.<%=column.getLabel()%> = jsonArray_<%=cid%>.getJSONObject(i_<%=cid%>).getJSONObject(queryKeysIterator_<%=cid%>.next()).getString("value");
+			}
+			catch (org.json.JSONException e_<%=cid%>)
+			{
+				<%=outConn.getName()%>.<%=column.getLabel()%> = "";
+			}
+		}
+    
+<%
+	}
+%>
