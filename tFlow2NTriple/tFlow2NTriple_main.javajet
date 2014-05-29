@@ -87,54 +87,58 @@ java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<
 
 	if (!("<%=useTextSubject%>".equals("false") && "<%=colName.getLabel()%>".equals("<%=subjectName%>")))
 	{
-	    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
+	
+		if (<%=inConn.getName()%>.<%=colName.getLabel()%> != null && ! "".equals(<%=inConn.getName()%>.<%=colName.getLabel()%>))
+	    {
+		    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
+		    
+			rowTmp_<%=cid%>.subject =  <%=inConn.getName()%>.<%=subjectName%>;
+			rowTmp_<%=cid%>.predicate = <%=predicatePrefixe%> + "<%=colName.getLabel()%>";
+			
+			<%
+			if (colName.getTalendType().equals("id_String"))
+			{
+			%>
+				rowTmp_<%=cid%>.object = <%=inConn.getName()%>.<%=colName.getLabel()%>;
+				rowTmp_<%=cid%>.type = "string";
+			<%
+			}
+			else if (colName.getTalendType().equals("id_Integer"))
+			{
+			%>
+				rowTmp_<%=cid%>.object = Integer.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+				rowTmp_<%=cid%>.type = "integer";
+			<%
+			}
+			else if (colName.getTalendType().equals("id_Double"))
+			{
+			%>
+				rowTmp_<%=cid%>.object = Double.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+				rowTmp_<%=cid%>.type = "double";
+			<%
+			}
+			else if (colName.getTalendType().equals("id_Object"))
+			{
+			%>
+				rowTmp_<%=cid%>.object = <%=objectPrefixe%> + (String) <%=inConn.getName()%>.<%=colName.getLabel()%>;
+				rowTmp_<%=cid%>.type = "uri";
+			<%
+			}
+			else if (colName.getTalendType().equals("id_Date"))
+			{
+			%>
+				java.text.DateFormat df_<%=cid%> = new SimpleDateFormat("yyyy-MM-dd");
+				rowTmp_<%=cid%>.object = df_<%=cid%>.format(<%=inConn.getName()%>.<%=colName.getLabel()%>);
+				rowTmp_<%=cid%>.type = "date";
+			<%
+			}
+			%>
+			
+		    rows_<%=cid%>.add(rowTmp_<%=cid%>);
+		    nb_line_<%=cid%>++;
+	    }
 	    
-		rowTmp_<%=cid%>.subject =  <%=inConn.getName()%>.<%=subjectName%>;
-		rowTmp_<%=cid%>.predicate = <%=predicatePrefixe%> + "<%=colName.getLabel()%>";
-		
-		<%
-		if (colName.getTalendType().equals("id_String"))
-		{
-		%>
-			rowTmp_<%=cid%>.object = <%=inConn.getName()%>.<%=colName.getLabel()%>;
-			rowTmp_<%=cid%>.type = "string";
-		<%
-		}
-		else if (colName.getTalendType().equals("id_Integer"))
-		{
-		%>
-			rowTmp_<%=cid%>.object = Integer.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
-			rowTmp_<%=cid%>.type = "integer";
-		<%
-		}
-		else if (colName.getTalendType().equals("id_Double"))
-		{
-		%>
-			rowTmp_<%=cid%>.object = Double.toString(<%=inConn.getName()%>.<%=colName.getLabel()%>);
-			rowTmp_<%=cid%>.type = "double";
-		<%
-		}
-		else if (colName.getTalendType().equals("id_Object"))
-		{
-		%>
-			rowTmp_<%=cid%>.object = <%=objectPrefixe%> + (String) <%=inConn.getName()%>.<%=colName.getLabel()%>;
-			rowTmp_<%=cid%>.type = "uri";
-		<%
-		}
-		else if (colName.getTalendType().equals("id_Date"))
-		{
-		%>
-			java.text.DateFormat df_<%=cid%> = new SimpleDateFormat("yyyy-MM-dd");
-			rowTmp_<%=cid%>.object = df_<%=cid%>.format(<%=inConn.getName()%>.<%=colName.getLabel()%>);
-			rowTmp_<%=cid%>.type = "date";
-		<%
-		}
-		%>
-		
-	    
-	    rows_<%=cid%>.add(rowTmp_<%=cid%>);
-	    nb_line_<%=cid%>++;
-    }
+	}
   <%}%>
 
 
