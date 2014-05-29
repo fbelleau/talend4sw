@@ -68,13 +68,29 @@ if (outConns != null && outConns.size() > 0){
 
 %>
 
+String parametersString_<%=cid%> = "";
+
+<%
+List<Map<String, String>> urlParametersList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__URL_PARAMETERS__");
+if(urlParametersList != null && urlParametersList.size() > 0) 
+{
+	int i = 0;
+	for(Map<String,String> urlParameter : urlParametersList) 
+	{            
+%>
+		parametersString_<%=cid%> = parametersString_<%=cid%> + "&" + <%=urlParameter.get("KEY")%> + "=" + <%=urlParameter.get("VALUE")%>;
+<%
+    }
+}
+%>
+
 
 String URL_string_<%=cid%> = <%=sSparqlEndpoint%>;
 if (URL_string_<%=cid%>.contains("ebi.ac.uk/rdf/services/"))
 {
 	URL_string_<%=cid%> = URL_string_<%=cid%>.replaceAll("/sparql.*", "/servlet/query");
 }
-URL_string_<%=cid%> = URL_string_<%=cid%> + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>";
+URL_string_<%=cid%> = URL_string_<%=cid%> + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + parametersString_<%=cid%>;
 
 
 <%

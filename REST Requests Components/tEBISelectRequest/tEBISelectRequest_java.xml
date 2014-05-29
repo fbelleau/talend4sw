@@ -87,6 +87,18 @@ LIMIT 10"</DEFAULT>
     <PARAMETER NAME="ATLAS_ENDPOINT" FIELD="TEXT" SHOW_IF="DATASET_LIST == 'ATLAS'" NUM_ROW="5">
       <DEFAULT>"http://www.ebi.ac.uk/rdf/services/atlas/sparql"</DEFAULT>
     </PARAMETER>
+    
+    	    <PARAMETER
+      NAME="URL_PARAMETERS"
+      FIELD="TABLE"
+      NUM_ROW="8"
+      NB_LINES="4"
+    >
+      <ITEMS>
+        <ITEM NAME="KEY" FIELD="String" VALUE="&quot;key&quot;" />
+        <ITEM NAME="VALUE" FIELD="String" VALUE="&quot;value&quot;" />
+      </ITEMS>
+    </PARAMETER>
    
 	   <PARAMETER NAME="CHECK_DISPLAY_URL" FIELD="CHECK" NUM_ROW="10">
 	      <DEFAULT>false</DEFAULT>

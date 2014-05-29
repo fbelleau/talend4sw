@@ -45,7 +45,23 @@ if (outConns != null && outConns.size() > 0){
 
 %>
 
-String URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "?default-graph-uri=&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + "&timeout=0&debug=on";
+String parametersString_<%=cid%> = "";
+
+<%
+List<Map<String, String>> urlParametersList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__URL_PARAMETERS__");
+if(urlParametersList != null && urlParametersList.size() > 0) 
+{
+	int i = 0;
+	for(Map<String,String> urlParameter : urlParametersList) 
+	{            
+%>
+		parametersString_<%=cid%> = parametersString_<%=cid%> + "&" + <%=urlParameter.get("KEY")%> + "=" + <%=urlParameter.get("VALUE")%>;
+<%
+    }
+}
+%>
+
+String URL_string_<%=cid%> = <%=sSparqlEndpoint%> + "?default-graph-uri=&query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + parametersString_<%=cid%>;
 
 <%
 if (sDisplayUrl.equals("true"))

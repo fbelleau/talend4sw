@@ -58,6 +58,18 @@ WHERE
 	    <PARAMETER NAME="SPARQL_ENDPOINT" FIELD="TEXT" NUM_ROW="5">
 	      <DEFAULT>"http://pathwaycommons.bio2rdf.org/sparql"</DEFAULT>
 	    </PARAMETER>
+	    
+	    	    <PARAMETER
+      NAME="URL_PARAMETERS"
+      FIELD="TABLE"
+      NUM_ROW="8"
+      NB_LINES="4"
+    >
+      <ITEMS>
+        <ITEM NAME="KEY" FIELD="String" VALUE="&quot;key&quot;" />
+        <ITEM NAME="VALUE" FIELD="String" VALUE="&quot;value&quot;" />
+      </ITEMS>
+    </PARAMETER>
    
 	   <PARAMETER NAME="CHECK_DISPLAY_URL" FIELD="CHECK" NUM_ROW="10">
 	      <DEFAULT>false</DEFAULT>

@@ -36,6 +36,34 @@
   <PARAMETERS>
     <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
   </PARAMETER>
+  
+  <PARAMETER NAME="TUMOR_TYPE" FIELD="CLOSED_LIST" NUM_ROW="10">
+      <ITEMS DEFAULT="BLCA">
+        <ITEM NAME="ACC" VALUE="ACC"/>
+        <ITEM NAME="BLCA" VALUE="BLCA"/>
+        <ITEM NAME="BRCA" VALUE="BRCA"/>
+        <ITEM NAME="DLBC" VALUE="DLBC"/>
+        <ITEM NAME="ESCA" VALUE="ESCA"/>
+        <ITEM NAME="CESC" VALUE="CESC"/>
+        <ITEM NAME="HNSC" VALUE="HNSC"/>
+        <ITEM NAME="KIRP" VALUE="KIRP"/>
+        <ITEM NAME="LAML" VALUE="LAML"/>
+        <ITEM NAME="LGG" VALUE="LGG"/>
+        <ITEM NAME="LUSC" VALUE="LUSC"/>
+        <ITEM NAME="PRAD" VALUE="PRAD"/>
+        <ITEM NAME="READ" VALUE="READ"/>
+        <ITEM NAME="SKCM" VALUE="SKCM"/>
+      </ITEMS>
+    </PARAMETER>
+   
+   
+	<PARAMETER NAME="ENDPOINT" FIELD="CLOSED_LIST" NUM_ROW="12">
+      <ITEMS DEFAULT="A">
+        <ITEM NAME="A" VALUE="A"/>
+        <ITEM NAME="B" VALUE="B"/>
+        <ITEM NAME="C" VALUE="C"/>
+      </ITEMS>
+    </PARAMETER>
     
     <PARAMETER
       NAME="QUERY"
@@ -43,24 +71,27 @@
       NUM_ROW="55"
       REQUIRED="true"
     >
-      <DEFAULT>"PREFIX up:&lt;http://purl.uniprot.org/core/&gt; 
-SELECT ?p ?o
-FROM &lt;http://beta.sparql.uniprot.org/taxonomy/&gt;
+      <DEFAULT>"SELECT DISTINCT ?s ?type
 WHERE
 {
-	&lt;http://purl.uniprot.org/taxonomy/1000565&gt; ?p ?o .
-}"</DEFAULT>
+	?s rdf:type ?type .
+}
+LIMIT 10"</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
   
-	    <PARAMETER NAME="SPARQL_ENDPOINT" FIELD="TEXT" NUM_ROW="5">
-	      <DEFAULT>"http://beta.sparql.uniprot.org/"</DEFAULT>
+	   <PARAMETER NAME="CUSTOM_URL" FIELD="CHECK" NUM_ROW="5">
+	      <DEFAULT>false</DEFAULT>
+	   </PARAMETER>
+	    
+	    <PARAMETER NAME="ENDPOINT_CUSTOM_URL" FIELD="TEXT" SHOW_IF="CUSTOM_URL == 'true'" NUM_ROW="5">
+	      <DEFAULT>"http://digital.path.uab.edu/sparql"</DEFAULT>
 	    </PARAMETER>
 	    
-	     <PARAMETER
+	    	    <PARAMETER
       NAME="URL_PARAMETERS"
       FIELD="TABLE"
       NUM_ROW="8"

@@ -26,7 +26,23 @@ String sDisplayUrl = ElementParameterParser.getValue(node, "__CHECK_DISPLAY_URL_
 
 %>
 
-String URL_string_<%=cid%> = <%=sSparqlEndpoint%> + ".json?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&_implicit=false&implicit=true&_form=%2Fsparql";
+String parametersString_<%=cid%> = "";
+
+<%
+List<Map<String, String>> urlParametersList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__URL_PARAMETERS__");
+if(urlParametersList != null && urlParametersList.size() > 0) 
+{
+	int i = 0;
+	for(Map<String,String> urlParameter : urlParametersList) 
+	{            
+%>
+		parametersString_<%=cid%> = parametersString_<%=cid%> + "&" + <%=urlParameter.get("KEY")%> + "=" + <%=urlParameter.get("VALUE")%>;
+<%
+    }
+}
+%>
+
+String URL_string_<%=cid%> = <%=sSparqlEndpoint%> + ".json?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&_form=%2Fsparql" + parametersString_<%=cid%>;
 
 <%
 if (sDisplayUrl.equals("true"))
