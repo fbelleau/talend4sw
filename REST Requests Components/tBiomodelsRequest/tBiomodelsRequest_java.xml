@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT> 
+
+<HEADER   AUTHOR="vincent.emonet@gmail.com, francois.belleau@bio2rdf.org" 
+          COMPATIBILITY="ALL" 
+          PLATEFORM="ALL" 
+          RELEASE_DATE="20140119" 
+          SERIAL="" 
+          STARTABLE="true" 
+          STATUS="BETA" 
+          DATA_AUTO_PROPAGATE="false"
+          SCHEMA_AUTO_PROPAGATE="false"
+          HAS_CONDITIONAL_OUTPUTS="true"
+          PARTITIONING="AUTO"
+          VERSION="0.1">    
+          <SIGNATURE/>
+</HEADER>
+
+<FAMILIES> 
+  <FAMILY>Bio2RDF</FAMILY>
+</FAMILIES>  
+
+<DOCUMENTATION> 
+  <URL>http://bio2rdf.org</URL> 
+</DOCUMENTATION> 
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1" SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="RDF" TYPE="id_String" READONLY="true" CUSTOM="true" />
+      </TABLE>
+    </PARAMETER>
+    
+    
+    <PARAMETER NAME="CHOSEN_METHOD" FIELD="CLOSED_LIST" NUM_ROW="10">
+      <ITEMS DEFAULT="DESCRIBE">
+        <ITEM NAME="DESCRIBE" VALUE="describe"/>
+        <ITEM NAME="LINKS" VALUE="links"/>
+        <ITEM NAME="SEARCH" VALUE="search"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="DESCRIBE_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'DESCRIBE'" NUM_ROW="11">
+      <DEFAULT>"http://identifiers.org/biomodels.db/BIOMD0000000001#_000013"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="SEARCH_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'SEARCH'"  NUM_ROW="12">
+      <DEFAULT>"IntermediateACh2"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="LINKS_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'LINKS'"  NUM_ROW="12">
+      <DEFAULT>"http://identifiers.org/biomodels.db/BIOMD0000000001#_000013"</DEFAULT>
+    </PARAMETER>
+    
+    
+    <PARAMETER NAME="FORMAT_LIST" FIELD="CLOSED_LIST" SHOW_IF="CHECK_FORMAT_LIST == 'true'" NUM_ROW="15">
+      <ITEMS DEFAULT="RDF">
+        <ITEM NAME="NT" VALUE="nt"/>
+        <ITEM NAME="RDF" VALUE="rdf"/>
+        <ITEM NAME="N3" VALUE="n3"/>
+        <ITEM NAME="JSON" VALUE="json"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER NAME="FORMAT_TEXT" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHECK_FORMAT_LIST == 'false'"  NUM_ROW="15">
+      <DEFAULT>"rdf"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="CHECK_FORMAT_LIST" FIELD="CHECK" NUM_ROW="15">
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER NAME="INFO1" FIELD="LABEL" REQUIRED="true" NUM_ROW="1" >
+		<DEFAULT>Component using the EBI SPARQL endpoint: http://www.ebi.ac.uk/rdf/services/biomodels/sparql</DEFAULT>
+	</PARAMETER>
+	 <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+      <DEFAULT>"http://bio2rdf.org"</DEFAULT>
+    </PARAMETER>
+  	 <PARAMETER NAME="DEBUG_MODE" FIELD="CHECK" NUM_ROW="50">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
+
+  <CODEGENERATION/>
+
+  <RETURNS/>
+
+</COMPONENT>

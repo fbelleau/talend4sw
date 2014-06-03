@@ -1,0 +1,160 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+String sFormatOut = ElementParameterParser.getValue(node, "__FORMAT_OUT__");
+String sSparqlEndpoint = ElementParameterParser.getValue(node, "__SPARQL_ENDPOINT__");
+
+String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
+sQuery = sQuery.replaceAll("\n", " ");
+
+String sDisplayUrl = ElementParameterParser.getValue(node, "__CHECK_DISPLAY_URL__");
+
+
+List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
+String inConnName = null, outConnName = null;
+
+boolean hasOutputSchema = false;
+
+if (outConns != null && outConns.size() > 0){
+  	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+	  	outConnName = outConns.get(0).getName();
+	  	hasOutputSchema = true;
+  	}
+  	if (inConns != null && inConns.size() > 0){
+    	inConnName = inConns.get(0).getName();
+  	}
+}
+
+%>
+
+String parametersString_<%=cid%> = "";
+
+<%
+List<Map<String, String>> urlParametersList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__URL_PARAMETERS__");
+if(urlParametersList != null && urlParametersList.size() > 0) 
+{
+	int i = 0;
+	for(Map<String,String> urlParameter : urlParametersList) 
+	{            
+%>
+		parametersString_<%=cid%> = parametersString_<%=cid%> + "&" + <%=urlParameter.get("KEY")%> + "=" + <%=urlParameter.get("VALUE")%>;
+<%
+    }
+}
+%>
+
+
+String URL_string_<%=cid%> = <%=sSparqlEndpoint%>;
+if (URL_string_<%=cid%>.contains("ebi.ac.uk/rdf/services/"))
+{
+	URL_string_<%=cid%> = URL_string_<%=cid%>.replaceAll("/sparql.*", "/servlet/query");
+}
+URL_string_<%=cid%> = URL_string_<%=cid%> + "?query=" + java.net.URLEncoder.encode(<%=sQuery%>, "UTF-8") + "&format=" + "<%=sFormatOut%>" + parametersString_<%=cid%>;
+
+
+<%
+if (sDisplayUrl.equals("true"))
+{
+%>
+	System.out.println(URL_string_<%=cid%>);
+<%
+}
+%>
+
+<%
+///// Construct the HTTP request
+%>
+
+
+java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
+
+java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
+urlConn_<%=cid%>.setRequestMethod("GET");
+urlConn_<%=cid%>.setDoOutput(true);
+urlConn_<%=cid%>.setDoInput(true);
+urlConn_<%=cid%>.setUseCaches(false);
+
+urlConn_<%=cid%>.connect();
+
+<%
+////////// Get the response from an Input Stream
+%>
+
+byte[] buffer_<%=cid%> = new byte[1024];
+int bos_buffer_<%=cid%> = 0;
+<%
+if(hasOutputSchema)
+{
+%>
+	StringBuilder sb_<%=cid%>=new StringBuilder(); 
+<%
+}
+%>
+
+if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
+{
+	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+	<%// Get the input stream containing the request response 
+
+	// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
+	// bos_buffer_cid is the byte table size
+	%>
+	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
+	{
+		<%if(hasOutputSchema)
+		{// Then the table of bytes and its size are used to generate a string
+		 // which is added to a string builder that will contain the whole response
+		%>
+			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
+		<%}%>
+	}
+	bis_<%=cid%>.close();
+	
+} else {
+	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+}
+
+<%
+// output data
+if (outConnName != null){
+  List<IMetadataTable> metaTables = node.getMetadataList();
+  
+  if (metaTables != null && metaTables.size() > 0){
+    IMetadataTable metaTable = metaTables.get(0);
+    List<IMetadataColumn> columns = metaTable.getListColumns();
+    
+    for (IMetadataColumn column : columns){
+      String colName = column.getLabel();
+      
+      if ("SparqlResults".equals(colName)){
+      %>
+        <%=outConnName%>.SparqlResults = sb_<%=cid%>.toString();
+      <%
+      } else {
+      %>
+        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+      <%
+      }
+    }
+  }
+}
+%>
+urlConn_<%=cid%>.disconnect();

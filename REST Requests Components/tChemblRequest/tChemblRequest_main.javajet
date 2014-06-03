@@ -1,0 +1,188 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+    java.util.Map
+"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+////////////////// Get component properties
+
+List<? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);
+List<? extends IConnection> outConns = node.getOutgoingSortedConnections();
+String inConnName = null, outConnName = null;
+
+boolean hasOutputSchema = false;
+
+if (outConns != null && outConns.size() > 0){
+  	if (outConns.get(0).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) { 
+	  	outConnName = outConns.get(0).getName();
+	  	hasOutputSchema = true;
+  	}
+  	if (inConns != null && inConns.size() > 0){
+    	inConnName = inConns.get(0).getName();
+  	}
+}
+
+String sNamespace = "chembl.ebi";
+
+String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
+String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
+String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
+String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
+String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
+
+
+String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
+String sFormat = "";
+
+
+boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
+
+
+
+///// Construct URL query string
+%>
+
+String URL_string_<%=cid%> = null;
+String formatOut_<%=cid%>;
+
+<%
+if (sCheckFormatList.equals("true"))
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
+%>
+	formatOut_<%=cid%> = "<%=sFormat%>";
+<%
+}
+else 
+{
+	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
+%>
+	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
+<%
+}
+%>
+
+if ("<%=sMethod%>".equals("search")){
+  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
+}
+else if ("<%=sMethod%>".equals("describe")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
+  	}
+}
+
+else if ("<%=sMethod%>".equals("links")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
+  	}
+
+}
+
+<%if (bDebug){%>
+  System.out.println(URL_string_<%=cid%>);
+<%}%>
+
+<%
+///// Construct the HTTP request
+%>
+
+java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
+
+java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
+urlConn_<%=cid%>.setRequestMethod("GET");
+urlConn_<%=cid%>.setDoOutput(true);
+urlConn_<%=cid%>.setDoInput(true);
+urlConn_<%=cid%>.setUseCaches(false);
+
+urlConn_<%=cid%>.connect();
+
+<%
+////////// Get the response from an Input Stream
+%>
+
+byte[] buffer_<%=cid%> = new byte[1024];
+int bos_buffer_<%=cid%> = 0;
+<%
+if(hasOutputSchema)
+{
+%>
+	StringBuilder sb_<%=cid%>=new StringBuilder(); 
+<%
+}
+%>
+
+if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
+{
+	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+	<%// Get the input stream containing the request response 
+
+	// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
+	// bos_buffer_cid is the byte table size
+	%>
+	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
+	{
+		<%if(hasOutputSchema)
+		{// Then the table of bytes and its size are used to generate a string
+		 // which is added to a string builder that will contain the whole response
+		%>
+			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
+		<%}%>
+	}
+	bis_<%=cid%>.close();
+	
+} else {
+	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+}
+
+<%
+// output data
+if (outConnName != null){
+  List<IMetadataTable> metaTables = node.getMetadataList();
+  
+  if (metaTables != null && metaTables.size() > 0){
+    IMetadataTable metaTable = metaTables.get(0);
+    List<IMetadataColumn> columns = metaTable.getListColumns();
+    
+    for (IMetadataColumn column : columns){
+      String colName = column.getLabel();
+      
+      if ("RDF".equals(colName)){
+      %>
+        <%=outConnName%>.RDF = sb_<%=cid%>.toString();
+      <%
+      } else {
+      %>
+        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+      <%
+      }
+    }
+  }
+}
+%>
+urlConn_<%=cid%>.disconnect();
