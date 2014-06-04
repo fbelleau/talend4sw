@@ -23,7 +23,6 @@ String sQuery = ElementParameterParser.getValue(node, "__QUERY__");
 sQuery = sQuery.replaceAll("\n", " ");
 
 String sDisplayUrl = ElementParameterParser.getValue(node, "__CHECK_DISPLAY_URL__");
-
 %>
 
 String parametersString_<%=cid%> = "";

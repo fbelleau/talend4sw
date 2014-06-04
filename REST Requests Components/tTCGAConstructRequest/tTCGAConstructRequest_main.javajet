@@ -65,7 +65,7 @@ else
 		sSparqlEndpoint = "\"http://vmlion14.deri.ie/node42/8082/sparql\"";
 	}
 	
-	else if (sEndpoint.equals("BRCA") && sEndpoint.equals("A"))
+	else if (sTumorType.equals("BRCA") && sEndpoint.equals("A"))
 	{
 		sSparqlEndpoint = "\"http://digital2.path.uab.edu/sparql\"";
 	}

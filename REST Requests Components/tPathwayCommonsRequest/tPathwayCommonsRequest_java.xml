@@ -73,7 +73,6 @@
         <ITEM NAME="RDF" VALUE="rdf"/>
         <ITEM NAME="N3" VALUE="n3"/>
         <ITEM NAME="JSON" VALUE="json"/>
-        <ITEM NAME="JSONLD" VALUE="jsonld"/>
       </ITEMS>
     </PARAMETER>
     

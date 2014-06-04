@@ -5,8 +5,8 @@
     VERSION="0.101"
     STATUS="ALPHA"
     COMPATIBILITY="ALL"
-    AUTHOR="Talend"
-    RELEASE_DATE="20050320A"
+    AUTHOR="vincent.emonet@gmail.com"
+    RELEASE_DATE="20140604"
     DATA_AUTO_PROPAGATE="false"
     SCHEMA_AUTO_PROPAGATE="true"
     STARTABLE="true"
@@ -16,7 +16,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic Web</FAMILY>
+    <FAMILY>Bio2RDF</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>
