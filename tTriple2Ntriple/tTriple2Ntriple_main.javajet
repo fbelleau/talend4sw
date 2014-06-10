@@ -146,7 +146,7 @@ String object_<%=cid %> = <%=inRowName %>.<%=object %>;
 
 if (<%=inRowName%>.<%=type %>.equals("uri")) {
 
-<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + StringHandling.CHANGE(object_<%=cid %>, " ", "_") + "> .";
+<%=outRowName %>.<%=ntriple %> = <%=outRowName %>.<%=ntriple %> + "<" + object_<%=cid %>.replace(" ", "_").replace("<", "&lt;").replace(">", "&gt;") + "> .";
 }
 
 else if (<%=inRowName%>.<%=type %>.equals("string")) {

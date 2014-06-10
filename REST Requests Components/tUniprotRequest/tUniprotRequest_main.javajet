@@ -36,9 +36,8 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sNamespace = "uniprot";
-
 String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
+String sNamespace = ElementParameterParser.getValue(node, "__CHOSEN_GRAPH__");
 String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
 String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
 String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");

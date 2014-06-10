@@ -41,6 +41,25 @@
       </TABLE>
     </PARAMETER>
     
+    <PARAMETER NAME="CHOSEN_GRAPH" FIELD="CLOSED_LIST" NUM_ROW="5">
+      <ITEMS DEFAULT="UNIPROT">
+        <ITEM NAME="UNIPROT" VALUE="uniprot"/>
+        <ITEM NAME="UNIPARC" VALUE="uniparc"/>
+        <ITEM NAME="UNIREF" VALUE="uniref"/>
+        <ITEM NAME="UNIPROT_CITATIONMAPPING" VALUE="uniprot_citationmapping"/>
+        <ITEM NAME="UNIPROT_CITATIONS" VALUE="uniprot_citations"/>
+        <ITEM NAME="UNIPROT_DATABASES" VALUE="uniprot_databases"/>
+        <ITEM NAME="UNIPROT_DISEASES" VALUE="uniprot_diseases"/>
+        <ITEM NAME="UNIPROT_ENZYMES" VALUE="uniprot_enzymes"/>
+        <ITEM NAME="UNIPROT_GO" VALUE="uniprot_go"/>
+        <ITEM NAME="UNIPROT_JOURNALS" VALUE="uniprot_journals"/>
+        <ITEM NAME="UNIPROT_KEYWORDS" VALUE="uniprot_keywords"/>
+        <ITEM NAME="UNIPROT_LOCATIONS" VALUE="uniprot_locations"/>
+        <ITEM NAME="UNIPROT_PATHWAYS" VALUE="uniprot_pathways"/>
+        <ITEM NAME="UNIPROT_TAXONOMY" VALUE="uniprot_taxonomy"/>
+        <ITEM NAME="UNIPROT_TISSUES" VALUE="uniprot_tissues"/>
+      </ITEMS>
+    </PARAMETER>
     
     <PARAMETER NAME="CHOSEN_METHOD" FIELD="CLOSED_LIST" NUM_ROW="10">
       <ITEMS DEFAULT="DESCRIBE">
@@ -51,7 +70,7 @@
     </PARAMETER>
 
     <PARAMETER NAME="DESCRIBE_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'DESCRIBE'" NUM_ROW="11">
-      <DEFAULT>"http://uniprot.org/uniprot/P19367"</DEFAULT>
+      <DEFAULT>"http://purl.uniprot.org/uniprot/P19367"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="SEARCH_QUERY" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHOSEN_METHOD == 'SEARCH'"  NUM_ROW="12">
