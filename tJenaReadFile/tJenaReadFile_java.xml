@@ -6,7 +6,7 @@
     STATUS="ALPHA"
     STARTABLE="true"
     COMPATIBILITY="ALL"
-    AUTHOR="Bio2RDF"
+    AUTHOR="vincent.emonet@gmail.com"
     RELEASE_DATE="20130919"
     DATA_AUTO_PROPAGATE="false"
   >
@@ -14,7 +14,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic Web</FAMILY>
+    <FAMILY>Semantic Web/Jena</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>

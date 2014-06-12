@@ -4,9 +4,8 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    
     COMPATIBILITY="ALL"
-    AUTHOR="Bio2RDF"
+    AUTHOR="vincent.emonet@gmail.com"
     RELEASE_DATE="20130919"
     STARTABLE="true"
   >
@@ -14,7 +13,7 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic Web</FAMILY>
+    <FAMILY>Semantic Web/Virtuoso</FAMILY>
   </FAMILIES>
 
   <DOCUMENTATION>

@@ -94,7 +94,7 @@
   
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="INFO1" FIELD="LABEL" REQUIRED="true" NUM_ROW="1" >
-		<DEFAULT>Component using the UniProt SPARQL endpoint: http://beta.sparql.uniprot.org/</DEFAULT>
+		<DEFAULT>Component using the EBI SPARQL endpoints: http://www.ebi.ac.uk/rdf/services/</DEFAULT>
 	</PARAMETER>
 	 <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
       <DEFAULT>"http://bio2rdf.org"</DEFAULT>

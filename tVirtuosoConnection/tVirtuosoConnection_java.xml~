@@ -4,6 +4,7 @@
     SERIAL=""
     VERSION="0.102"  
     STATUS="ALPHA"
+    
     COMPATIBILITY="ALL"
     AUTHOR="vincent.emonet@gmail.com"
     RELEASE_DATE="20130919"

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<COMPONENT> 
+  <HEADER 
+  AUTHOR="vincent.emonet@gmail.com" 
+  COMPATIBILITY="ALL" 
+  PLATEFORM="ALL" 
+  RELEASE_DATE="20140611" 
+  SERIAL="" 
+  STARTABLE="false" 
+  STATUS="ALPHA" 
+  VERSION="0.102"
+  DATA_AUTO_PROPAGATE="false"  
+  SCHEMA_AUTO_PROPAGATE="false"
+  HAS_CONDITIONAL_OUTPUTS="true"
+  PARTITIONING="AUTO"
+  > 
+    <SIGNATURE/> 
+  </HEADER>  
+
+  <FAMILIES> 
+    <FAMILY>Semantic Web</FAMILY> 
+  </FAMILIES>  
+
+  <DOCUMENTATION> 
+    <URL/> 
+  </DOCUMENTATION>
+  
+  <CONNECTORS> 
+  <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" MIN_INPUT="1" MIN_OUTPUT="1"/>
+  <CONNECTOR CTYPE="COMPONENT_OK" />
+  <CONNECTOR CTYPE="COMPONENT_ERROR" />
+  <CONNECTOR CTYPE="RUN_IF" /> 
+  </CONNECTORS>  
+
+  <PARAMETERS> 
+   <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+         <TABLE READONLY="true">
+            <COLUMN NAME="subject" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="predicate" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="object" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="type" TYPE="id_String" READONLY="true" CUSTOM="true" />
+         </TABLE>
+    </PARAMETER>
+  
+    
+    <PARAMETER FIELD="TABLE" NAME="COL_MAPPING" NB_LINES="3" NUM_ROW="10" REQUIRED="true" SHOW="true">
+      <ITEMS>
+      	<ITEM NAME="subject" FIELD="String" />
+      	<ITEM NAME="predicate" FIELD="String" />
+      	<ITEM NAME="object" FIELD="String" />
+      	<ITEM NAME="type" FIELD="CLOSED_LIST">
+      		<ITEMS DEFAULT="STRING" >
+      			<ITEM NAME="STRING" VALUE="&quot;string&quot;" />
+      			<ITEM NAME="URI" VALUE="&quot;uri&quot;" />
+      			<ITEM NAME="INTEGER" VALUE="&quot;integer&quot;" />
+      			<ITEM NAME="DOUBLE" VALUE="&quot;double&quot;" />
+      			<ITEM NAME="DATE" VALUE="&quot;date&quot;" />
+      		</ITEMS>
+      	</ITEM>
+      </ITEMS>
+    </PARAMETER>
+  </PARAMETERS> 
+  
+  <ADVANCED_PARAMETERS/>  
+  <CODEGENERATION/>  
+
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+  </RETURNS> 
+</COMPONENT>

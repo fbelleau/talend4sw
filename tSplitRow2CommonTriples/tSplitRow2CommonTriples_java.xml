@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<COMPONENT> 
+  <HEADER 
+  AUTHOR="vincent.emonet@gmail.com" 
+  COMPATIBILITY="ALL" 
+  PLATEFORM="ALL" 
+  RELEASE_DATE="20140612" 
+  SERIAL="" 
+  STARTABLE="false" 
+  STATUS="ALPHA" 
+  VERSION="0.102"
+  DATA_AUTO_PROPAGATE="false"  
+  SCHEMA_AUTO_PROPAGATE="false"
+  HAS_CONDITIONAL_OUTPUTS="true"
+  PARTITIONING="AUTO"
+  > 
+    <SIGNATURE/> 
+  </HEADER>  
+
+  <FAMILIES> 
+    <FAMILY>Semantic Web</FAMILY> 
+  </FAMILIES>  
+
+  <DOCUMENTATION> 
+    <URL/> 
+  </DOCUMENTATION>
+  
+  <CONNECTORS> 
+  <CONNECTOR CTYPE="FLOW" MAX_INPUT="1" MAX_OUTPUT="1" MIN_INPUT="1" MIN_OUTPUT="1"/>
+  <CONNECTOR CTYPE="COMPONENT_OK" />
+  <CONNECTOR CTYPE="COMPONENT_ERROR" />
+  <CONNECTOR CTYPE="RUN_IF" /> 
+  </CONNECTORS>  
+
+  <PARAMETERS> 
+    <PARAMETER NAME="PROPERTY" FIELD="SCHEMA_TYPE" READONLY="true" REQUIRED="true" NUM_ROW="1">
+         <TABLE READONLY="true">
+            <COLUMN NAME="subject" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="predicate" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="object" TYPE="id_String" READONLY="true" CUSTOM="true" />
+            <COLUMN NAME="type" TYPE="id_String" READONLY="true" CUSTOM="true" />
+         </TABLE>
+    </PARAMETER>
+    
+    <PARAMETER FIELD="TABLE" NAME="COL_MAPPING" NB_LINES="3" NUM_ROW="10" REQUIRED="true" SHOW="true">
+      <ITEMS>
+      	<ITEM NAME="subject" FIELD="String" />
+      	<ITEM NAME="predicate" FIELD="CLOSED_LIST">
+      		<ITEMS DEFAULT="TYPE" >
+      			<ITEM NAME="TYPE" VALUE="&quot;rdf:type&quot;" />
+      			<ITEM NAME="SUBCLASSOF" VALUE="&quot;rdfs:subClassOf&quot;" />
+      			<ITEM NAME="LABEL" VALUE="&quot;rdfs:label&quot;" />
+      			<ITEM NAME="COMMENT" VALUE="&quot;rdfs:comment&quot;" />
+      			<ITEM NAME="IDENTIFIER" VALUE="&quot;dc:identifier&quot;" />
+      			<ITEM NAME="TITLE" VALUE="&quot;dc:title&quot;" />
+      			<ITEM NAME="DEPICTION" VALUE="&quot;foaf:depiction&quot;" />
+      			<ITEM NAME="SAMEAS" VALUE="&quot;owl:sameAs&quot;" />
+      		</ITEMS>
+      	</ITEM>
+      	<ITEM NAME="object" FIELD="String" />
+      </ITEMS>
+    </PARAMETER>
+ 
+  </PARAMETERS> 
+  
+  <ADVANCED_PARAMETERS/>  
+  <CODEGENERATION/>  
+
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+  </RETURNS> 
+</COMPONENT>

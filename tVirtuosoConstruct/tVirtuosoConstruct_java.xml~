@@ -2,10 +2,11 @@
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
-    VERSION="0.102"  
+    VERSION="0.102"
     STATUS="ALPHA"
+    
     COMPATIBILITY="ALL"
-    AUTHOR="vincent.emonet@gmail.com"
+    AUTHOR="Bio2RDF"
     RELEASE_DATE="20130919"
     STARTABLE="true"
   >
@@ -21,7 +22,7 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -35,51 +36,50 @@
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      SHOW="false"
+      SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:JDBC"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      
 	/>
-   
-	<PARAMETER
-		NAME="TRIPLESTORE"
-		FIELD="CLOSED_LIST"
-		NUM_ROW="10"
-		SHOW="false"
-		REPOSITORY_VALUE="TUTORIAL">
-		<ITEMS DEFAULT="VIRTUOSO">
-			<ITEM NAME="VIRTUOSO" VALUE="VIRTUOSO" />
-			<ITEM NAME="SESAME" VALUE="SESAME" />
-			<ITEM NAME="JENA" VALUE="JENA" />
-		</ITEMS>
-	</PARAMETER>  
 	
+   <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      SHOW="false"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tVirtuosoConnection"
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+      DYNAMIC_SETTINGS="true"
+    />
+    
 	
     <PARAMETER
-      NAME="HOST"
+      NAME="URL"
       FIELD="TEXT"
       NUM_ROW="15"
-      REPOSITORY_VALUE="HOST"
+      REPOSITORY_VALUE="URL"
       REQUIRED="true" 
+     SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 	>
-      <DEFAULT>"localhost"</DEFAULT>
+      <DEFAULT>"localhost:1111"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="20"
-      REPOSITORY_VALUE="PORT"
-      REQUIRED="true" 
-	>
-      <DEFAULT>"1111"</DEFAULT>
-    </PARAMETER>
-    	
+	
 	<PARAMETER
       NAME="DATABASE"
       FIELD="TEXT"
       NUM_ROW="30"
       REPOSITORY_VALUE="DATABASE"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 	>
 	<DEFAULT>"DB"</DEFAULT>
     </PARAMETER>
@@ -90,6 +90,7 @@
       NUM_ROW="30"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 	>
       <DEFAULT>"dba"</DEFAULT>
     </PARAMETER>
@@ -100,22 +101,32 @@
       NUM_ROW="30"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true" 
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
 	>
       <DEFAULT>"dba"</DEFAULT>
     </PARAMETER>
-	
-
-	<PARAMETER
-      NAME="DATASOURCE_ALIAS"
-	  FIELD="TEXT"
-      NUM_ROW="65"
-      REQUIRED="true"
-	  GROUP="DATASOURCE"
-	  SHOW_IF="(SPECIFY_DATASOURCE_ALIAS=='true' AND USE_SHARED_CONNECTION=='false')"
-    >      
-	<DEFAULT>""</DEFAULT>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="35"
+    >
+      <TABLE READONLY="false">
+        <COLUMN NAME="subject" TYPE="id_String" />
+        <COLUMN NAME="predicate" TYPE="id_String" />
+        <COLUMN NAME="object" TYPE="id_String" />
+      </TABLE>
     </PARAMETER>
-	
+
+    <PARAMETER
+      NAME="QUERY"
+      FIELD="MEMO_SQL"
+      NUM_ROW="55"
+      REQUIRED="true"
+    >
+      <DEFAULT>"construct {?s ?p ?o .}  where {?s ?p ?o .}"</DEFAULT>
+    </PARAMETER>
+		
    </PARAMETERS>
 
    <ADVANCED_PARAMETERS>
@@ -128,7 +139,7 @@
     >
       	<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
-
+	
 	<PARAMETER NAME="USE_CURSOR" FIELD="CHECK" NUM_ROW="20">
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -153,9 +164,12 @@
 
    <CODEGENERATION>
 	   <IMPORTS>
-	      <IMPORT NAME="virtjdbc3" MODULE="virtjdbc3.jar" REQUIRED="true" />
+	      <IMPORT NAME="virtjdbc3" MODULE="virtjdbc3.jar" UrlPath="http://www.openlinksw.com/dataspace/doc/dav/wiki/Main/VOSDownload/virtjdbc3.jar" REQUIRED="true" />
 	   </IMPORTS>
    </CODEGENERATION>
 
-   <RETURNS/>
+   <RETURNS>
+      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+      <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>
+   </RETURNS>
 </COMPONENT>
