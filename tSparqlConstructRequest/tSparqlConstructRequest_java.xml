@@ -41,7 +41,7 @@
     </PARAMETER>
     
     <PARAMETER NAME="VIRTUOSO_ENDPOINT" FIELD="TEXT" SHOW_IF="TRIPLESTORE_TYPE == 'VIRTUOSO'" NUM_ROW="5">
-      <DEFAULT>"http://dataset.bio2rdf.org/sparql"</DEFAULT>
+      <DEFAULT>"http://pubmed.bio2rdf.org/sparql"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER NAME="EBI_ENDPOINT" FIELD="TEXT" READONLY="true" SHOW_IF="TRIPLESTORE_TYPE == 'EBI'" NUM_ROW="5">
@@ -102,7 +102,8 @@
       NUM_ROW="55"
       REQUIRED="true"
     >
-      <DEFAULT>"construct {?s ?p ?o .}  where {?s ?p ?o .}"</DEFAULT>
+      <DEFAULT>"CONSTRUCT {?s ?p ?o .}  
+WHERE {?s ?p ?o .}"</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
