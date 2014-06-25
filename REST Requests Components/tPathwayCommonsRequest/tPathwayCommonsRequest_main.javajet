@@ -36,7 +36,6 @@ if (outConns != null && outConns.size() > 0){
   	}
 }
 
-String sRestEndpoint = ElementParameterParser.getValue(node, "__REST_ENDPOINT__");
 String sNamespace = "pc";
 
 String sRestUri = ElementParameterParser.getValue(node, "__REST_URI__");
@@ -44,21 +43,14 @@ String sMethod = ElementParameterParser.getValue(node, "__CHOSEN_METHOD__");
 String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY__");
 String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
 String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
+String sRestDescribeQuery = ElementParameterParser.getValue(node, "__REST_DESCRIBE_QUERY__");
+String sRestSearchQuery = ElementParameterParser.getValue(node, "__REST_SEARCH_QUERY__");
+String sRestLinksQuery = ElementParameterParser.getValue(node, "__REST_LINKS_QUERY__");
 
 
-String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
-String sFormat = "";
+String sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
 
 
-String restMethod;
-if (sRestEndpoint.equals("true"))
-{
-	restMethod = "rest_" + sMethod;
-}
-else
-{
-	restMethod = sMethod;
-}
 
 boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
 
@@ -68,48 +60,57 @@ boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MO
 %>
 
 String URL_string_<%=cid%> = null;
-String formatOut_<%=cid%>;
+String formatOut_<%=cid%> = "<%=sFormat%>";
 
-<%
-if (sCheckFormatList.equals("true"))
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
-%>
-	formatOut_<%=cid%> = "<%=sFormat%>";
-<%
-}
-else 
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
-%>
-	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
-<%
-}
-%>
 
 if ("<%=sMethod%>".equals("search")){
-  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
+  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;
+}
+else if ("<%=sMethod%>".equals("rest_search")){
+  URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sRestSearchQuery%>;
 }
 else if ("<%=sMethod%>".equals("describe")){
 	// Check if the user use an URI or ns:id
   	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sDescribeQuery%> ;
   	}
   	else
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sDescribeQuery.replaceAll("#", "%23")%> ;
+  	}
+}
+else if ("<%=sMethod%>".equals("rest_describe")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sDescribeQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sRestDescribeQuery%> ;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sRestDescribeQuery.replaceAll("#", "%23")%> ;
   	}
 }
 else if ("<%=sMethod%>".equals("links")){
 	// Check if the user use an URI or ns:id
   	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sLinksQuery%>;
   	}
   	else
   	{
-  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=restMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sLinksQuery%>;
+  	}
+}
+else if ("<%=sMethod%>".equals("rest_links")){
+	// Check if the user use an URI or ns:id
+  	if (<%=sLinksQuery%>.matches("^[a-zA-Z0-9_]*:[a-zA-Z0-9_]*$"))
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sRestLinksQuery%>;
+  	}
+  	else
+  	{
+  		URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "?uri=" + <%=sRestLinksQuery%>;
   	}
 }
 
