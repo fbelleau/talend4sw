@@ -44,37 +44,20 @@ String sDescribeQuery = ElementParameterParser.getValue(node, "__DESCRIBE_QUERY_
 String sSearchQuery = ElementParameterParser.getValue(node, "__SEARCH_QUERY__");
 String sLinksQuery = ElementParameterParser.getValue(node, "__LINKS_QUERY__");
 
-
-String sCheckFormatList = ElementParameterParser.getValue(node, "__CHECK_FORMAT_LIST__");
-String sFormat = "";
+String sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
 
 
 boolean bDebug = "true".equals(ElementParameterParser.getValue(node, "__DEBUG_MODE__"));
-
 
 
 ///// Construct URL query string
 %>
 
 String URL_string_<%=cid%> = null;
-String formatOut_<%=cid%>;
+String formatOut_<%=cid%> = "<%=sFormat%>";
 
-<%
-if (sCheckFormatList.equals("true"))
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_LIST__");
-%>
-	formatOut_<%=cid%> = "<%=sFormat%>";
-<%
-}
-else 
-{
-	sFormat = ElementParameterParser.getValue(node, "__FORMAT_TEXT__");
-%>
-	formatOut_<%=cid%> = BioUtil.restRequestFormat(<%=sFormat%>);
-<%
-}
-%>
+
+
 
 if ("<%=sMethod%>".equals("search")){
   URL_string_<%=cid%> = <%=sRestUri%> + "/" + "<%=sNamespace%>" + "/" + "<%=sMethod%>" + "/" + formatOut_<%=cid%> + "/" + <%=sSearchQuery%>;

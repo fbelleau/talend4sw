@@ -33,21 +33,6 @@ if (objectPrefixe.equals(""))
 	objectPrefixe = "\"\"";
 }
 
-String subjectName = null; 
-    
-if (useTextSubject.equals("true"))
-{
-	if (subjectByText.matches("^\".*\"$"))
-	{
-		subjectByText = subjectByText.substring(1, subjectByText.length()-1);
-	}
-	subjectName = subjectByText;
-}
-else
-{
-	subjectName = subjectByColumn;
-}
-
 
 
 //for TDI-23590 deal with FLOW_MERGE connection
@@ -74,6 +59,20 @@ if (!inConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
 List<IMetadataColumn> outColumns = outConn.getMetadataTable().getListColumns();
 List<IMetadataColumn> columnsInc = inConn.getMetadataTable().getListColumns();
 
+// Get the subject (from the text box or the dropdown list)
+if (useTextSubject.equals("true"))
+{
+%>
+	String subjectValue_<%=cid%> = <%=subjectByText%>;
+<%
+}
+else
+{
+%>
+	String subjectValue_<%=cid%> = "<%=subjectByColumn%>";
+<%
+}
+
 
 int rowNumber = columnsInc.size();
 %>
@@ -83,16 +82,17 @@ java.util.List<<%=outConnName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<
 
 
 
-<%for (IMetadataColumn colName : columnsInc) {%>
+<%for (IMetadataColumn colName : columnsInc) {
+%>
 
-	if (!("<%=useTextSubject%>".equals("false") && "<%=colName.getLabel()%>".equals("<%=subjectName%>")))
+	if ((! "<%=colName.getLabel()%>".equals("<%=subjectByColumn%>") && "<%=useColumnSubject%>".equals("true")) || ("<%=useTextSubject%>".equals("true")))
 	{
 	
 		if (<%=inConn.getName()%>.<%=colName.getLabel()%> != null && ! "".equals(<%=inConn.getName()%>.<%=colName.getLabel()%>))
 	    {
 		    rowTmp_<%=cid%> = new <%=outConnName%>Struct();
 		    
-			rowTmp_<%=cid%>.subject =  <%=inConn.getName()%>.<%=subjectName%>;
+		    rowTmp_<%=cid%>.subject =  subjectValue_<%=cid%>;
 			rowTmp_<%=cid%>.predicate = <%=predicatePrefixe%> + "<%=colName.getLabel()%>";
 			
 			<%

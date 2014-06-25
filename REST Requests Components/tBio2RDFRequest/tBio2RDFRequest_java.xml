@@ -42,14 +42,58 @@
     </PARAMETER>
     
     <PARAMETER NAME="NAMESPACE_LIST" FIELD="CLOSED_LIST" NUM_ROW="5" REQUIRED="true">
-      <ITEMS DEFAULT="UNIPROT">
-        <ITEM NAME="ATLAS" VALUE="atlas.ebi"/>
-        <ITEM NAME="BIOMODELS" VALUE="biomodels.ebi"/>
-        <ITEM NAME="BIOSAMPLES" VALUE="biosamples.ebi"/>
-        <ITEM NAME="CHEMBL" VALUE="chembl.ebi"/>
-        <ITEM NAME="REACTOME" VALUE="reactome.ebi"/>
-        <ITEM NAME="UNIPROT" VALUE="uniprot"/>
-        <ITEM NAME="PC" VALUE="pc"/>
+      <ITEMS DEFAULT="AFFYMETRIX">
+        <ITEM NAME="AFFYMETRIX" VALUE="affymetrix" />
+        <ITEM NAME="BIOMODELS" VALUE="biomodels" />
+        <ITEM NAME="BIOPORTAL" VALUE="bioportal" />
+        <ITEM NAME="CLINICALTRIALS" VALUE="clinicaltrials" />
+        <ITEM NAME="CTD" VALUE="ctd" />
+        <ITEM NAME="DBSNP" VALUE="dbsnp" />
+        <ITEM NAME="DRUGBANK" VALUE="drugbank" />
+        <ITEM NAME="GENAGE" VALUE="genage" />
+        <ITEM NAME="GENDR" VALUE="gendr" />
+        <ITEM NAME="GOA" VALUE="goa" />
+        <ITEM NAME="HGNC" VALUE="hgnc" />
+        <ITEM NAME="HOMOLOGENE" VALUE="homologene" />
+        <ITEM NAME="INTERPRO" VALUE="interpro" />
+        <ITEM NAME="IPROCLASS" VALUE="iproclass" />
+        <ITEM NAME="IREFINDEX" VALUE="irefindex" />
+        <ITEM NAME="LSR" VALUE="lsr" />
+        <ITEM NAME="MESH" VALUE="mesh" />
+        <ITEM NAME="MGI" VALUE="mgi" />
+        <ITEM NAME="NCBIGENE" VALUE="ncbigene" />
+        <ITEM NAME="NDC" VALUE="ndc" />
+        <ITEM NAME="OMIM" VALUE="omim" />
+        <ITEM NAME="PC" VALUE="pc" />
+        <ITEM NAME="PDB" VALUE="pdb" />
+        <ITEM NAME="PHARMGKB" VALUE="pharmgkb" />
+        <ITEM NAME="PUBCHEM" VALUE="pubchem" />
+        <ITEM NAME="PUBMED" VALUE="pubmed" />
+        <ITEM NAME="SABIORK" VALUE="sabiork" />
+        <ITEM NAME="SGD" VALUE="sgd" />
+        <ITEM NAME="SIDER" VALUE="sider" />
+        <ITEM NAME="TAXONOMY" VALUE="taxonomy" />
+        <ITEM NAME="WORMBASE" VALUE="wormbase" />
+        <ITEM NAME="UNIPROT" VALUE="uniprot" />
+        <ITEM NAME="UNIPARC" VALUE="uniparc" />
+        <ITEM NAME="UNIREF" VALUE="uniref" />
+        <ITEM NAME="UNIPROT_CITATIONMAPPING" VALUE="uniprot_citationmapping" />
+        <ITEM NAME="UNIPROT_CITATIONS" VALUE="uniprot_citations" />
+        <ITEM NAME="UNIPROT_DATABASES" VALUE="uniprot_databases" />
+        <ITEM NAME="UNIPROT_DISEASES" VALUE="uniprot_diseases" />
+        <ITEM NAME="UNIPROT_ENZYMES" VALUE="uniprot_enzymes" />
+        <ITEM NAME="UNIPROT_GO" VALUE="uniprot_go" />
+        <ITEM NAME="UNIPROT_JOURNALS" VALUE="uniprot_journals" />
+        <ITEM NAME="UNIPROT_KEYWORDS" VALUE="uniprot_keywords" />
+        <ITEM NAME="UNIPROT_LOCATIONS" VALUE="uniprot_locations" />
+        <ITEM NAME="UNIPROT_PATHWAYS" VALUE="uniprot_pathways" />
+        <ITEM NAME="UNIPROT_TAXONOMY" VALUE="uniprot_taxonomy" />
+        <ITEM NAME="UNIPROT_TISSUES" VALUE="uniprot_tissues" />
+        <ITEM NAME="ATLAS.EBI" VALUE="atlas.ebi" />
+        <ITEM NAME="BIOMODELS.EBI" VALUE="biomodels.ebi" />
+        <ITEM NAME="BIOSAMPLES.EBI" VALUE="biosamples.ebi" />
+        <ITEM NAME="CHEMBL.EBI" VALUE="chembl.ebi" />
+        <ITEM NAME="REACTOME.EBI" VALUE="reactome.ebi" />
       </ITEMS>
     </PARAMETER>
     
@@ -75,7 +119,7 @@
     </PARAMETER>
     
     
-    <PARAMETER NAME="FORMAT_LIST" FIELD="CLOSED_LIST" SHOW_IF="CHECK_FORMAT_LIST == 'true'" NUM_ROW="15">
+    <PARAMETER NAME="FORMAT_LIST" FIELD="CLOSED_LIST" NUM_ROW="15">
       <ITEMS DEFAULT="RDF">
         <ITEM NAME="NT" VALUE="nt"/>
         <ITEM NAME="RDF" VALUE="rdf"/>
@@ -84,19 +128,11 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER NAME="FORMAT_TEXT" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHECK_FORMAT_LIST == 'false'"  NUM_ROW="15">
-      <DEFAULT>"rdf"</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER NAME="CHECK_FORMAT_LIST" FIELD="CHECK" NUM_ROW="15">
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
-    
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
   	<PARAMETER NAME="INFO1" FIELD="LABEL" REQUIRED="true" NUM_ROW="1" >
-		<DEFAULT>Component using the UniProt SPARQL endpoint: http://beta.sparql.uniprot.org/</DEFAULT>
+		<DEFAULT>Component using the Bio2RDF REST service: http://bio2rdf.org/</DEFAULT>
 	</PARAMETER>
 	 <PARAMETER NAME="REST_URI" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
       <DEFAULT>"http://bio2rdf.org"</DEFAULT>
