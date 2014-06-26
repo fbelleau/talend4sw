@@ -68,7 +68,7 @@ if (("false").equals(useBulkLoad)) {
 <%
 } else {
 %>
-	query_<%=cid %> = "insert into <"+<%=graph%>+"> { "+<%=ntriples%>+" }";
+	query_<%=cid %> = <%=ntriples%>;
 <%
 }
 %>
@@ -143,14 +143,7 @@ try {
 } else {
 %>
 
-	bulkLoadList_<%=cid%>.set(bulkLoadRow_<%=cid%>, bulkLoadList_<%=cid%>.get(bulkLoadRow_<%=cid%>) + "\n" + query_<%=cid %>);
-	lineCount_<%=cid%> += 1;
-	
-	if (lineCount_<%=cid%> >= commitEvery_<%=cid%>) {
-		bulkLoadList_<%=cid%>.add("");
-		bulkLoadRow_<%=cid%> += 1;
-		lineCount_<%=cid%> = 0;
-	}
+	loadTriples_<%=cid%> = loadTriples_<%=cid%> + query_<%=cid %>;
 
 
 <%

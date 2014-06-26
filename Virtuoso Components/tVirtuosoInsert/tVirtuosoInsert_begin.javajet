@@ -38,17 +38,16 @@ String useBulkLoad = ElementParameterParser.getValue(node, "__USE_BULK_LOAD__");
 
 %>
 
-java.sql.Statement stmt_<%=cid %> = connection_<%=cid%>.createStatement();
 <%
 if (("true").equals(useBulkLoad)) {
 %>
-	java.util.List<String> bulkLoadList_<%=cid%> = new java.util.ArrayList<String>();
-	bulkLoadList_<%=cid%>.add("");
-	int bulkLoadRow_<%=cid%> = 0;
-	int lineCount_<%=cid%> = 0;
-	int commitEvery_<%=cid%> = Integer.parseInt("<%=commitEvery%>");
 	
-	String test_<%=cid%>;
+	Model virtModel_<%=cid%> = VirtModel.openDatabaseModel("http://graph", "jdbc:virtuoso://192.168.3.28:13010", "dba", "dba");
+ 	String loadTriples_<%=cid%> = "";
+<%
+} else {
+%>
+	java.sql.Statement stmt_<%=cid %> = connection_<%=cid%>.createStatement();
 <%
 }
 %>

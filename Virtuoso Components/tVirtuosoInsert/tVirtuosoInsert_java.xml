@@ -5,7 +5,7 @@
     VERSION="0.102"
     STATUS="ALPHA"    
     COMPATIBILITY="ALL"
-    AUTHOR="vincent.emonet@gmail.com"
+    AUTHOR="Talend"
     RELEASE_DATE="20070806A"
     STARTABLE="true"
     DATA_AUTO_PROPAGATE="false"
@@ -36,6 +36,8 @@
   </CONNECTORS>
 
   <PARAMETERS>
+
+      
 
     <PARAMETER
       NAME="CONNECTION"
@@ -122,9 +124,27 @@
 	>
 		<DEFAULT>10</DEFAULT>
 	</PARAMETER>
+	
+	   <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW="false" NUM_ROW="0" NB_LINES="3">
+	    <DEFAULT>import virtuoso.jena.driver.*; import com.hp.hpl.jena.rdf.model.*; import com.hp.hpl.jena.util.FileManager; import java.io.*; import com.hp.hpl.jena.query.* ;</DEFAULT>
+	</PARAMETER>
+	
   </ADVANCED_PARAMETERS>
 
-  <CODEGENERATION></CODEGENERATION>
+  <CODEGENERATION>
+	   <IMPORTS>
+	      <IMPORT NAME="jena-core-2.7.2" MODULE="jena-core-2.7.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-log4j12-1.6.4" MODULE="slf4j-log4j12-1.6.4.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-api-1.6.4" MODULE="slf4j-api-1.6.4.jar" REQUIRED="true" />
+		  <IMPORT NAME="log4j-1.2.16" MODULE="log4j-1.2.16.jar" REQUIRED="true" />
+		  <IMPORT NAME="xercesImpl-2.10.0" MODULE="xercesImpl-2.10.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="xml-apis-1.4.01" MODULE="xml-apis-1.4.01.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-iri-0.9.2" MODULE="jena-iri-0.9.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-arq-2.9.2" MODULE="jena-arq-2.9.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="virt_jena2.jar" MODULE="virt_jena2.jar" REQUIRED="true" />
+		  <IMPORT NAME="virtjdbc4.jar" MODULE="virtjdbc4.jar" REQUIRED="true" />
+	   </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="QUERY" TYPE="id_String" AVAILABILITY="FLOW"/>

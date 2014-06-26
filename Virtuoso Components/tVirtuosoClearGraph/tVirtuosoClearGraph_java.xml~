@@ -5,7 +5,7 @@
     VERSION="0.102"
     STATUS="ALPHA"    
     COMPATIBILITY="ALL"
-    AUTHOR="vincent.emonet@gmail.com"
+    AUTHOR="Talend"
     RELEASE_DATE="20070806A"
     STARTABLE="true"
     DATA_AUTO_PROPAGATE="false"
@@ -17,7 +17,8 @@
   </HEADER>
 
   <FAMILIES>
-    <FAMILY>Semantic Web/Jena</FAMILY>  
+    <FAMILY>Semantic Web</FAMILY>
+    <FAMILY>Database/Virtuoso</FAMILY>    
   </FAMILIES>
 
   <DOCUMENTATION>

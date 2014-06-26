@@ -14,19 +14,16 @@ String useBulkLoad = ElementParameterParser.getValue(node, "__USE_BULK_LOAD__");
 %>
 
 <%
-if (("true").equals(useBulkLoad)) {
+if (("false").equals(useBulkLoad)) {
 %>
+	stmt_<%=cid%>.close();
+<%
+} else {
+%>
+	InputStream stringIn_<%=cid%> = new ByteArrayInputStream(loadTriples_<%=cid%>.getBytes()); 
 
-	java.util.ListIterator li_<%=cid%> = bulkLoadList_<%=cid%>.listIterator();
-	
-	while(li_<%=cid%>.hasNext()) {
-		//System.out.println("sparql " + li_<%=cid%>.next().toString());
-		stmt_<%=cid %>.execute("sparql " + li_<%=cid%>.next().toString());
-		
-	}
+	virtModel_<%=cid%>.read(stringIn_<%=cid%>, "", "N-TRIPLE");
 
 <%
 }
 %>
-
-stmt_<%=cid%>.close();
