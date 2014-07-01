@@ -139,7 +139,7 @@ urlConn_<%=cid%>.disconnect();
 %>
 
 java.util.ArrayList<String> queryKeys_<%=cid%> = new java.util.ArrayList<String>();
-	// ArrayList that contain the key value of the query sorted correctly
+	// ArrayList that will contain the key value of the query sorted correctly
 
 org.json.JSONObject jsonObj_<%=cid%> = new org.json.JSONObject(sb_<%=cid%>.toString());
 
@@ -154,6 +154,18 @@ int i_<%=cid%>;
 int nb_line_<%=cid %> = 0;
 
 org.json.JSONArray jsonArray_<%=cid%> = jsonObj_<%=cid%>.getJSONObject("results").getJSONArray("bindings");
+
+
+if (jsonArray_<%=cid%>.length() == 0)
+{
+	globalMap.put("<%=cid%>_HAS_RESULTS", false);
+}
+else
+{
+	globalMap.put("<%=cid%>_HAS_RESULTS", true);
+}
+
+
 for (i_<%=cid%> = 0; i_<%=cid%> < jsonArray_<%=cid%>.length(); i_<%=cid%>++)
 {
 
