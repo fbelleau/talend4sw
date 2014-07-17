@@ -88,6 +88,18 @@ if (sDisplayUrl.equals("true"))
 %>
 
 
+	org.json.JSONArray jsonArray_<%=cid%> = new org.json.JSONArray();
+	
+	org.json.JSONArray jsonKeysArray_<%=cid%>;
+	
+	java.util.ArrayList<String> queryKeys_<%=cid%> = new java.util.ArrayList<String>();
+	// ArrayList that will contain the key value of the query sorted correctly
+	
+	org.json.JSONObject jsonObj_<%=cid%>;
+	
+	java.util.Iterator<String> queryKeysIterator_<%=cid%>;
+
+
 <%
 ///// Construct the HTTP request
 %>
@@ -100,61 +112,61 @@ urlConn_<%=cid%>.setDoOutput(true);
 urlConn_<%=cid%>.setDoInput(true);
 urlConn_<%=cid%>.setUseCaches(false);
 
-urlConn_<%=cid%>.connect();
-
-<%
-////////// Get the response from an Input Stream and convert it to a string
-%>
-
-byte[] buffer_<%=cid%> = new byte[1024];
-int bos_buffer_<%=cid%> = 0;
-
-StringBuilder sb_<%=cid%>=new StringBuilder(); 
+try {
+	urlConn_<%=cid%>.connect();
 
 
-if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
-{
-	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
-	<%// Get the input stream containing the request response 
-
-	// The inputstream is read table of bytes by table of bytes (table of bytes = buffer_cid)	
-	// bos_buffer_cid is the byte table size
+	<%
+	////////// Get the response from an Input Stream and convert it to a string
 	%>
-	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
-	{
-		// Then the table of bytes and its size are used to generate a string
-		// which is added to a string builder that will contain the whole response
-		sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
-	}
-	bis_<%=cid%>.close();
 	
-} else {
-	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+	byte[] buffer_<%=cid%> = new byte[1024];
+	int bos_buffer_<%=cid%> = 0;
+	
+	StringBuilder sb_<%=cid%>=new StringBuilder(); 
+	
+	
+	if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
+	{
+		java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+		<%// Get the input stream containing the request response 
+	
+		// The inputstream is read table of bytes by table of bytes (table of bytes = buffer_cid)	
+		// bos_buffer_cid is the byte table size
+		%>
+		while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
+		{
+			// Then the table of bytes and its size are used to generate a string
+			// which is added to a string builder that will contain the whole response
+			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
+		}
+		bis_<%=cid%>.close();
+		
+	} else {
+		System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+	}
+	
+	urlConn_<%=cid%>.disconnect();
+	
+	<%
+	/////////// Parse the JSON object
+	%>
+	
+	jsonObj_<%=cid%> = new org.json.JSONObject(sb_<%=cid%>.toString());
+	
+	jsonKeysArray_<%=cid%> = jsonObj_<%=cid%>.getJSONObject("head").getJSONArray("vars");
+	for (int k_<%=cid%> = 0; k_<%=cid%> < jsonKeysArray_<%=cid%>.length(); k_<%=cid%>++)
+	{
+		queryKeys_<%=cid%>.add(jsonKeysArray_<%=cid%>.getString(k_<%=cid%>));
+	}
+	
+	
+	jsonArray_<%=cid%> = jsonObj_<%=cid%>.getJSONObject("results").getJSONArray("bindings");
+
 }
-
-urlConn_<%=cid%>.disconnect();
-
-<%
-/////////// Parse the JSON object
-%>
-
-java.util.ArrayList<String> queryKeys_<%=cid%> = new java.util.ArrayList<String>();
-	// ArrayList that will contain the key value of the query sorted correctly
-
-org.json.JSONObject jsonObj_<%=cid%> = new org.json.JSONObject(sb_<%=cid%>.toString());
-
-org.json.JSONArray jsonKeysArray_<%=cid%> = jsonObj_<%=cid%>.getJSONObject("head").getJSONArray("vars");
-for (int k_<%=cid%> = 0; k_<%=cid%> < jsonKeysArray_<%=cid%>.length(); k_<%=cid%>++)
-{
-	queryKeys_<%=cid%>.add(jsonKeysArray_<%=cid%>.getString(k_<%=cid%>));
+catch (Exception e) {
+	System.err.println("UnknownHostException");
 }
-
-java.util.Iterator<String> queryKeysIterator_<%=cid%>;
-int i_<%=cid%>;
-int nb_line_<%=cid %> = 0;
-
-org.json.JSONArray jsonArray_<%=cid%> = jsonObj_<%=cid%>.getJSONObject("results").getJSONArray("bindings");
-
 
 if (jsonArray_<%=cid%>.length() == 0)
 {
@@ -164,6 +176,9 @@ else
 {
 	globalMap.put("<%=cid%>_HAS_RESULTS", true);
 }
+
+int i_<%=cid%>;
+int nb_line_<%=cid %> = 0;
 
 
 for (i_<%=cid%> = 0; i_<%=cid%> < jsonArray_<%=cid%>.length(); i_<%=cid%>++)

@@ -116,75 +116,82 @@ if (sDisplayUrl.equals("true"))
 
 java.net.URL url_<%=cid%> = new java.net.URL(URL_string_<%=cid%>);
 
-java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
-urlConn_<%=cid%>.setRequestMethod("GET");
-urlConn_<%=cid%>.setDoOutput(true);
-urlConn_<%=cid%>.setDoInput(true);
-urlConn_<%=cid%>.setUseCaches(false);
+try {
 
-urlConn_<%=cid%>.connect();
+	java.net.HttpURLConnection urlConn_<%=cid%> = (java.net.HttpURLConnection) url_<%=cid%>.openConnection();
+	urlConn_<%=cid%>.setRequestMethod("GET");
+	urlConn_<%=cid%>.setDoOutput(true);
+	urlConn_<%=cid%>.setDoInput(true);
+	urlConn_<%=cid%>.setUseCaches(false);
 
-<%
-////////// Get the response from an Input Stream
-%>
-
-byte[] buffer_<%=cid%> = new byte[1024];
-int bos_buffer_<%=cid%> = 0;
-<%
-if(hasOutputSchema)
-{
-%>
-	StringBuilder sb_<%=cid%>=new StringBuilder(); 
-<%
-}
-%>
-
-if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
-{
-	java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
-	<%// Get the input stream containing the request response 
-
-	// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
-	// bos_buffer_cid is the byte table size
-	%>
-	while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
-	{
-		<%if(hasOutputSchema)
-		{// Then the table of bytes and its size are used to generate a string
-		 // which is added to a string builder that will contain the whole response
-		%>
-			sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
-		<%}%>
-	}
-	bis_<%=cid%>.close();
+	urlConn_<%=cid%>.connect();
 	
-} else {
-	System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+	<%
+	////////// Get the response from an Input Stream
+	%>
+	
+	byte[] buffer_<%=cid%> = new byte[1024];
+	int bos_buffer_<%=cid%> = 0;
+	<%
+	if(hasOutputSchema)
+	{
+	%>
+		StringBuilder sb_<%=cid%>=new StringBuilder(); 
+	<%
+	}
+	%>
+	
+	if (java.net.HttpURLConnection.HTTP_OK == (urlConn_<%=cid%>.getResponseCode()))
+	{
+		java.io.InputStream bis_<%=cid%> = new java.io.BufferedInputStream(urlConn_<%=cid%>.getInputStream());
+		<%// Get the input stream containing the request response 
+	
+		// The inputstream is read table of bytes by tables of bytes (table of bytes = buffer_cid)	
+		// bos_buffer_cid is the byte table size
+		%>
+		while ((bos_buffer_<%=cid%> = bis_<%=cid%>.read(buffer_<%=cid%>)) != -1)
+		{
+			<%if(hasOutputSchema)
+			{// Then the table of bytes and its size are used to generate a string
+			 // which is added to a string builder that will contain the whole response
+			%>
+				sb_<%=cid%>.append(new String(buffer_<%=cid%>,0,bos_buffer_<%=cid%>));
+			<%}%>
+		}
+		bis_<%=cid%>.close();
+		
+	} else {
+		System.err.println(urlConn_<%=cid%>.getResponseCode() + " " + urlConn_<%=cid%>.getResponseMessage());
+	}
+	
+	<%
+	// output data
+	if (outConnName != null){
+	  List<IMetadataTable> metaTables = node.getMetadataList();
+	  
+	  if (metaTables != null && metaTables.size() > 0){
+	    IMetadataTable metaTable = metaTables.get(0);
+	    List<IMetadataColumn> columns = metaTable.getListColumns();
+	    
+	    for (IMetadataColumn column : columns){
+	      String colName = column.getLabel();
+	      
+	      if ("SparqlResults".equals(colName)){
+	      %>
+	        <%=outConnName%>.SparqlResults = sb_<%=cid%>.toString();
+	      <%
+	      } else {
+	      %>
+	        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
+	      <%
+	      }
+	    }
+	  }
+	}
+	%>
+	urlConn_<%=cid%>.disconnect();
+}
+catch (Exception e) {
+	System.err.println("UnknownHostException");
 }
 
-<%
-// output data
-if (outConnName != null){
-  List<IMetadataTable> metaTables = node.getMetadataList();
-  
-  if (metaTables != null && metaTables.size() > 0){
-    IMetadataTable metaTable = metaTables.get(0);
-    List<IMetadataColumn> columns = metaTable.getListColumns();
-    
-    for (IMetadataColumn column : columns){
-      String colName = column.getLabel();
-      
-      if ("SparqlResults".equals(colName)){
-      %>
-        <%=outConnName%>.SparqlResults = sb_<%=cid%>.toString();
-      <%
-      } else {
-      %>
-        <%=outConnName%>.<%=colName%> = <%=inConnName%>.<%=colName%>;
-      <%
-      }
-    }
-  }
-}
-%>
-urlConn_<%=cid%>.disconnect();
