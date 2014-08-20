@@ -2,12 +2,12 @@
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
-    VERSION="0.102"
+    VERSION="0.2"
     STATUS="ALPHA"
     STARTABLE="true"
     COMPATIBILITY="ALL"
     AUTHOR="Bio2RDF"
-    RELEASE_DATE="20130919"
+    RELEASE_DATE="20140820"
     DATA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE/>
@@ -44,7 +44,6 @@
       </TABLE>
 	</PARAMETER>
 	
-	
 	<PARAMETER
 		NAME="INPUT_FORMAT_LIST"
 		FIELD="CLOSED_LIST"
@@ -53,12 +52,16 @@
 		REQUIRED="true"
 		>
 		<ITEMS DEFAULT="RDFXML">
-			<ITEM NAME="RDFXML" VALUE="RDF/XML" />
-			<ITEM NAME="RDFJSON" VALUE="RDF/JSON" />
-			<ITEM NAME="NTRIPLE" VALUE="N-TRIPLE" />
+			<ITEM NAME="RDFXML" VALUE="RDFXML" />	
+			<ITEM NAME="JSONLD" VALUE="JSONLD" />
+			<ITEM NAME="NTRIPLES" VALUE="NTRIPLES" />
 			<ITEM NAME="TURTLE" VALUE="TURTLE" />
+			<ITEM NAME="N3" VALUE="N3" />
+			<ITEM NAME="NQUADS" VALUE="NQUADS" />
+			<ITEM NAME="TRIG" VALUE="TRIG" />
+			<ITEM NAME="RDFJSON" VALUE="RDFJSON" />
 		</ITEMS>
-	</PARAMETER>  
+	</PARAMETER> 
 	
 	<PARAMETER NAME="INPUT_FORMAT_TEXT" FIELD="TEXT" REQUIRED="true" SHOW_IF="CHECK_INPUT_FORMAT_LIST == 'false'"  NUM_ROW="20">
       <DEFAULT>"rdf"</DEFAULT>
@@ -78,11 +81,14 @@
 		REQUIRED="true"
 		>
 		<ITEMS DEFAULT="RDFXML">
-			<ITEM NAME="RDFXML" VALUE="RDF/XML" />
-			<ITEM NAME="RDFXMLABBREV" VALUE="RDF/XML-ABBREV" />			
-			<ITEM NAME="RDFJSON" VALUE="RDF/JSON" />
-			<ITEM NAME="NTRIPLE" VALUE="N-TRIPLE" />
+			<ITEM NAME="RDFXML" VALUE="RDFXML" />	
+			<ITEM NAME="JSONLD" VALUE="JSONLD" />
+			<ITEM NAME="NTRIPLES" VALUE="NTRIPLES" />
 			<ITEM NAME="TURTLE" VALUE="TURTLE" />
+			<ITEM NAME="N3" VALUE="N3" />
+			<ITEM NAME="NQUADS" VALUE="NQUADS" />
+			<ITEM NAME="TRIG" VALUE="TRIG" />
+			<ITEM NAME="RDFJSON" VALUE="RDFJSON" />
 		</ITEMS>
 	</PARAMETER> 
 	
@@ -108,21 +114,36 @@
 
    <ADVANCED_PARAMETERS>
    <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW_IF="false" NUM_ROW="0" NB_LINES="3">
-	    <DEFAULT>import com.hp.hpl.jena.rdf.model.*; import com.hp.hpl.jena.util.FileManager; import java.io.*; import org.openjena.riot.out.RDFJSONWriter;</DEFAULT>
+	    <DEFAULT>import org.apache.jena.riot.Lang; import org.apache.jena.riot.RDFDataMgr; import com.hp.hpl.jena.rdf.model.Model; import com.hp.hpl.jena.rdf.model.ModelFactory; import java.io.*;</DEFAULT>
 	  </PARAMETER>
 
    </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
 	   <IMPORTS>
-	      <IMPORT NAME="jena-core-2.7.2" MODULE="jena-core-2.7.2.jar" REQUIRED="true" />
-		  <IMPORT NAME="slf4j-log4j12-1.6.4" MODULE="slf4j-log4j12-1.6.4.jar" REQUIRED="true" />
-		  <IMPORT NAME="slf4j-api-1.6.4" MODULE="slf4j-api-1.6.4.jar" REQUIRED="true" />
+	      <IMPORT NAME="jena-core-2.12.0" MODULE="jena-core-2.12.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-log4j12-1.7.7.jar" MODULE="slf4j-log4j12-1.7.7.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-api-1.7.7.jar" MODULE="slf4j-api-1.7.7.jar" REQUIRED="true" />
+		  <IMPORT NAME="jcl-over-slf4j-1.7.7.jar" MODULE="jcl-over-slf4j-1.7.7.jar" REQUIRED="true" />
 		  <IMPORT NAME="log4j-1.2.16" MODULE="log4j-1.2.16.jar" REQUIRED="true" />
 		  <IMPORT NAME="xercesImpl-2.10.0" MODULE="xercesImpl-2.10.0.jar" REQUIRED="true" />
 		  <IMPORT NAME="xml-apis-1.4.01" MODULE="xml-apis-1.4.01.jar" REQUIRED="true" />
-		  <IMPORT NAME="jena-iri-0.9.2" MODULE="jena-iri-0.9.2.jar" REQUIRED="true" />
-		  <IMPORT NAME="jena-arq-2.9.2" MODULE="jena-arq-2.9.2.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-iri-1.1.0" MODULE="jena-iri-1.1.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-arq-2.12.0" MODULE="jena-arq-2.12.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="jena-tdb-1.1.0.jar" MODULE="jena-tdb-1.1.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="jsonld-java-0.5.0.jar" MODULE="jsonld-java-0.5.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="jackson-databind-2.3.3.jar" MODULE="jackson-databind-2.3.3.jar" REQUIRED="true" />
+		  <IMPORT NAME="jackson-core-2.3.3.jar" MODULE="jackson-core-2.3.3.jar" REQUIRED="true" />
+		  <IMPORT NAME="junit-4.11.jar" MODULE="junit-4.11.jar" REQUIRED="true" />
+		  <IMPORT NAME="httpclient-4.2.5.jar" MODULE="httpclient-4.2.5.jar" REQUIRED="true" />	
+		  <IMPORT NAME="httpclient-cache-4.2.5.jar" MODULE="httpclient-cache-4.2.5.jar" REQUIRED="true" />
+		  <IMPORT NAME="sesame-rio-nquads-2.7.12.jar" MODULE="sesame-rio-nquads-2.7.12.jar" REQUIRED="true" />
+		  <IMPORT NAME="sesame-rio-api-2.7.12.jar" MODULE="sesame-rio-api-2.7.12.jar" REQUIRED="true" />
+		  <IMPORT NAME="mockito-core-1.9.5.jar" MODULE="mockito-core-1.9.5.jar" REQUIRED="true" />
+		  <IMPORT NAME="httpcore-4.2.5.jar" MODULE="httpcore-4.2.5.jar" REQUIRED="true" />
+		  <IMPORT NAME="commons-codec-1.6.jar" MODULE="commons-codec-1.6.jar" REQUIRED="true" />
+		  <IMPORT NAME="jackson-annotations-2.3.0.jar" MODULE="jackson-annotations-2.3.0.jar" REQUIRED="true" />
+		  <IMPORT NAME="log4j-1.2.17.jar" MODULE="log4j-1.2.17.jar" REQUIRED="true" />		  
 	   </IMPORTS>
    </CODEGENERATION>
 
