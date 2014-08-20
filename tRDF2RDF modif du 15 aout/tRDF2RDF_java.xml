@@ -108,7 +108,7 @@
 
    <ADVANCED_PARAMETERS>
    <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW_IF="false" NUM_ROW="0" NB_LINES="3">
-	    <DEFAULT>import com.hp.hpl.jena.rdf.model.*; import com.hp.hpl.jena.util.FileManager; import java.io.*; import org.openjena.riot.out.RDFJSONWriter;</DEFAULT>
+	    <DEFAULT>import com.hp.hpl.jena.rdf.model.*; import com.hp.hpl.jena.util.FileManager; import java.io.*; import org.openjena.riot.out.RDFJSONWriter; import org.apache.jena.riot.RDFDataMgr; import org.apache.jena.riot.RDFLanguages;</DEFAULT>
 	  </PARAMETER>
 
    </ADVANCED_PARAMETERS>

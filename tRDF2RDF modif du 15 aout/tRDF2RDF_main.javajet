@@ -150,7 +150,9 @@ model_<%=cid %> = ModelFactory.createDefaultModel();
 
 model_<%=cid %>.read(reader_<%=cid %>,  defaultGraph_<%=cid %>, inputFormat_<%=cid %>); 
 
-model_<%=cid %>.write(writer_<%=cid %>, outputFormat_<%=cid %>); 
+//model_<%=cid %>.write(writer_<%=cid %>, outputFormat_<%=cid %>); 
+
+model_<%=cid %>.write(writer_<%=cid %>, Lang.NQUADS); 
 
 <%=outRowName %>.rdf = writer_<%=cid %>.toString();
 
