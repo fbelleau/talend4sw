@@ -1,0 +1,119 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+IMetadataTable preMetadata = null;
+
+String sesameModel = "model_" + ElementParameterParser.getValue(node,"__SESAMEMODEL__");
+String sCheckOutputFormatList = ElementParameterParser.getValue(node, "__CHECK_OUTPUT_FORMAT_LIST__");
+%>
+
+
+<%
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+String outRowName = "";
+String columnOutRdf = "";
+
+
+if (outConns != null && outConns.size() > 0){
+
+  	if (outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MAIN)||outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+	  	outRowName = outConn.getName();
+	  	columnOutRdf = columnsOut.get(0).getLabel();
+  	}
+}
+%>
+
+
+org.openrdf.model.Model model_<%=cid%> = (org.openrdf.model.Model)globalMap.get("<%=sesameModel%>");
+
+java.io.Writer rdfWriter_<%=cid %> = new java.io.StringWriter();
+
+try {
+<%
+String sOutputFormat = "";
+if (sCheckOutputFormatList.equals("true"))
+{
+	sOutputFormat = "org.openrdf.rio.RDFFormat." + ElementParameterParser.getValue(node, "__OUTPUT_FORMAT_LIST__");
+%>
+	org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, <%=sOutputFormat%>);
+<%
+}
+else
+{
+	sOutputFormat = ElementParameterParser.getValue(node, "__OUTPUT_FORMAT_TEXT__");
+%>
+
+	if (<%=sOutputFormat%>.toLowerCase().equals("rdf") || <%=sOutputFormat%>.toLowerCase().equals("rdf/xml") || <%=sOutputFormat%>.toLowerCase().equals("xml") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+xml") || <%=sOutputFormat%>.toLowerCase().equals("rdfxml"))
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.RDFXML);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("turtle") || <%=sOutputFormat%>.toLowerCase().equals("ttl") || <%=sOutputFormat%>.toLowerCase().equals("text/turtle"))
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.TURTLE);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("nt") || <%=sOutputFormat%>.toLowerCase().equals("n-triple") || <%=sOutputFormat%>.toLowerCase().equals("text/plain")  || <%=sOutputFormat%>.toLowerCase().equals("ntriple") || <%=sOutputFormat%>.toLowerCase().equals("ntriples")  || <%=sOutputFormat%>.toLowerCase().equals("n-triples")) 
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.NTRIPLES);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("jsonld") || <%=sOutputFormat%>.toLowerCase().equals("json-ld") || <%=sOutputFormat%>.toLowerCase().equals("json/ld")) 
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.JSONLD);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("n3") || <%=sOutputFormat%>.toLowerCase().equals("text/rdf+n3")) 
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.N3);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("rdf/json") || <%=sOutputFormat%>.toLowerCase().equals("json") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+json") || <%=sOutputFormat%>.toLowerCase().equals("rdfjson"))
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.RDFJSON);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("trig") || <%=sOutputFormat%>.toLowerCase().equals("application/trig")) 
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.TRIG);
+	}
+	else if (<%=sOutputFormat%>.toLowerCase().equals("nquads") || <%=sOutputFormat%>.toLowerCase().equals("n-quads") || <%=sOutputFormat%>.toLowerCase().equals("nquad") || <%=sOutputFormat%>.toLowerCase().equals("n-quad")) 
+	{
+		org.openrdf.rio.Rio.write(model_<%=cid%>, rdfWriter_<%=cid %>, org.openrdf.rio.RDFFormat.NQUADS);
+	}
+	else
+	{
+		System.err.println("RDF Format not supported");
+	}
+	
+<%
+}
+%>
+}
+catch (Exception e) {
+	System.out.println("FAILED");
+}
+
+
+<%=outRowName %>.<%=columnOutRdf %> = rdfWriter_<%=cid %>.toString();
+
+
+
+nb_line_<%=cid %>++;

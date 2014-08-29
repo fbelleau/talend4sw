@@ -1,0 +1,125 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.BlockCode
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+String rdfInput = ElementParameterParser.getValue(node, "__RDFINPUT__");
+String inputFormat = "org.openrdf.rio.RDFFormat." + ElementParameterParser.getValue(node, "__INPUT_FORMAT__");
+
+String checkGraph = ElementParameterParser.getValue(node, "__CHECK_GRAPH__"); 
+String graph = ElementParameterParser.getValue(node, "__GRAPH_COL__"); 
+
+
+/////// Get the input connection 
+IMetadataTable preMetadata = null;
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+
+List<IMetadataColumn> columns = preMetadata.getListColumns();
+
+String inRowName = node.getIncomingConnections().get(0).getName();
+%>
+
+
+<%
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+String outRowName = "";
+
+if (outConns != null && outConns.size() > 0){
+
+  	if (outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MAIN)||outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+	  	outRowName = outConn.getName();
+  	}
+}
+%>
+
+
+String rdfInput_<%=cid %> = <%=inRowName %>.<%=rdfInput %>;
+
+<%
+if (checkGraph.equals("true")) {
+%>
+	String graph_<%=cid %> = <%=graph %>;
+<%
+}
+%>
+
+
+org.openrdf.model.Model model_<%=cid%> = new org.openrdf.model.impl.LinkedHashModel(); 
+
+try {
+	model_<%=cid%> = org.openrdf.rio.Rio.parse(new java.io.ByteArrayInputStream(rdfInput_<%=cid%>.getBytes()), "http://base_uri", <%=inputFormat%>);
+
+}
+catch (Exception e) {
+	System.err.println("Error while parsing the RDF data");
+}
+
+
+int rowNumber_<%=cid%> = model_<%=cid%>.size();
+	
+java.util.List<<%=outRowName%>Struct> rows_<%=cid%> = new java.util.ArrayList<<%=outRowName%>Struct>(rowNumber_<%=cid%>);
+<%=outRowName%>Struct rowTmp_<%=cid%> = null;
+	
+for (org.openrdf.model.Statement statement_<%=cid%>: model_<%=cid%>) {
+		rowTmp_<%=cid%> = new <%=outRowName%>Struct();
+		
+		rowTmp_<%=cid%>.subject = statement_<%=cid%>.getSubject().toString();
+		rowTmp_<%=cid%>.predicate = statement_<%=cid%>.getPredicate().toString();
+		rowTmp_<%=cid%>.object = statement_<%=cid%>.getObject().toString();
+		
+		if (statement_<%=cid%>.getObject().getClass().getName().equals("org.openrdf.model.impl.URIImpl")) {
+			rowTmp_<%=cid%>.type = "uri";
+		}
+		else {
+			rowTmp_<%=cid%>.type = "string";
+		}
+		
+		<%if (checkGraph.equals("true")) {%>
+			rowTmp_<%=cid%>.graph = <%=graph%>;
+		<%}
+		else {%>
+			try {
+				rowTmp_<%=cid%>.graph = statement_<%=cid%>.getContext().toString();
+			} catch (Exception e) {
+				rowTmp_<%=cid%>.graph = "http://defaultgraph/";
+			}
+		<%}%>
+		
+		rows_<%=cid%>.add(rowTmp_<%=cid%>);
+		nb_line_<%=cid%>++;
+
+}
+
+
+for (<%=outRowName%>Struct row_<%=cid%> : rows_<%=cid%>) {// C_01
+	<%=outRowName%> = row_<%=cid%>;
+<%
+    List<BlockCode> blockCodes = new java.util.ArrayList<BlockCode>(1);
+  blockCodes.add(new BlockCode("C_01"));
+  ((org.talend.core.model.process.AbstractNode) node).setBlocksCodeToClose(blockCodes);
+%> 

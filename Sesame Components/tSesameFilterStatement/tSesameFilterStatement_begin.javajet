@@ -1,0 +1,114 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+IMetadataTable preMetadata = null;
+
+String sesameModel = "model_" + ElementParameterParser.getValue(node,"__SESAMEMODEL__");
+
+String fSubject = ElementParameterParser.getValue(node, "__FILTER_SUBJECT__");
+String fPredicate = ElementParameterParser.getValue(node, "__FILTER_PREDICATE__");
+String fObject = ElementParameterParser.getValue(node, "__FILTER_OBJECT__");
+String fGraph = ElementParameterParser.getValue(node, "__FILTER_GRAPH__");
+String checkTypeUri = ElementParameterParser.getValue(node, "__CHECK_TYPE__");
+
+String checkSubject = ElementParameterParser.getValue(node, "__CHECK_SUBJECT__");
+String checkPredicate = ElementParameterParser.getValue(node, "__CHECK_PREDICATE__");
+String checkObject = ElementParameterParser.getValue(node, "__CHECK_OBJECT__");
+String checkGraph = ElementParameterParser.getValue(node, "__CHECK_GRAPH__");
+
+String nullTest = null;
+%>
+
+int nb_line_<%=cid %> = 0;
+
+<%
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+String outRowName = "";
+String columnOutRdf = "";
+
+
+if (outConns != null && outConns.size() > 0){
+
+  	if (outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MAIN)||outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+	  	outRowName = outConn.getName();
+  	}
+}
+%>
+
+org.openrdf.model.ValueFactory factory_<%=cid%> = org.openrdf.model.impl.ValueFactoryImpl.getInstance();
+
+org.openrdf.model.Model model_<%=cid%> = (org.openrdf.model.Model)globalMap.get("<%=sesameModel%>");
+
+
+
+<%if (checkSubject.equals("false")) {%>
+	org.openrdf.model.URI filterSubject_<%=cid%> = null;
+<%} else {%>
+	org.openrdf.model.URI filterSubject_<%=cid%> = factory_<%=cid%>.createURI(<%=fSubject%>);
+<%}%>
+
+
+<%if (checkPredicate.equals("false")) {%>
+	org.openrdf.model.URI filterPredicate_<%=cid%> = null;
+<%} else {%>
+	org.openrdf.model.URI filterPredicate_<%=cid%> = factory_<%=cid%>.createURI(<%=fPredicate%>);
+<%}%>
+
+
+<%if (checkObject.equals("false")) {%>
+	org.openrdf.model.URI filterObject_<%=cid%> = null;
+<%} else {%>	
+	<%
+	if (checkTypeUri.equals("true")) {
+	%>
+		org.openrdf.model.URI filterObject_<%=cid%> = factory_<%=cid%>.createURI(<%=fObject%>);
+	<%
+	} else {
+	%>
+		org.openrdf.model.Literal filterObject_<%=cid%> = factory_<%=cid%>.createLiteral(<%=fObject%>);
+	<%
+	}
+}%>
+
+
+
+<%if (checkGraph.equals("false")) {%>
+	for (org.openrdf.model.Statement statement_<%=cid%>: model_<%=cid%>.filter(filterSubject_<%=cid%>, filterPredicate_<%=cid%>, filterObject_<%=cid%>))
+	{
+<%} else {%>
+	for (org.openrdf.model.Statement statement_<%=cid%>: model_<%=cid%>.filter(filterSubject_<%=cid%>, filterPredicate_<%=cid%>, filterObject_<%=cid%>, factory_<%=cid%>.createURI(<%=fGraph%>)))
+	{
+<%}%>
+
+
+
+		//System.out.println(statement_<%=cid%>.getSubject() + " | " + statement_<%=cid%>.getPredicate() + " | " + statement_<%=cid%>.getObject());
+		
+		nb_line_<%=cid %>++;
+
+		
+		
+		

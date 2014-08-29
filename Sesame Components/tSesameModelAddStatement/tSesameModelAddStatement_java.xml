@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT> 
+
+<HEADER AUTHOR="vincent.emonet@gmail.com" 
+          COMPATIBILITY="ALL" 
+          PLATEFORM="ALL" 
+          RELEASE_DATE="20140827" 
+          SERIAL="" 
+          STARTABLE="false" 
+          STATUS="BETA" 
+          DATA_AUTO_PROPAGATE="false"
+          SCHEMA_AUTO_PROPAGATE="false"
+          HAS_CONDITIONAL_OUTPUTS="true"
+          PARTITIONING="AUTO"
+          VERSION="0.1">
+          
+<SIGNATURE/> 
+</HEADER>
+
+  <FAMILIES> 
+    <FAMILY>Semantic Web/Sesame</FAMILY>
+  </FAMILIES>  
+  <DOCUMENTATION> 
+    <URL></URL> 
+  </DOCUMENTATION>   
+  <CONNECTORS> 
+    <CONNECTOR CTYPE="FLOW" MIN_INPUT="1" MAX_INPUT="1" MIN_OUTPUT="0" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="COMPONENT_OK"/>
+    <CONNECTOR CTYPE="COMPONENT_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>  
+  
+  <PARAMETERS>
+ 
+ <PARAMETER
+      NAME="SESAMEMODEL"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSesameModelCreate"
+      NUM_ROW="1"
+      DYNAMIC_SETTINGS="true"
+    />
+  
+<PARAMETER NAME="OUTPUT_SCHEMA" FIELD="SCHEMA_TYPE" READONLY="false" REQUIRED="true" NUM_ROW="2">
+<TABLE READONLY="false">
+<COLUMN NAME="acceptedStatement" TYPE="id_Boolean" READONLY="true" CUSTOM="true" />
+</TABLE>
+</PARAMETER>
+
+
+<PARAMETER NAME="SUBJECT_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+<DEFAULT>subject</DEFAULT>
+</PARAMETER>
+
+<PARAMETER NAME="PREDICATE_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+<DEFAULT>predicate</DEFAULT>
+</PARAMETER>
+
+<PARAMETER NAME="OBJECT_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+<DEFAULT>object</DEFAULT>
+</PARAMETER>
+
+<PARAMETER NAME="TYPE_COL" FIELD="PREV_COLUMN_LIST" REQUIRED="true" NUM_ROW ="3">
+<DEFAULT>type</DEFAULT>
+</PARAMETER>
+
+<PARAMETER NAME="CHECK_GRAPH" FIELD="CHECK" REQUIRED="false" NUM_ROW ="4">
+<DEFAULT>false</DEFAULT>
+</PARAMETER>
+
+
+
+<PARAMETER
+		NAME="GRAPH_COL"
+		FIELD="STRING"
+		SHOW_IF="CHECK_GRAPH == 'TRUE'" 
+		NUM_ROW ="4"
+		REQUIRED="false"
+		>
+		 <DEFAULT>"http://defaultgraph.org/"</DEFAULT>
+	</PARAMETER> 
+   
+  </PARAMETERS>
+  
+<ADVANCED_PARAMETERS>
+
+
+</ADVANCED_PARAMETERS>
+
+  <CODEGENERATION>
+	   <IMPORTS>
+	      <IMPORT NAME="openrdf-sesame-2.7.13-onejar.jar" MODULE="openrdf-sesame-2.7.13-onejar.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-log4j12-1.7.7" MODULE="slf4j-log4j12-1.7.7.jar" REQUIRED="true" />
+		  <IMPORT NAME="slf4j-api-1.7.7" MODULE="slf4j-api-1.7.7.jar" REQUIRED="true" />
+		  <IMPORT NAME="log4j-1.2.17" MODULE="log4j-1.2.17.jar" REQUIRED="true" />
+		  <IMPORT NAME="commons-io-2.4" MODULE="commons-io-2.4.jar" REQUIRED="true" />
+	   </IMPORTS>
+   </CODEGENERATION>
+ 
+ 
+  <RETURNS> 
+    <RETURN AVAILABILITY="AFTER" NAME="NB_LINE" TYPE="id_Integer"/> 
+  </RETURNS> 
+</COMPONENT>

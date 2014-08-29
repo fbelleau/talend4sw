@@ -101,14 +101,6 @@
     </PARAMETER>
 	
 	
-    <PARAMETER
-		NAME="DEFAULT_GRAPH"
-		FIELD="STRING"
-		NUM_ROW="40"
-		REQUIRED="true"
-		>
-		 <DEFAULT>"http://default.graph"</DEFAULT>
-	</PARAMETER> 
 	
    </PARAMETERS>
 
@@ -116,6 +108,15 @@
    <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" SHOW_IF="false" NUM_ROW="0" NB_LINES="3">
 	    <DEFAULT>import org.apache.jena.riot.Lang; import org.apache.jena.riot.RDFDataMgr; import com.hp.hpl.jena.rdf.model.Model; import com.hp.hpl.jena.rdf.model.ModelFactory; import java.io.*;</DEFAULT>
 	  </PARAMETER>
+	  
+	  <PARAMETER
+		NAME="BASE_URI"
+		FIELD="STRING"
+		NUM_ROW="40"
+		REQUIRED="true"
+		>
+		 <DEFAULT>"http://identifiers.org/"</DEFAULT>
+	</PARAMETER> 
 
    </ADVANCED_PARAMETERS>
 

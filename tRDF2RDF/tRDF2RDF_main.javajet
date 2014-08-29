@@ -20,7 +20,7 @@ String cid = node.getUniqueName();
 IMetadataTable preMetadata = null;
 
 
-String defaultGraph = ElementParameterParser.getValue(node, "__DEFAULT_GRAPH__");
+String baseUri = ElementParameterParser.getValue(node, "__BASE_URI__");
 
 
 
@@ -38,7 +38,7 @@ List<IMetadataColumn> columns = preMetadata.getListColumns();
 %>
 
 String rdfInput_<%=cid %> = "";
-String defaultGraph_<%=cid %> = <%=defaultGraph %>;
+String baseUri_<%=cid %> = <%=baseUri %>;
 
 <%
  for (int i = 0; i < columns.size(); i++) 
@@ -57,7 +57,7 @@ if (sCheckInputFormatList.equals("true"))
 {
 	sInputFormat = "Lang." + ElementParameterParser.getValue(node, "__INPUT_FORMAT_LIST__");
 %>	
-	RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, <%=sInputFormat%>);
+	RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, <%=sInputFormat%>);
 <%
 }
 else
@@ -65,37 +65,37 @@ else
 	sInputFormat = ElementParameterParser.getValue(node, "__INPUT_FORMAT_TEXT__");
 %>
 
-	if (<%=sInputFormat%>.toLowerCase().equals("rdf") || <%=sInputFormat%>.toLowerCase().equals("rdf/xml") || <%=sInputFormat%>.toLowerCase().equals("xml") || <%=sInputFormat%>.toLowerCase().equals("application/rdf+xml"))
+	if (<%=sInputFormat%>.toLowerCase().equals("rdf") || <%=sInputFormat%>.toLowerCase().equals("rdf/xml") || <%=sInputFormat%>.toLowerCase().equals("xml") || <%=sInputFormat%>.toLowerCase().equals("application/rdf+xml") || <%=sInputFormat%>.toLowerCase().equals("rdfxml"))
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.RDFXML);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.RDFXML);
 	}
 	else if (<%=sInputFormat%>.toLowerCase().equals("turtle") || <%=sInputFormat%>.toLowerCase().equals("ttl") || <%=sInputFormat%>.toLowerCase().equals("text/turtle"))
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.TURTLE);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.TURTLE);
 	}
 	else if (<%=sInputFormat%>.toLowerCase().equals("nt") || <%=sInputFormat%>.toLowerCase().equals("n-triple") || <%=sInputFormat%>.toLowerCase().equals("text/plain")  || <%=sInputFormat%>.toLowerCase().equals("ntriple") || <%=sInputFormat%>.toLowerCase().equals("ntriples")  || <%=sInputFormat%>.toLowerCase().equals("n-triples")) 
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.NTRIPLES);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.NTRIPLES);
 	}
 	else if (<%=sInputFormat%>.toLowerCase().equals("jsonld") || <%=sInputFormat%>.toLowerCase().equals("json-ld") || <%=sInputFormat%>.toLowerCase().equals("json/ld")) 
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.JSONLD);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.JSONLD);
 	}
 	else if (<%=sInputFormat%>.toLowerCase().equals("n3") || <%=sInputFormat%>.toLowerCase().equals("text/rdf+n3")) 
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.N3);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.N3);
 	}
-	else if (<%=sInputFormat%>.toLowerCase().equals("rdf/json") || <%=sInputFormat%>.toLowerCase().equals("json") || <%=sInputFormat%>.toLowerCase().equals("application/json") || <%=sInputFormat%>.toLowerCase().equals("rdfjson"))
+	else if (<%=sInputFormat%>.toLowerCase().equals("rdf/json") || <%=sInputFormat%>.toLowerCase().equals("json") || <%=sInputFormat%>.toLowerCase().equals("application/rdf+json") || <%=sInputFormat%>.toLowerCase().equals("rdfjson"))
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.RDFJSON);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.RDFJSON);
 	}
-	else if (<%=sInputFormat%>.toLowerCase().equals("trig")) 
+	else if (<%=sInputFormat%>.toLowerCase().equals("trig") || <%=sInputFormat%>.toLowerCase().equals("application/trig")) 
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.TRIG);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.TRIG);
 	}
 	else if (<%=sInputFormat%>.toLowerCase().equals("nquads") || <%=sInputFormat%>.toLowerCase().equals("n-quads")) 
 	{
-		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), defaultGraph_<%=cid %>, Lang.NQUADS);
+		RDFDataMgr.read(model_<%=cid %>, new ByteArrayInputStream(rdfInput_<%=cid %>.getBytes()), baseUri_<%=cid %>, Lang.NQUADS);
 	}
 	else
 	{
@@ -134,7 +134,7 @@ else
 	sOutputFormat = ElementParameterParser.getValue(node, "__OUTPUT_FORMAT_TEXT__");
 %>
 
-	if (<%=sOutputFormat%>.toLowerCase().equals("rdf") || <%=sOutputFormat%>.toLowerCase().equals("rdf/xml") || <%=sOutputFormat%>.toLowerCase().equals("xml") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+xml"))
+		if (<%=sOutputFormat%>.toLowerCase().equals("rdf") || <%=sOutputFormat%>.toLowerCase().equals("rdf/xml") || <%=sOutputFormat%>.toLowerCase().equals("xml") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+xml") || <%=sOutputFormat%>.toLowerCase().equals("rdfxml"))
 	{
 		RDFDataMgr.write(writer_<%=cid %>, model_<%=cid %>, Lang.RDFXML);
 	}
@@ -154,11 +154,11 @@ else
 	{
 		RDFDataMgr.write(writer_<%=cid %>, model_<%=cid %>, Lang.N3);
 	}
-	else if (<%=sOutputFormat%>.toLowerCase().equals("rdf/json") || <%=sOutputFormat%>.toLowerCase().equals("json") || <%=sOutputFormat%>.toLowerCase().equals("application/json") || <%=sOutputFormat%>.toLowerCase().equals("rdfjson"))
+	else if (<%=sOutputFormat%>.toLowerCase().equals("rdf/json") || <%=sOutputFormat%>.toLowerCase().equals("json") || <%=sOutputFormat%>.toLowerCase().equals("application/rdf+json") || <%=sOutputFormat%>.toLowerCase().equals("rdfjson"))
 	{
 		RDFDataMgr.write(writer_<%=cid %>, model_<%=cid %>, Lang.RDFJSON);
 	}
-	else if (<%=sOutputFormat%>.toLowerCase().equals("trig")) 
+	else if (<%=sOutputFormat%>.toLowerCase().equals("trig") || <%=sOutputFormat%>.toLowerCase().equals("application/trig")) 
 	{
 		RDFDataMgr.write(writer_<%=cid %>, model_<%=cid %>, Lang.TRIG);
 	}

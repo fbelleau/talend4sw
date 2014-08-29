@@ -1,0 +1,131 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String sesameModel = "model_" + ElementParameterParser.getValue(node,"__SESAMEMODEL__");
+
+
+String subject = ElementParameterParser.getValue(node, "__SUBJECT_COL__"); // colonne subject
+String predicate = ElementParameterParser.getValue(node, "__PREDICATE_COL__"); // colonne predicate
+String object = ElementParameterParser.getValue(node, "__OBJECT_COL__"); // colonne object
+String type = ElementParameterParser.getValue(node, "__TYPE_COL__"); // colonne type
+String checkGraph = ElementParameterParser.getValue(node, "__CHECK_GRAPH__"); // check if specified graph
+String graph = ElementParameterParser.getValue(node, "__GRAPH_COL__"); // graph
+
+
+/////// Get the input connection 
+IMetadataTable preMetadata = null;
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0))
+preMetadata = node.getIncomingConnections().get(0).getMetadataTable();
+
+List<IMetadataColumn> columns = preMetadata.getListColumns();
+
+String inRowName = node.getIncomingConnections().get(0).getName();
+
+%>
+
+
+<%
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+String outRowName = "";
+
+if (outConns != null && outConns.size() > 0){
+
+  	if (outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MAIN)||outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+	  	outRowName = outConn.getName();
+  	}
+}
+%>
+
+
+String subject_<%=cid %> = <%=inRowName %>.<%=subject %>;
+String predicate_<%=cid %> = <%=inRowName %>.<%=predicate %>;
+String object_<%=cid %> = <%=inRowName %>.<%=object %>;
+
+<%
+if (checkGraph.equals("true")) {
+%>
+	String graph_<%=cid %> = <%=graph %>;
+<%
+}
+%>
+
+
+org.openrdf.model.Model model_<%=cid%> = (org.openrdf.model.Model)globalMap.get("<%=sesameModel%>");
+
+
+try {
+	<%if (!outRowName.equals("")) { %>
+		if (<%=inRowName%>.<%=type %>.toLowerCase().equals("uri")) {
+			<% if (checkGraph.equals("false")) {%>
+			<%=outRowName %>.acceptedStatement = model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>));
+			<% } 
+			else { %>
+			<%=outRowName %>.acceptedStatement = model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+			<% } %>
+		}
+		
+		else {
+			<% if (checkGraph.equals("false")) {%>
+			<%=outRowName %>.acceptedStatement = model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>));
+			<% } 
+			else { %>
+			<%=outRowName %>.acceptedStatement = model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+			<% } %>
+		}
+	<%}
+	else { %>
+		if (<%=inRowName%>.<%=type %>.toLowerCase().equals("uri")) {
+			<% if (checkGraph.equals("false")) {%>
+			model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>));
+			<% } 
+			else { %>
+			model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+			<% } %>
+		}
+		
+		else {
+			<% if (checkGraph.equals("false")) {%>
+			model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>));
+			<% } 
+			else { %>
+			model_<%=cid%>.add(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+			<% } %>
+		}
+	
+	<% } %>
+	globalMap.put("<%=sesameModel%>", model_<%=cid%>);
+}
+catch (Exception e) {
+	//System.out.println("Fail");
+	<%if (!outRowName.equals("")) { %>
+		<%=outRowName %>.acceptedStatement = false;
+	<%}%>
+}
+
+
+
+nb_line_<%=cid %>++;

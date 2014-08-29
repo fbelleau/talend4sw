@@ -1,0 +1,96 @@
+
+<%@ jet 
+	imports="
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.INode
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    java.util.Map
+    java.util.ArrayList;
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+String sesameModel = "model_" + ElementParameterParser.getValue(node,"__SESAMEMODEL__");
+
+
+String subject = ElementParameterParser.getValue(node, "__RM_SUBJECT__"); // subject
+String predicate = ElementParameterParser.getValue(node, "__RM_PREDICATE__"); // predicate
+String object = ElementParameterParser.getValue(node, "__RM_OBJECT__"); //  object
+String checkGraph = ElementParameterParser.getValue(node, "__CHECK_GRAPH__"); // check if specified graph
+String graph = ElementParameterParser.getValue(node, "__RM_GRAPH__"); // graph
+
+
+/////// Get the output connection 
+List<? extends IConnection> outConns = node.getOutgoingConnections();
+IConnection outConn = null;
+IMetadataTable postMetadata = null;
+List<IMetadataColumn> columnsOut = null;
+String outRowName = "";
+
+
+if (outConns != null && outConns.size() > 0){
+
+  	if (outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MAIN)||outConns.get(0).getLineStyle().equals(EConnectionType.FLOW_MERGE)) { 
+	  	outConn = outConns.get(0);
+	  	postMetadata = outConn.getMetadataTable();
+	  	columnsOut = postMetadata.getListColumns();
+	  	outRowName = outConn.getName();
+  	}
+}
+%>
+
+
+String subject_<%=cid %> = <%=subject %>;
+String predicate_<%=cid %> = <%=predicate %>;
+String object_<%=cid %> = <%=object %>;
+
+<%
+if (checkGraph.equals("true")) {
+%>
+	String graph_<%=cid %> = <%=graph %>;
+<%
+}
+%>
+
+
+org.openrdf.model.Model model_<%=cid%> = (org.openrdf.model.Model)globalMap.get("<%=sesameModel%>");
+
+try {
+	<%if (!outRowName.equals("")) { %>
+		<% if (checkGraph.equals("false")) {%>
+			<%=outRowName %>.statementRemoved = model_<%=cid%>.remove(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>));
+		<% } 
+		else { %>
+			<%=outRowName %>.statementRemoved = model_<%=cid%>.remove(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+		<% } %>
+	
+	<%}
+	else {%>
+		<% if (checkGraph.equals("false")) {%>
+			model_<%=cid%>.remove(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createURI(object_<%=cid %>));
+		<% } 
+		else { %>
+			model_<%=cid%>.remove(factory_<%=cid%>.createURI(subject_<%=cid %>), factory_<%=cid%>.createURI(predicate_<%=cid %>), factory_<%=cid%>.createLiteral(object_<%=cid %>), factory_<%=cid%>.createURI(graph_<%=cid %>));
+		<% } %>
+	<%}%>
+	
+	globalMap.put("<%=sesameModel%>", model_<%=cid%>);
+}
+catch (Exception e) {
+	<%if (!outRowName.equals("")) { %>
+		<%=outRowName %>.statementRemoved = false;
+	<%}%>
+}
+
+
+
+nb_line_<%=cid %>++;
