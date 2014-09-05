@@ -52,7 +52,12 @@ if (outConns != null && outConns.size() > 0){
 <%=outRowName%>.subject = statement_<%=cid%>.getSubject().toString();
 <%=outRowName%>.predicate = statement_<%=cid%>.getPredicate().toString();
 <%=outRowName%>.object = statement_<%=cid%>.getObject().toString();
-<%=outRowName%>.graph = statement_<%=cid%>.getContext().toString();
+try {
+	<%=outRowName%>.graph = statement_<%=cid%>.getContext().toString();
+}
+catch (Exception e) {
+	<%=outRowName%>.graph = null;
+}
 
 if (statement_<%=cid%>.getObject().getClass().getName().equals("org.openrdf.model.impl.URIImpl")) {
 	<%=outRowName%>.type = "uri";

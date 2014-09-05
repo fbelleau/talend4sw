@@ -107,7 +107,6 @@ org.openrdf.model.Model model_<%=cid%> = (org.openrdf.model.Model)globalMap.get(
 
 		//System.out.println(statement_<%=cid%>.getSubject() + " | " + statement_<%=cid%>.getPredicate() + " | " + statement_<%=cid%>.getObject());
 		
-		nb_line_<%=cid %>++;
 
 		
 		
